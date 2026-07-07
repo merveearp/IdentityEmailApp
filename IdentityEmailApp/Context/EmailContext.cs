@@ -10,5 +10,9 @@ namespace IdentityEmailApp.Context
         {
             
         }
+      
+
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Message> Messages { get; set; }
     }
 }
