@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityEmailApp.ViewComponents
+namespace IdentityEmailApp.ViewComponents.LayoutViewComponents
 {
-    public class _HomeHeadViewComponent:ViewComponent
+    public class _LayoutMobileMenuComponent :ViewComponent
     {
         public IViewComponentResult Invoke()
         {
