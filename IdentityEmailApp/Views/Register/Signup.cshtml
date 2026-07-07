@@ -202,7 +202,35 @@
             font-size: 20px;
             z-index: 10;
         }
+ 
+    .password-wrapper{
+        position:relative;
+    }
+
+    .password-wrapper input{
+        padding-right:40px;
+    }
+
+    .toggle-password{
+        position:absolute;
+        right:0;
+        top:50%;
+        transform:translateY(-50%);
+        background:none;
+        border:none;
+        cursor:pointer;
+        color:#777;
+        padding:0;
+    }
+
+    .toggle-password:hover{
+        color:#00c292;
+    }
+
+
     </style>
+
+
 </head>
 <body class="bg-background text-on-background font-body-lg overflow-hidden h-screen">
 <main class="flex h-full w-full">
@@ -290,27 +318,61 @@
         </div>
     </div>
 
-    <div class="input-group flex items-end space-x-md group">
-        <span class="pb-2 text-text-muted group-focus-within:text-primary">
-            <i class="notika-icon notika-edit"></i>
-        </span>
-        <div class="nk-int-st flex-grow">
-            <label class="font-label-md text-label-md text-secondary block uppercase mb-xs">Şifre</label>
-            <input asp-for="Password" type="password" class="w-full py-2 bg-transparent text-body-lg focus:outline-none" placeholder="Password" />
-            <span asp-validation-for="Password" class="text-red-500 text-xs"></span>
-        </div>
-    </div>
+   <div class="input-group flex items-end space-x-md group">
+    <span class="pb-2 text-text-muted group-focus-within:text-primary">
+        <i class="notika-icon notika-edit"></i>
+    </span>
 
-    <div class="input-group flex items-end space-x-md group">
-        <span class="pb-2 text-text-muted group-focus-within:text-primary">
-            <i class="notika-icon notika-edit"></i>
-        </span>
-        <div class="nk-int-st flex-grow">
-            <label class="font-label-md text-label-md text-secondary block uppercase mb-xs">Şifre Tekrar</label>
-            <input asp-for="ConfirmPassword" type="password" class="w-full py-2 bg-transparent text-body-lg focus:outline-none" placeholder="Confirm Password" />
-            <span asp-validation-for="ConfirmPassword" class="text-red-500 text-xs"></span>
+    <div class="nk-int-st flex-grow">
+        <label class="font-label-md text-label-md text-secondary block uppercase mb-xs">
+            Şifre
+        </label>
+
+        <div class="password-wrapper">
+            <input asp-for="Password"
+                   id="Password"
+                   type="password"
+                   class="w-full py-2 bg-transparent text-body-lg focus:outline-none"
+                   placeholder="Password" />
+
+            <button type="button"
+                    class="toggle-password"
+                    onclick="togglePassword('Password',this)">
+                <span class="material-symbols-outlined">visibility</span>
+            </button>
         </div>
+
+        <span asp-validation-for="Password" class="text-red-500 text-xs"></span>
     </div>
+</div>
+
+   <div class="input-group flex items-end space-x-md group">
+    <span class="pb-2 text-text-muted group-focus-within:text-primary">
+        <i class="notika-icon notika-edit"></i>
+    </span>
+
+    <div class="nk-int-st flex-grow">
+        <label class="font-label-md text-label-md text-secondary block uppercase mb-xs">
+            Şifre Tekrar
+        </label>
+
+        <div class="password-wrapper">
+            <input asp-for="ConfirmPassword"
+                   id="ConfirmPassword"
+                   type="password"
+                   class="w-full py-2 bg-transparent text-body-lg focus:outline-none"
+                   placeholder="Confirm Password" />
+
+            <button type="button"
+                    class="toggle-password"
+                    onclick="togglePassword('ConfirmPassword',this)">
+                <span class="material-symbols-outlined">visibility</span>
+            </button>
+        </div>
+
+        <span asp-validation-for="ConfirmPassword" class="text-red-500 text-xs"></span>
+    </div>
+</div>
     
 
     <div class="pt-5">
@@ -365,6 +427,22 @@
             });
         });
     </script>
+
+    <script>
+    function togglePassword(inputId, button) {
+
+        const input = document.getElementById(inputId);
+        const icon = button.querySelector("span");
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.textContent = "visibility_off";
+        } else {
+            input.type = "password";
+            icon.textContent = "visibility";
+        }
+    }
+</script>
 
 
 

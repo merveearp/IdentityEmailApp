@@ -1,8 +1,15 @@
-﻿namespace IdentityEmailApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace IdentityEmailApp.Models
 {
     public class LoginUserViewModel
     {
-        public string Username { get; set; }
+        [Required]
+        public string UsernameOrEmail { get; set; }
+
+        [Required]
         public string Password { get; set; }
+
+        public bool RememberMe { get; set; }
     }
 }
