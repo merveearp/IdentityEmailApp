@@ -4,7 +4,10 @@
     ViewData["Title"] = "MessageDetail";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-              
+   
+<div class="inbox-area">
+    <div class="container">
+        <div class="row">
 @await Component.InvokeAsync("_MessageSidebarComponent")
 
 
@@ -38,4 +41,9 @@
             </div>
         </div>
     </div>
+            </div>
+
+        </div>
+    </div>
 </div>
+    
