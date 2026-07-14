@@ -3,7 +3,7 @@ using IdentityEmailApp.Entities;
 using IdentityEmailApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.DiaSymReader;
+
 
 namespace IdentityEmailApp.Controllers
 {
@@ -73,7 +73,12 @@ namespace IdentityEmailApp.Controllers
 
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Home");
+                if(user.IsProfileSetupShown)
+                {
+                    return RedirectToAction("CompleteProfile", "Profile");
+                }
+                return RedirectToAction("Inbox", "Message");
+               
             }
 
            

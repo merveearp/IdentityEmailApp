@@ -45,7 +45,10 @@ namespace IdentityEmailApp.Controllers
                 Surname = model.Surname,
                 UserName = model.Username,
                 Email = model.Email,
-                ActivationCode = code
+                ImageUrl = "/images/default.jfif",
+                ActivationCode = code,
+                IsProfileCompleted = false,
+                IsProfileSetupShown = false
             };
 
             var result = await _userManager.CreateAsync(appUser, model.Password);
