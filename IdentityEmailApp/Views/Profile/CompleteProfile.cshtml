@@ -1,8 +1,266 @@
-﻿
+﻿@model IdentityEmailApp.Models.CompleteProfileViewModel
+@using IdentityEmailApp.Enums
+
 @{
-    ViewData["Title"] = "CompleteProfile";
+    ViewData["Title"] = "Profilini Tamamla";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>CompleteProfile</h1>
+<style>
+    .complete-profile-wrapper {
+        padding: 40px 0;
+    }
 
+    .complete-profile-card {
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 35px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .complete-profile-title {
+        margin-bottom: 30px;
+    }
+
+        .complete-profile-title h2 {
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .complete-profile-title p {
+            color: #777;
+            margin-bottom: 0;
+        }
+
+    .profile-form-group {
+        margin-bottom: 20px;
+    }
+
+        .profile-form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+    .profile-image-box {
+        background: #f8f9fa;
+        border: 1px solid #e1e5e9;
+        border-radius: 8px;
+        padding: 25px;
+        text-align: center;
+        min-height: 100%;
+    }
+
+    .profile-image-preview {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        margin-bottom: 15px;
+    }
+
+    .profile-image-box h4 {
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .profile-image-box p {
+        color: #777;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+
+    .profile-actions {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eeeeee;
+        overflow: hidden;
+    }
+
+    .profile-skip-button {
+        float: left;
+    }
+
+    .profile-save-button {
+        float: right;
+    }
+
+    @@media (max-width: 767px) {
+        .profile-image-box {
+            margin-top: 25px;
+        }
+
+        .profile-skip-button,
+        .profile-save-button {
+            float: none;
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+<div class="container complete-profile-wrapper">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1 col-md-12">
+
+            <div class="complete-profile-card">
+
+                <div class="complete-profile-title">
+                    <h2>Profilini Tamamla</h2>
+
+                    <p>
+                        Hesabını kişiselleştirmek için profil bilgilerini ekleyebilirsin.
+                    </p>
+                </div>
+
+                <form asp-controller="Profile"
+                      asp-action="CompleteProfile"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger">
+                    </div>
+
+                    <input asp-for="ImageUrl" type="hidden" />
+
+                    <div class="row">
+
+                        <!-- Sol taraf -->
+                        <div class="col-md-8">
+
+                            <div class="profile-form-group">
+                                <label asp-for="PhoneNumber"></label>
+
+                                <input asp-for="PhoneNumber"
+                                       type="tel"
+                                       class="form-control"
+                                       placeholder="05XX XXX XX XX" />
+
+                                <span asp-validation-for="PhoneNumber"
+                                      class="text-danger">
+                                </span>
+                            </div>
+
+                            <div class="profile-form-group">
+                                <label asp-for="City"></label>
+
+                                <input asp-for="City"
+                                       class="form-control"
+                                       placeholder="Şehir bilgisi" />
+
+                                <span asp-validation-for="City"
+                                      class="text-danger">
+                                </span>
+                            </div>
+
+                            <div class="profile-form-group">
+                                <label asp-for="BirthDate"></label>
+
+                                <input asp-for="BirthDate"
+                                       type="date"
+                                       class="form-control"
+                                       max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+
+                                <span asp-validation-for="BirthDate"
+                                      class="text-danger">
+                                </span>
+                            </div>
+
+                            <div class="profile-form-group">
+                                <label asp-for="Gender"></label>
+
+                                <select asp-for="Gender"
+                                        asp-items="Html.GetEnumSelectList<Gender>()"
+                                        class="form-control">
+
+                                    <option value="">Cinsiyet seçiniz</option>
+
+                                </select>
+
+                                <span asp-validation-for="Gender"
+                                      class="text-danger">
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <!-- Sağ taraf -->
+                        <div class="col-md-4">
+
+                            <div class="profile-image-box">
+
+                                <img src="@Model.ImageUrl"
+                                     alt="Profil Fotoğrafı"
+                                     class="profile-image-preview"
+                                     id="profileImagePreview" />
+
+                                <h4>Profil Fotoğrafı</h4>
+
+                                <p>
+                                    JPG, JPEG, PNG veya WEBP formatında,
+                                    en fazla 5 MB boyutunda bir görsel seçebilirsin.
+                                </p>
+
+                                <input asp-for="ProfileImage"
+                                       type="file"
+                                       accept=".jpg,.jpeg,.png,.webp"
+                                       class="form-control"
+                                       id="profileImageInput" />
+
+                                <span asp-validation-for="ProfileImage"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="profile-actions">
+
+                        <a asp-controller="Message"
+                               asp-action="Inbox"
+                               class="btn btn-default profile-skip-button">
+                            Bu Adımı Geç
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-success profile-save-button">
+                            Profili Kaydet ve Devam Et
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("profileImageInput")
+        .addEventListener("change", function (event) {
+
+            const file = event.target.files[0];
+
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById("profileImagePreview").src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+</script>

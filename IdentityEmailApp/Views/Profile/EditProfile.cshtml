@@ -1,123 +1,518 @@
-﻿@model EditUserViewModel
+﻿@model IdentityEmailApp.Models.EditUserViewModel
+@using IdentityEmailApp.Enums
+
 @{
-    ViewData["Title"] = "EditProfile";
+    ViewData["Title"] = "Profilini Düzenle";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int profileCompletion = ViewBag.ProfileCompletion ?? 0;
 }
 
-<!-- Form Element area Start-->
-<div class="form-element-area">
+<style>
+
+    .edit-profile-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eeeeee;
+    overflow: hidden;
+}
+
+.edit-profile-actions .btn-default {
+    float: left;
+}
+
+.edit-profile-actions .btn-success {
+    float: right;
+}
+    .edit-profile-area {
+        padding: 35px 0;
+    }
+
+    .edit-profile-card {
+        background: #fff;
+        padding: 35px;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .edit-profile-header {
+        margin-bottom: 25px;
+    }
+
+        .edit-profile-header h2 {
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .edit-profile-header p {
+            color: #777;
+            margin-bottom: 0;
+        }
+
+    .readonly-email-box {
+        background: #f7f9fa;
+        border: 1px solid #e4e8eb;
+        border-radius: 6px;
+        padding: 18px;
+        margin-bottom: 30px;
+    }
+
+        .readonly-email-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .readonly-email-box input {
+            background-color: #eeeeee !important;
+            cursor: not-allowed;
+        }
+
+    .readonly-email-info {
+        display: block;
+        margin-top: 8px;
+        color: #888;
+        font-size: 13px;
+    }
+
+    .profile-form-group {
+        margin-bottom: 20px;
+    }
+
+        .profile-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+    .profile-side-card {
+        background: #f8f9fa;
+        border: 1px solid #e1e5e9;
+        border-radius: 8px;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .profile-image-preview {
+        width: 160px;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #ffffff;
+        box-shadow: 0 2px 9px rgba(0, 0, 0, 0.15);
+        margin-bottom: 15px;
+    }
+
+    .profile-user-name {
+        margin-bottom: 4px;
+        font-weight: 700;
+    }
+
+    .profile-user-email {
+        margin-bottom: 20px;
+        color: #888;
+        font-size: 13px;
+        word-break: break-word;
+    }
+
+    .profile-upload-title {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .profile-upload-info {
+        margin-top: 8px;
+        margin-bottom: 20px;
+        color: #888;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .profile-completion-box {
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #dddddd;
+        text-align: left;
+    }
+
+    .profile-completion-header {
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+
+    .profile-completion-title {
+        float: left;
+        font-weight: 600;
+    }
+
+    .profile-completion-percentage {
+        float: right;
+        color: #00c292;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .profile-progress {
+        height: 10px;
+        background: #e3e7e9;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 12px;
+    }
+
+    .profile-progress-bar {
+        height: 100%;
+        background: #00c292;
+        border-radius: 20px;
+        transition: width 0.4s ease;
+    }
+
+    .profile-completion-message {
+        color: #777;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 0;
+    }
+
+    .edit-profile-actions {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eeeeee;
+        text-align: right;
+    }
+
+    @@media (max-width: 991px) {
+        .profile-side-card {
+            margin-top: 25px;
+        }
+    }
+
+    @@media (max-width: 767px) {
+        .edit-profile-card {
+            padding: 20px;
+        }
+
+        .edit-profile-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="edit-profile-area">
     <div class="container">
         <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="form-element-list">
-                    <div class="basic-tb-hd">
+
+            <div class="col-lg-10 col-lg-offset-1 col-md-12 col-sm-12 col-xs-12">
+
+                <div class="edit-profile-card">
+
+                    <div class="edit-profile-header">
                         <h2>Profilini Düzenle</h2>
-                        <p>Lütfen bilgileri eksiksiz oalrak doldurup güncelleme işlemini yapınız </p>
+
+                        <p>
+                            Profil bilgilerini güncelleyerek hesabını kişiselleştirebilirsin.
+                        </p>
                     </div>
-                    <form method="post" enctype="multipart/form-data">
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    <form asp-controller="Profile"
+                          asp-action="EditProfile"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger">
+                        </div>
+
+                        <input asp-for="ImageUrl" type="hidden" />
+
+                        <!-- Değiştirilemeyen e-posta -->
+                        <div class="readonly-email-box">
+                            <label asp-for="Email">
+                                E-posta Adresi
+                            </label>
+
+                            <input asp-for="Email"
+                                   type="email"
+                                   class="form-control"
+                                   readonly />
+
+                            <span class="readonly-email-info">
+                                <i class="fa fa-lock"></i>
+                                E-posta adresiniz güvenlik nedeniyle bu sayfadan değiştirilemez.
+                            </span>
+                        </div>
+
                         <div class="row">
 
-                            <!-- Sol Taraf -->
-                            <div class="col-lg-8">
+                            <!-- Sol taraf -->
+                            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
 
-                                <div class="form-group">
-                                    <div class="nk-int-st">
-                                        <input type="text" class="form-control" placeholder="İsim">
+                                <div class="row">
+
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="profile-form-group">
+                                            <label asp-for="Name">İsim</label>
+
+                                            <div class="nk-int-st">
+                                                <input asp-for="Name"
+                                                       class="form-control"
+                                                       placeholder="İsminiz" />
+                                            </div>
+
+                                            <span asp-validation-for="Name"
+                                                  class="text-danger">
+                                            </span>
+                                        </div>
                                     </div>
+
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="profile-form-group">
+                                            <label asp-for="Surname">Soyisim</label>
+
+                                            <div class="nk-int-st">
+                                                <input asp-for="Surname"
+                                                       class="form-control"
+                                                       placeholder="Soyisminiz" />
+                                            </div>
+
+                                            <span asp-validation-for="Surname"
+                                                  class="text-danger">
+                                            </span>
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                                <div class="form-group">
+                                <div class="profile-form-group">
+                                    <label asp-for="UserName">
+                                        Kullanıcı Adı
+                                    </label>
+
                                     <div class="nk-int-st">
-                                        <input type="text" class="form-control" placeholder="Soyisim">
+                                        <input asp-for="UserName"
+                                               class="form-control"
+                                               placeholder="Kullanıcı adınız" />
                                     </div>
+
+                                    <span asp-validation-for="UserName"
+                                          class="text-danger">
+                                    </span>
+
+                                    <small class="text-muted">
+                                        Seçtiğiniz kullanıcı adı başka bir kullanıcı tarafından kullanılıyorsa kaydedilemez.
+                                    </small>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="profile-form-group">
+                                    <label asp-for="PhoneNumber">
+                                        Telefon Numarası
+                                    </label>
+
                                     <div class="nk-int-st">
-                                        <input type="text" class="form-control" placeholder="Şehriniz">
+                                        <input asp-for="PhoneNumber"
+                                               type="tel"
+                                               class="form-control"
+                                               placeholder="05XX XXX XX XX" />
                                     </div>
+
+                                    <span asp-validation-for="PhoneNumber"
+                                          class="text-danger">
+                                    </span>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class="nk-int-st">
-                                        <input type="text" class="form-control" placeholder="Kullanıcı Adınız">
+                                <div class="row">
+
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="profile-form-group">
+                                            <label asp-for="City">Şehir</label>
+
+                                            <div class="nk-int-st">
+                                                <input asp-for="City"
+                                                       class="form-control"
+                                                       placeholder="Şehriniz" />
+                                            </div>
+
+                                            <span asp-validation-for="City"
+                                                  class="text-danger">
+                                            </span>
+                                        </div>
                                     </div>
+
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="profile-form-group">
+                                            <label asp-for="BirthDate">
+                                                Doğum Tarihi
+                                            </label>
+
+                                            <div class="nk-int-st">
+                                                <input asp-for="BirthDate"
+                                                       type="date"
+                                                       class="form-control"
+                                                       max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                                            </div>
+
+                                            <span asp-validation-for="BirthDate"
+                                                  class="text-danger">
+                                            </span>
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                                <div class="form-group">
-                                    <div class="nk-int-st">
-                                        <input type="email" class="form-control" placeholder="Email">
-                                    </div>
-                                </div>
+                                <div class="profile-form-group">
+                                    <label asp-for="Gender">
+                                        Cinsiyet
+                                    </label>
 
-                                <div class="form-group">
-                                    <div class="nk-int-st">
-                                        <input type="text" class="form-control" placeholder="Telefon Numaranız">
-                                    </div>
-                                </div>
+                                    <select asp-for="Gender"
+                                            asp-items="Html.GetEnumSelectList<Gender>()"
+                                            class="form-control">
 
-                                <div class="form-group">
-                                    <div class="nk-int-st">
-                                        <input type="password" class="form-control" placeholder="Şifreniz">
-                                    </div>
-                                </div>
+                                        <option value="">Cinsiyet seçiniz</option>
 
-                                <div class="form-group">
-                                    <div class="nk-int-st">
-                                        <input type="password" class="form-control" placeholder="Şifre Tekrar">
-                                    </div>
+                                    </select>
+
+                                    <span asp-validation-for="Gender"
+                                          class="text-danger">
+                                    </span>
                                 </div>
 
                             </div>
 
-                            <!-- Sağ Taraf -->
-                            <div class="col-lg-4 text-center">
+                            <!-- Sağ taraf -->
+                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 
-                                <img id="previewImage"
-                                     src="~/images/default.jfif"
-                                     class="img-circle"
-                                     style="width:180px;height:180px;object-fit:cover;border:4px solid #eee;">
+                                <div class="profile-side-card">
 
-                                <br /><br />
+                                    <img id="previewImage"
+                                         src="@Model.ImageUrl"
+                                         alt="Profil Fotoğrafı"
+                                         class="profile-image-preview" />
 
-                                <input type="file"
-                                       id="imageUpload"
-                                       name="ProfileImage"
-                                       class="form-control"
-                                       accept="image/*">
+                                    <h4 class="profile-user-name">
+                                        @Model.Name @Model.Surname
+                                    </h4>
 
-                            </div>
+                                    <p class="profile-user-email">
+                                        @Model.Email
+                                    </p>
 
-                            <div class="col-lg-12">
-                                <br />
-                                <button class="btn btn-success notika-btn-success">
-                                    Bilgileri Güncelle
-                                </button>
+                                    <label asp-for="ProfileImage"
+                                           class="profile-upload-title">
+                                        Profil Fotoğrafını Değiştir
+                                    </label>
+
+                                    <input asp-for="ProfileImage"
+                                           type="file"
+                                           id="imageUpload"
+                                           class="form-control"
+                                           accept=".jpg,.jpeg,.png,.webp" />
+
+                                    <span asp-validation-for="ProfileImage"
+                                          class="text-danger">
+                                    </span>
+
+                                    <p class="profile-upload-info">
+                                        JPG, JPEG, PNG veya WEBP formatında,
+                                        en fazla 5 MB boyutunda bir görsel seçebilirsin.
+                                    </p>
+
+                                    <div class="profile-completion-box">
+
+                                        <div class="profile-completion-header">
+
+                                            <span class="profile-completion-title">
+                                                Profil Doluluk Oranı
+                                            </span>
+
+                                            <span class="profile-completion-percentage">
+                                                %@profileCompletion
+                                            </span>
+
+                                        </div>
+
+                                        <div class="profile-progress">
+
+                                            <div class="profile-progress-bar"
+                                                 style="width: @(profileCompletion)%;">
+                                            </div>
+
+                                        </div>
+
+                                        @if (profileCompletion < 100)
+                                        {
+                                            <p class="profile-completion-message">
+                                                Profilinizde eksik bilgiler bulunuyor.
+                                                Bilgilerinizi tamamlayarak profil doluluk oranınızı artırabilirsiniz.
+                                            </p>
+                                        }
+                                        else
+                                        {
+                                            <p class="profile-completion-message text-success">
+                                                <i class="fa fa-check-circle"></i>
+                                                Profiliniz tamamen dolduruldu.
+                                            </p>
+                                        }
+
+                                    </div>
+
+                                </div>
+
                             </div>
 
                         </div>
+
+                        <div class="edit-profile-actions">
+
+                            <a asp-controller="Profile"
+                                   asp-action="Index"
+                                   class="btn btn-danger">
+                                <i class="fa fa-arrow-left"></i>
+                                Vazgeç
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success notika-btn-success">
+                                <i class="fa fa-save"></i>
+                                Bilgileri Güncelle
+                            </button>
+
+                        </div>
+
                     </form>
-                 
+
                 </div>
+
             </div>
+
         </div>
-    
     </div>
 </div>
-<!-- Form Element area End-->
+
 <script>
-    document.getElementById("imageUpload").addEventListener("change", function (e) {
+    document.getElementById("imageUpload")
+        .addEventListener("change", function (event) {
 
-        if (e.target.files.length > 0) {
+            const file = event.target.files[0];
 
-            var reader = new FileReader();
+            if (!file) {
+                return;
+            }
 
-            reader.onload = function (event) {
-                document.getElementById("previewImage").src = event.target.result;
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById("previewImage").src = e.target.result;
             };
 
-            reader.readAsDataURL(e.target.files[0]);
-        }
-
-    });
+            reader.readAsDataURL(file);
+        });
 </script>

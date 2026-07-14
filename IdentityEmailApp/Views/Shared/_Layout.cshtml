@@ -13,16 +13,9 @@
 
     <!-- Mobile Menu end -->
 
-    <!-- Breadcomb area Start-->
-    @await Component.InvokeAsync("_LayoutBreadcombComponent")
-    
-    <!-- Breadcomb area End-->
 
-    <!-- Main Menu area start-->
-    @await Component.InvokeAsync("_LayoutNavbarComponent")
-  
     <!-- Main Menu area End-->
-  
+    @await Component.InvokeAsync("_LayoutNavbarComponent")
 
             @RenderBody()
 

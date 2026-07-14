@@ -73,7 +73,7 @@ namespace IdentityEmailApp.Controllers
 
             if (result.Succeeded)
             {
-                if(user.IsProfileSetupShown)
+                if(!user.IsProfileSetupShown)
                 {
                     return RedirectToAction("CompleteProfile", "Profile");
                 }
