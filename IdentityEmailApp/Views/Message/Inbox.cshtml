@@ -1,8 +1,10 @@
-﻿@model List<IdentityEmailApp.Models.MessageWithSenderInfoModel>
+﻿@using System.Text.RegularExpressions
+@model List<MessageWithSenderInfoModel>
 
 @{
-    ViewData["Title"] = "Inbox";
+    ViewData["Title"] = "Gelen Kutusu";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 @await Component.InvokeAsync("_LayoutBreadcombComponent")
@@ -137,8 +139,9 @@
                                 <tr>
                                     <th>Seç</th>
                                     <th>Gönderen</th>
+                                    <th>Kategori</th>
                                     <th>Mesaj</th>
-                                    <th>Tarih</th>
+                                    <th class="text-right">Tarih</th>
                                 </tr>
                             </thead>
 
@@ -151,12 +154,14 @@
                                             ? "read-message"
                                             : "unread-message";
 
+                                        var plainText = Regex.Replace(item.MessageDetail ?? "", "<.*?>", "");
+
                                         var messagePreview =
-                                            string.IsNullOrWhiteSpace(item.MessageDetail)
+                                            string.IsNullOrWhiteSpace(plainText)
                                                 ? "Mesaj içeriği bulunmuyor."
-                                                : item.MessageDetail.Length > 40
-                                                    ? item.MessageDetail.Substring(0, 40) + "..."
-                                                    : item.MessageDetail;
+                                                : plainText.Length > 40
+                                                    ? plainText.Substring(0, 40) + "..."
+                                                    : plainText;
 
                                         <tr class="@rowClass">
 
@@ -179,8 +184,46 @@
                                                     <span class="sender-email">
                                                         @item.SenderEmail
                                                     </span>
-
                                                 </a>
+                                            </td>
+
+                                            <td>
+                                                @if (string.IsNullOrEmpty(item.CategoryName))
+                                                {
+                                                    <span class="label label-default">
+                                                        Kategori Yok
+                                                    </span>
+                                                }
+                                                else if (item.CategoryName == "Eğitim")
+                                                {
+                                                    <span class="label label-info">
+                                                        @item.CategoryName
+                                                    </span>
+                                                }
+                                                else if (item.CategoryName == "Sosyal")
+                                                {
+                                                    <span class="label label-success">
+                                                        @item.CategoryName
+                                                    </span>
+                                                }
+                                                else if (item.CategoryName == "Kampanyalar")
+                                                {
+                                                    <span class="label label-warning">
+                                                        @item.CategoryName
+                                                    </span>
+                                                }
+                                                else if (item.CategoryName == "Finans")
+                                                {
+                                                    <span class="label label-primary">
+                                                        @item.CategoryName
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="label label-default">
+                                                        @item.CategoryName
+                                                    </span>
+                                                }
                                             </td>
 
                                             <td>
@@ -196,12 +239,22 @@
                                                     <span class="message-preview">
                                                         @messagePreview
                                                     </span>
-
                                                 </a>
                                             </td>
 
                                             <td class="text-right mail-date">
-                                                @item.SendDate.ToString("dd.MM.yyyy HH:mm")
+                                                @if (item.SendDate.Date == DateTime.Today)
+                                                {
+                                                    <span>Bugün @item.SendDate.ToString("HH:mm")</span>
+                                                }
+                                                else if (item.SendDate.Date == DateTime.Today.AddDays(-1))
+                                                {
+                                                    <span>Dün @item.SendDate.ToString("HH:mm")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@item.SendDate.ToString("dd.MM.yyyy HH:mm")</span>
+                                                }
                                             </td>
 
                                         </tr>
@@ -210,7 +263,7 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="4"
+                                        <td colspan="5"
                                             class="text-center"
                                             style="padding: 30px;">
                                             Gelen kutunuzda mesaj bulunmuyor.

@@ -1,4 +1,4 @@
-﻿
+﻿@model Message
 @{
     ViewData["Title"] = "ComposeMessage";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -13,6 +13,11 @@
 
 @await Component.InvokeAsync("_MessageSidebarComponent")
 
+    <form method="post"
+            asp-controller="Message"
+            asp-action="ComposeMessage">
+
+        @Html.AntiForgeryToken()
 <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
     <div class="view-mail-list sm-res-mg-t-30">
         <div class="view-mail-hd">
@@ -30,7 +35,7 @@
                 <div class="col-lg-11 col-md-10 col-sm-10 col-xs-12">
                     <div class="form-group">
                         <div class="nk-int-st cmp-int-in cmp-email-over">
-                            <input type="email" class="form-control" placeholder="example@email.com" />
+                            <input type="email" class="form-control" asp-for="ReceiverEmail" placeholder="example@email.com" />
                         </div>
                     </div>
                 </div>
@@ -44,7 +49,9 @@
                 <div class="col-lg-11 col-md-10 col-sm-10 col-xs-12">
                     <div class="form-group">
                         <div class="nk-int-st cmp-int-in cmp-email-over">
-                            <input type="email" class="form-control" placeholder="" />
+                            <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.v">
+                               <option value="">--Kategori Seçiniz--</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -58,22 +65,24 @@
                 <div class="col-lg-11 col-md-10 col-sm-10 col-xs-12">
                     <div class="form-group cmp-em-mg">
                         <div class="nk-int-st cmp-int-in cmp-email-over">
-                            <input type="text" class="form-control" placeholder="" />
+                            <input type="text" class="form-control" asp-for="Subject" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="cmp-int-box mg-t-20">
-            <div class="html-editor-cm">
-                <h2>Hello Mamunur Roshid!</h2>
-                <p>Dummy text of the printing and typesetting industry. Lorem Ipsum has been the <b>dustrys standard dummy text</b> ever since the 1500s, when an unknown printer took a galley of types and scrambleded it to make a type specimenen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages <a href="#">Read more</a>.</p>
-                <p>All the Lorem Ipsum generators on the Internet tend to repeat the predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence crisity structures, to generate Lorem Ipsum which looks reasonable. recently with.Dummy text of the printing and typesetting industryunknown printer took a galley of type.</p>
-                <span class="vw-tr">Thanks and Regards</span>
-                <span>Mark Smith</span>
-            </div>
+           <div class="form-group">
+               <textarea asp-for="MessageDetail" placeholder="Mesajınızı Yazın" class="form-control summernote"></textarea>
+
+           </div>
         </div>
-        <div class="multiupload-sys">
+
+                        <button type="submit" class="btn btn-info">
+                            Mesaj Gönder
+                        </button>
+
+       @*  <div class="multiupload-sys">
             <div id="dropzone" class="dropmail">
                 <form action="/upload" class="dropzone dropzone-custom needsclick" id="demo-upload">
                     <div class="dz-message needsclick download-custom">
@@ -85,7 +94,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div> *@
         <div class="vw-ml-action-ls text-right mg-t-20">
             <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
                 <button class="btn btn-default btn-sm waves-effect"><i class="notika-icon notika-next"></i> Yanıtla</button>
@@ -97,7 +106,26 @@
     </div>
             </div>
 
+            </form>
         </div>
     </div>
 </div>
     
+
+<!-- Summernote CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css" rel="stylesheet" />
+
+<!-- jQuery + Bootstrap + Summernote JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-tr-TR.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $('.summernote').summernote({
+            height : 250
+        });
+    });
+
+</script>

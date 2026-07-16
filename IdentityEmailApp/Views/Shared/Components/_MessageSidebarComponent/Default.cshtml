@@ -10,8 +10,8 @@
         </div>
         <div class="inbox-status">
             <ul class="inbox-st-nav inbox-ft">
-                <li><a href="#"><i class="notika-icon notika-mail"></i> Gelen Kutusu<span class="pull-right">12</span></a></li>
-                <li><a href="#"><i class="notika-icon notika-sent"></i> Giden Kutusu</a></li>
+                <li><a asp-controller="Message" asp-action="Inbox"><i class="notika-icon notika-mail"></i> Gelen Kutusu<span class="pull-right">@ViewBag.receivedMessageCount</span></a></li>
+                <li><a asp-controller="Message" asp-action="SendBox"><i class="notika-icon notika-sent"></i> Giden Kutusu<span class="pull-right">@ViewBag.sendMessageCount</span></a></li>
                 <li><a href="#"><i class="notika-icon notika-draft"></i> Taslaklar</a></li>
                 <li><a href="#"><i class="notika-icon notika-trash"></i> Çöp Kutusu</a></li>
             </ul>

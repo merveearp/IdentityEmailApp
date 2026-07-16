@@ -1,52 +1,331 @@
 ﻿@model Message
 
 @{
-    ViewData["Title"] = "MessageDetail";
+    ViewData["Title"] = "Mesaj Detayı";
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
 
+    bool isReceiver = ViewBag.IsReceiver == true;
+}
+@{
+    var timeDiff = DateTime.Now - Model.SendDate;
+    string timeAgoText;
+
+    if (timeDiff.TotalMinutes < 1)
+    {
+        timeAgoText = "Şimdi";
+    }
+    else if (timeDiff.TotalMinutes < 60)
+    {
+        timeAgoText = $"{(int)timeDiff.TotalMinutes} dakika önce";
+    }
+    else if (timeDiff.TotalHours < 24)
+    {
+        timeAgoText = $"{(int)timeDiff.TotalHours} saat önce";
+    }
+    else if (timeDiff.TotalDays < 7)
+    {
+        timeAgoText = $"{(int)timeDiff.TotalDays} gün önce";
+    }
+    else
+    {
+        timeAgoText = Model.SendDate.ToString("dd.MM.yyyy HH:mm");
+    }
+}
 @await Component.InvokeAsync("_LayoutBreadcombComponent")
 
-   
+<style>
+    .message-detail-card {
+        background-color: #fff;
+        border: 1px solid #eeeeee;
+        border-radius: 6px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .message-detail-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    .message-detail-title {
+        margin: 0 0 8px 0;
+        color: #333;
+        font-size: 23px;
+        font-weight: 600;
+    }
+
+    .message-detail-subject {
+        margin: 0;
+        color: #666;
+        font-size: 15px;
+    }
+
+    .message-detail-date {
+        color: #999;
+        font-size: 13px;
+        white-space: nowrap;
+        text-align: right;
+    }
+
+    .message-sender-area {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 0;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    .message-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background-color: #00c292;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .message-sender-info {
+        flex: 1;
+    }
+
+        .message-sender-info p {
+            margin: 2px 0;
+        }
+
+    .message-email {
+        color: #777;
+        font-size: 13px;
+    }
+
+    .message-category {
+        margin-top: 6px;
+    }
+
+    .message-content {
+        min-height: 180px;
+        padding: 25px 5px;
+        color: #444;
+        font-size: 15px;
+        line-height: 1.8;
+        white-space: pre-wrap;
+        word-break: break-word;
+        text-align: left;
+    }
+
+        .message-content p {
+            margin: 0 0 10px 0;
+            text-align: left !important;
+        }
+
+    .message-action-area {
+        padding-top: 20px;
+        border-top: 1px solid #eeeeee;
+    }
+
+        .message-action-area form {
+            display: inline-block;
+            margin: 0;
+        }
+
+    .back-inbox-button {
+        float: left;
+    }
+
+    .mark-unread-button {
+        margin-right: 5px;
+    }
+
+    @@media (max-width: 767px) {
+        .message-detail-header {
+            display: block;
+        }
+
+        .message-detail-date {
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .message-action-area {
+            text-align: left !important;
+        }
+
+        .back-inbox-button {
+            float: none;
+            display: block;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
 <div class="inbox-area">
     <div class="container">
         <div class="row">
-@await Component.InvokeAsync("_MessageSidebarComponent")
 
+            @await Component.InvokeAsync("_MessageSidebarComponent")
 
-<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-    <div class="view-mail-list sm-res-mg-t-30">
-        <div class="view-mail-hd">
-            <div class="view-mail-hrd">
-                <h2>Mesaj Detayları</h2>
-            </div>
-            <div class="view-ml-rl">
-                <p>08:26 PM (2 hours ago)</p>
-            </div>
-        </div>
-        <div class="mail-ads mail-vw-ph">
-            <p class="first-ph"><b>Konu: </b>@Model.Subject</p>
-            <p><b>Email:</b> <a href="#"></a>@Model.SenderEmail</p>
-            <p class="last-ph"><b>Date:</b>@Model.SendDate</p>
-        </div>
-        <div class="view-mail-atn">
-          
-            <p>@Model.MessageDetail</p>
-      
-        </div>
-    
-        <div class="vw-ml-action-ls text-right mg-t-20">
-            <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
-                <button class="btn btn-default btn-sm waves-effect"><i class="notika-icon notika-next"></i> Yanıtla</button>
-                <button class="btn btn-default btn-sm waves-effect"><i class="notika-icon notika-right-arrow"></i> Yönlendir</button>
-                <button class="btn btn-default btn-sm waves-effect"><i class="notika-icon notika-print"></i> Yazdır</button>
-                <button class="btn btn-default btn-sm waves-effect"><i class="notika-icon notika-trash"></i> Sil</button>
-            </div>
-        </div>
-    </div>
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                <div class="message-detail-card sm-res-mg-t-30">
+
+                    <div class="message-detail-header">
+
+                        <div>
+                            <h2 class="message-detail-title">
+                                Mesaj Detayı
+                            </h2>
+
+                            <p class="message-detail-subject">
+                                <strong>Konu:</strong> @Model.Subject
+                            </p>
+                        </div>
+                        <div class="message-detail-date">
+                            <span>@timeAgoText</span>
+                        </div>
+
+                    </div>
+
+                    <div class="message-sender-area">
+
+                        <div class="message-avatar">
+                            @Model.SenderEmail?.Substring(0, 1).ToUpper()
+                        </div>
+
+                        <div class="message-sender-info">
+
+                            <p>
+                                <strong>Gönderen:</strong>
+                                @Model.SenderEmail
+                            </p>
+
+                            <p class="message-email">
+                                <strong>Alıcı:</strong>
+                                @Model.ReceiverEmail
+                            </p>
+
+                            <div class="message-category">
+                                @if (Model.Category == null)
+                                {
+                                    <span class="label label-default">
+                                        Kategori Yok
+                                    </span>
+                                }
+                                else if (Model.Category.CategoryName == "Eğitim")
+                                {
+                                    <span class="label label-info">
+                                        @Model.Category.CategoryName
+                                    </span>
+                                }
+                                else if (Model.Category.CategoryName == "Sosyal")
+                                {
+                                    <span class="label label-success">
+                                        @Model.Category.CategoryName
+                                    </span>
+                                }
+                                else if (Model.Category.CategoryName == "Kampanyalar")
+                                {
+                                    <span class="label label-warning">
+                                        @Model.Category.CategoryName
+                                    </span>
+                                }
+                                else if (Model.Category.CategoryName == "Finans")
+                                {
+                                    <span class="label label-primary">
+                                        @Model.Category.CategoryName
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="label label-default">
+                                        @Model.Category.CategoryName
+                                    </span>
+                                }
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="message-content">
+                        <p>@Html.Raw(Model.MessageDetail)</p>
+                    </div>
+
+                    <div class="message-action-area text-right">
+
+                        <a asp-controller="Message"
+                               asp-action="@(isReceiver ? "Inbox" : "SendBox")"
+                               class="btn btn-default btn-sm back-inbox-button">
+
+                            <i class="fa fa-arrow-left"></i>
+
+                            @(isReceiver
+                                ? "Gelen Kutusuna Dön"
+                                : "Gönderilen Kutusuna Dön")
+                        </a>
+
+                        @if (isReceiver)
+                        {
+                            <form asp-controller="Message"
+                                  asp-action="MarkAsUnread"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@Model.MessageId" />
+
+                                <button type="submit"
+                                        class="btn btn-default btn-sm mark-unread-button">
+
+                                    <i class="fa fa-envelope"></i>
+                                    Okunmadı Olarak İşaretle
+                                </button>
+
+                            </form>
+                        }
+
+                        <a asp-controller="Message"
+                               asp-action="Compose"
+                               asp-route-receiverEmail="@Model.SenderEmail"
+                               class="btn btn-default btn-sm">
+
+                            <i class="notika-icon notika-next"></i>
+                            Yanıtla
+                        </a>
+
+                        <button type="button"
+                                class="btn btn-default btn-sm">
+
+                            <i class="notika-icon notika-right-arrow"></i>
+                            Yönlendir
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-default btn-sm">
+
+                            <i class="notika-icon notika-print"></i>
+                            Yazdır
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-danger btn-sm">
+
+                            <i class="notika-icon notika-trash"></i>
+                            Sil
+                        </button>
+
+                    </div>
+
+                </div>
             </div>
 
         </div>
     </div>
 </div>
-    
