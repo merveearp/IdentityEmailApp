@@ -1,0 +1,348 @@
+﻿@using IdentityEmailApp.Models.RoleModels
+@model List<RoleAssignViewModel>?
+
+@{
+    ViewData["Title"] = "Kullanıcı Rol Atama";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var hasRoleList = Model != null && Model.Any();
+    var hasAssignedRole = hasRoleList && Model!.Any(x => x.RoleExist);
+}
+
+<style>
+    .role-page-card {
+        background: #ffffff;
+        border: 1px solid #eeeeee;
+        border-radius: 12px;
+        padding: 28px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    }
+
+    .role-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+        .role-page-header h2 {
+            margin: 0 0 7px 0;
+            color: #333333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .role-page-header p {
+            margin: 0;
+            color: #777777;
+        }
+
+    .user-info-card {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 20px;
+        margin-bottom: 25px;
+        background: #f8fbff;
+        border: 1px solid #dcecf8;
+        border-radius: 10px;
+    }
+
+    .user-info-image {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+    }
+
+    .user-info-details {
+        flex: 1;
+    }
+
+        .user-info-details h4 {
+            margin: 0 0 7px 0;
+            color: #333333;
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .user-info-details p {
+            margin: 3px 0;
+            color: #666666;
+        }
+
+    .role-status-area {
+        margin-bottom: 24px;
+        padding: 16px 18px;
+        background: #fafafa;
+        border: 1px solid #eeeeee;
+        border-radius: 9px;
+    }
+
+    .role-status-title {
+        display: block;
+        margin-bottom: 10px;
+        color: #444444;
+        font-weight: 600;
+    }
+
+    .role-badge {
+        display: inline-block;
+        margin: 0 6px 6px 0;
+        padding: 6px 12px;
+        background: #00c292;
+        color: #ffffff;
+        border-radius: 20px;
+        font-size: 13px;
+    }
+
+    .no-role-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #eeeeee;
+        color: #777777;
+        border-radius: 20px;
+        font-size: 13px;
+    }
+
+    .roles-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 25px;
+    }
+
+    .role-option-card {
+        display: block;
+        position: relative;
+        margin: 0;
+        padding: 18px;
+        border: 1px solid #e6e6e6;
+        border-radius: 10px;
+        background: #ffffff;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .role-option-card:hover {
+            border-color: #00c292;
+            box-shadow: 0 4px 12px rgba(0, 194, 146, 0.10);
+            transform: translateY(-1px);
+        }
+
+        .role-option-card input[type="checkbox"] {
+            margin-right: 9px;
+        }
+
+    .role-option-name {
+        color: #333333;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .empty-role-area {
+        padding: 35px 20px;
+        margin-bottom: 25px;
+        text-align: center;
+        border: 1px dashed #cccccc;
+        border-radius: 10px;
+        background: #fafafa;
+        color: #777777;
+    }
+
+    .role-action-area {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-top: 20px;
+        border-top: 1px solid #eeeeee;
+    }
+
+    @@media (max-width: 991px) {
+        .roles-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 767px) {
+        .role-page-card {
+            padding: 20px;
+        }
+
+        .user-info-card {
+            align-items: flex-start;
+        }
+
+        .roles-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .role-action-area {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .role-action-area .btn {
+                width: 100%;
+            }
+    }
+</style>
+
+<div class="data-table-area">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="role-page-card">
+
+                    <div class="role-page-header">
+                        <div>
+                            <h2>Kullanıcı Rol Atama</h2>
+                            <p>
+                                Seçili kullanıcıya rol atayabilir veya mevcut rollerini kaldırabilirsiniz.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="user-info-card">
+
+                        @if (!string.IsNullOrWhiteSpace(ViewBag.UserImageUrl))
+                        {
+                            <img src="@ViewBag.UserImageUrl"
+                                 alt="Kullanıcı profil fotoğrafı"
+                                 class="user-info-image" />
+                        }
+                        else
+                        {
+                            <img src="~/images/profile/default-user.png"
+                                 alt="Varsayılan profil fotoğrafı"
+                                 class="user-info-image" />
+                        }
+
+                        <div class="user-info-details">
+
+                            <h4>
+                                @if (!string.IsNullOrWhiteSpace(ViewBag.UserFullName))
+                                {
+                                    @ViewBag.UserFullName
+                                }
+                                else
+                                {
+                                    <span>Ad Soyad Bilgisi Yok</span>
+                                }
+                            </h4>
+
+                            <p>
+                                <strong>Kullanıcı Adı:</strong>
+                                @(string.IsNullOrWhiteSpace(ViewBag.UserName)
+                                    ? "Belirtilmemiş"
+                                    : ViewBag.UserName)
+                            </p>
+
+                            <p>
+                                <strong>E-posta:</strong>
+                                @(string.IsNullOrWhiteSpace(ViewBag.UserEmail)
+                                    ? "Belirtilmemiş"
+                                    : ViewBag.UserEmail)
+                            </p>
+
+                        </div>
+                    </div>
+
+                    <div class="role-status-area">
+
+                        <span class="role-status-title">
+                            Mevcut roller
+                        </span>
+
+                        @if (hasAssignedRole)
+                        {
+                            @foreach (var role in Model!.Where(x => x.RoleExist))
+                            {
+                                <span class="role-badge">
+                                    @role.RoleName
+                                </span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="no-role-badge">
+                                Bu kullanıcıya henüz rol atanmamış.
+                            </span>
+                        }
+
+                    </div>
+
+                    <form asp-action="AssignRole"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        @if (hasRoleList)
+                        {
+                            <div class="roles-grid">
+
+                                @for (int i = 0; i < Model!.Count; i++)
+                                {
+                                    <label class="role-option-card">
+
+                                        <input type="hidden"
+                                               asp-for="@Model[i].RoleId" />
+
+                                        <input type="hidden"
+                                               asp-for="@Model[i].RoleName" />
+
+                                        <input type="checkbox"
+                                               asp-for="@Model[i].RoleExist" />
+
+                                        <span class="role-option-name">
+                                            @(string.IsNullOrWhiteSpace(Model[i].RoleName)
+                                                ? "İsimsiz Rol"
+                                                : Model[i].RoleName)
+                                        </span>
+
+                                    </label>
+                                }
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="empty-role-area">
+                                <i class="fa fa-info-circle"></i>
+                                Sistemde henüz tanımlı bir rol bulunmamaktadır.
+                            </div>
+                        }
+
+                        <div class="role-action-area">
+
+                            <button type="submit"
+                                    class="btn btn-success notika-btn-success"
+                                    disabled="@(!hasRoleList)">
+
+                                <i class="fa fa-save"></i>
+                                Değişiklikleri Kaydet
+                            </button>
+
+                            <a asp-action="UserList"
+                                   class="btn btn-default">
+
+                                <i class="fa fa-arrow-left"></i>
+                                Kullanıcı Listesine Dön
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

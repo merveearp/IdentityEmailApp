@@ -1,0 +1,68 @@
+﻿@using IdentityEmailApp.Models.RoleModels
+@model UpdateRoleViewModel
+@{
+    ViewData["Title"] = "UpdateRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+div class="form-element-area">
+<div class="container">
+
+    <div class="row">
+        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+
+            <div class="form-element-list">
+
+                <div class="basic-tb-hd">
+                    <h2> Rol Düzenleme Sayfası </h2>
+                    <p>
+                        Sistemdeki kullanıcı rolünü düzenleyebilirsiniz.
+                    </p>
+                </div>
+
+                <form asp-action="CreateRole" method="post">
+                    <input type="hidden" asp-for="RoleId"/>
+
+                    <div class="form-group">
+                        <label asp-for="RoleName">
+                            Rol Adı
+                        </label>
+
+                        <div class="nk-int-st">
+                            <input asp-for="RoleName"
+                                   class="form-control"
+                                   placeholder="Örn: Admin" />
+                        </div>
+
+                        <span asp-validation-for="RoleName"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="mt-3">
+
+                        <button type="submit"
+                                class="btn btn-success notika-btn-success">
+
+                            <i class="fa fa-save"></i>
+                            Rolü Güncelle
+
+                        </button>
+
+                        <a asp-action="RoleList"
+                               class="btn btn-default">
+
+                            <i class="fa fa-arrow-left"></i>
+                            Rol Listesine Dön
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</div>
