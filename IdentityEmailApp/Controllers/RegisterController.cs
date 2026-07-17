@@ -1,5 +1,5 @@
 ﻿using IdentityEmailApp.Entities;
-using IdentityEmailApp.Models;
+using IdentityEmailApp.Models.UserModels;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

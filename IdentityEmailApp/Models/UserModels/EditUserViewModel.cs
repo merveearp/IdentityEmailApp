@@ -1,6 +1,6 @@
 ﻿using IdentityEmailApp.Enums;
 
-namespace IdentityEmailApp.Models
+namespace IdentityEmailApp.Models.UserModels
 {
     public class EditUserViewModel
     {

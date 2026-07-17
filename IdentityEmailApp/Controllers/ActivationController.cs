@@ -1,5 +1,5 @@
 ﻿using IdentityEmailApp.Context;
-using IdentityEmailApp.Models;
+using IdentityEmailApp.Models.UserModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

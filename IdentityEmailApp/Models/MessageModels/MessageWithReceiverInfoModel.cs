@@ -1,4 +1,4 @@
-﻿namespace IdentityEmailApp.Models
+﻿namespace IdentityEmailApp.Models.MessageModels
 {
     public class MessageWithReceiverInfoModel
     {

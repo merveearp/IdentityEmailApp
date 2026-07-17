@@ -1,7 +1,7 @@
 ﻿using IdentityEmailApp.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace IdentityEmailApp.Models
+namespace IdentityEmailApp.Models.UserModels
 {
     public class CompleteProfileViewModel
     {

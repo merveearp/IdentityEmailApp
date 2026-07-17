@@ -1,6 +1,6 @@
 ﻿using IdentityEmailApp.Context;
 using IdentityEmailApp.Entities;
-using IdentityEmailApp.Models;
+using IdentityEmailApp.Models.UserModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
