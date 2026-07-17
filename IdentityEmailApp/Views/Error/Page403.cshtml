@@ -1,0 +1,251 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html class="h-full" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notika Mail - 403 Erişim Yasaklandı</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-glass": "rgba(255, 255, 255, 0.8)",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed": "#002116",
+                    "primary": "#006c50",
+                    "background": "#f7faf9",
+                    "on-tertiary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb4a3",
+                    "surface-tint": "#006c50",
+                    "on-tertiary-fixed": "#3d0700",
+                    "surface-container-high": "#e6e9e8",
+                    "surface-container-highest": "#e0e3e2",
+                    "on-background": "#181c1c",
+                    "tertiary": "#9f412a",
+                    "secondary-container": "#cfe2f9",
+                    "on-secondary-fixed-variant": "#36485b",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#d1e4fb",
+                    "on-surface": "#181c1c",
+                    "secondary-fixed-dim": "#b5c8df",
+                    "outline": "#6c7a73",
+                    "on-primary-fixed-variant": "#00513b",
+                    "inverse-on-surface": "#eef1f0",
+                    "on-error-container": "#93000a",
+                    "on-primary-container": "#004935",
+                    "primary-fixed-dim": "#41dfac",
+                    "outline-variant": "#bbcac1",
+                    "surface": "#f7faf9",
+                    "on-tertiary-fixed-variant": "#7f2a16",
+                    "surface-dim": "#d7dbda",
+                    "secondary": "#4e6073",
+                    "surface-container-low": "#f1f4f3",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#41dfac",
+                    "on-secondary": "#ffffff",
+                    "surface-variant": "#e0e3e2",
+                    "on-secondary-fixed": "#091d2e",
+                    "on-secondary-container": "#526478",
+                    "primary-container": "#00c292",
+                    "on-surface-variant": "#3c4a43",
+                    "text-main": "#333333",
+                    "inverse-surface": "#2d3131",
+                    "surface-container": "#ebeeed",
+                    "primary-fixed": "#65fcc7",
+                    "on-tertiary-container": "#75220f",
+                    "surface-bright": "#f7faf9",
+                    "tertiary-container": "#ff8a6e",
+                    "text-muted": "#777777",
+                    "input-border": "#e1e1e1",
+                    "tertiary-fixed": "#ffdad2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "xl": "64px",
+                    "max-width-auth": "420px",
+                    "xs": "4px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "gutter": "24px",
+                    "lg": "48px",
+                    "md": "24px",
+                    "sm": "12px"
+            },
+            "fontFamily": {
+                    "label-md": ["Roboto"],
+                    "headline-lg-mobile": ["Roboto"],
+                    "body-lg": ["Roboto"],
+                    "body-sm": ["Roboto"],
+                    "headline-lg": ["Roboto"],
+                    "title-md": ["Roboto"],
+                    "display-lg": ["Roboto"]
+            },
+            "fontSize": {
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .text-glow {
+            text-shadow: 0 0 20px rgba(65, 223, 172, 0.5);
+        }
+        .ripple-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .forbidden-gradient {
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+        }
+    </style>
+</head>
+<body class="h-full bg-background flex flex-col overflow-hidden">
+<!-- Top Navigation Anchor -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter py-md max-w-7xl mx-auto left-1/2 -translate-x-1/2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed-dim text-3xl" style="font-variation-settings: 'FILL' 1;">mail</span>
+<span class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed-dim tracking-tight">Notika Mail</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim hover:text-primary-container transition-colors">help_outline</button>
+<button class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim hover:text-primary-container transition-colors">dark_mode</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow relative flex items-center justify-center p-gutter">
+<!-- Background Imagery -->
+<div class="absolute inset-0 z-0 overflow-hidden bg-black">
+<div class="w-full h-full bg-cover bg-center opacity-60 mix-blend-screen" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLts7b-a1IIGuaG8lJR3zBseR6acR12LAw6q9W56BdBAPzTSVx0xwEw_-qDaTU8InZMEdoWLCIFMVPGYHD21L83YX-lyhbnVIVHduDaPnXPleQ-17VnEFNeFmBsCrwpLl6j5zSm4eqF-86x-mw5ud0z-fqqzSsxKmK-1s5_bt-eSRicqj4IKc73XnvYoRvfmCHkoDLwnnoPCanTDZuNJXNl2ZwYO3ufT4gzhG4wFjhvShTyaJpcqShxi-K0')">
+</div>
+<div class="absolute inset-0 forbidden-gradient"></div>
+</div>
+<!-- Split-Screen Centered Architecture -->
+<div class="relative z-10 w-full max-w-5xl flex flex-col md:flex-row items-center gap-12 md:gap-24">
+<!-- Left Side: Visual Metaphor -->
+<div class="hidden md:flex flex-col items-center justify-center flex-1 space-y-8 animate-pulse duration-[3000ms]">
+<div class="relative">
+<div class="absolute -inset-8 bg-error/20 rounded-full blur-3xl"></div>
+<span class="material-symbols-outlined text-[160px] text-white/10" style="font-variation-settings: 'FILL' 1;">lock_person</span>
+<span class="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[80px] text-primary-fixed-dim text-glow" style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+</div>
+<div class="text-center">
+<div class="h-1 w-24 bg-primary mx-auto rounded-full mb-4 opacity-50"></div>
+<p class="font-label-md text-label-md text-primary-fixed-dim uppercase tracking-widest">Security Protocol 4.0.3</p>
+</div>
+</div>
+<!-- Right Side: Interaction Form -->
+<div class="flex-1 w-full max-w-md">
+<div class="glass-panel rounded-xl shadow-2xl relative overflow-hidden group p-gutter space-y-6">
+<!-- Shimmer effect for premium feel -->
+<div class="absolute top-0 left-0 w-full h-1 shimmer"></div>
+<header class="space-y-2">
+<div class="flex items-baseline gap-2">
+<h1 class="font-display-lg text-display-lg text-white font-extrabold tracking-tighter">403</h1>
+<span class="h-2 w-2 bg-error rounded-full mb-2"></span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-primary-fixed-dim font-bold">Erişim Yasaklandı</h2>
+<p class="font-body-lg text-body-lg text-outline-variant leading-relaxed">
+                            Bu kaynağa erişmek için izniniz bulunmuyor. Bu durum bir hata olduğunu düşünüyorsanız lütfen sistem yöneticisiyle iletişime geçin.
+                        </p>
+</header>
+<div class="space-y-4 pt-4">
+<a class="ripple-btn group relative flex items-center justify-center gap-2 w-full bg-primary text-on-primary py-4 rounded-lg font-bold transition-all hover:scale-[1.02] active:scale-95" asp-controller="Message" asp-action="Inbox" >
+<span class="material-symbols-outlined"></span>
+<span>Email Uygulamasına Dön</span>
+</a>
+<button class="group flex items-center justify-center gap-2 w-full border border-outline text-white/80 py-4 rounded-lg font-bold hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">support_agent</span>
+<span>Destek Talebi Oluştur</span>
+</button>
+</div>
+<!-- Micro-detail -->
+<div class="pt-6 border-t border-white/10 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-fixed-dim animate-ping"></span>
+<span class="font-label-md text-label-md text-primary-fixed-dim uppercase">Sistem Çevrimiçi</span>
+</div>
+<span class="font-body-sm text-body-sm text-white/30 font-mono">ERR_403_FORBIDDEN</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Anchor -->
+<footer class="relative z-20 flex flex-col md:flex-row justify-between items-center w-full px-gutter bg-transparent text-secondary dark:text-secondary-fixed-dim py-4">
+<p class="font-body-sm text-body-sm opacity-50">© 2026 Notika Productivity. Tüm hakları saklıdır.</p>
+
+</footer>
+<script>
+        // Micro-interaction for the "System Online" status pulsing
+        document.addEventListener('DOMContentLoaded', () => {
+            const rippleButtons = document.querySelectorAll('.ripple-btn');
+            
+            rippleButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    let ripple = document.createElement('span');
+                    ripple.classList.add('absolute', 'bg-white/30', 'rounded-full', 'pointer-events-none', '-translate-x-1/2', '-translate-y-1/2');
+                    
+                    const rect = button.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = (e.clientX - rect.left) + 'px';
+                    ripple.style.top = (e.clientY - rect.top) + 'px';
+                    ripple.style.transform = 'scale(0)';
+                    ripple.style.transition = 'transform 0.6s linear, opacity 0.6s linear';
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.style.transform = 'scale(4)';
+                        ripple.style.opacity = '0';
+                    }, 0);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+    </script>
+</body></html>

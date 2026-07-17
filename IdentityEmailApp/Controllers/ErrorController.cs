@@ -15,6 +15,11 @@ namespace IdentityEmailApp.Controllers
         {
             return View();
         }
+        [Route("Error/403")]
+        public IActionResult Page403()
+        {
+            return View();
+        }
 
         [Route("Error/{statusCode}")]
         public IActionResult HandlerError(int statusCode)
@@ -26,6 +31,10 @@ namespace IdentityEmailApp.Controllers
             if (statusCode == 401)
             {
                 return RedirectToAction("Page401");
+            }
+            if (statusCode == 403)
+            {
+                return RedirectToAction("Page403");
             }
             return View(statusCode);
         }
