@@ -43,6 +43,8 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -51,6 +53,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseRouting();
 
 app.UseAuthentication();

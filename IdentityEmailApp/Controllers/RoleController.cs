@@ -1,11 +1,13 @@
 ﻿using IdentityEmailApp.Entities;
 using IdentityEmailApp.Models.RoleModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityEmailApp.Controllers
 {
+    [Authorize]
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
