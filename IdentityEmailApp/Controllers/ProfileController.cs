@@ -58,15 +58,24 @@ namespace IdentityEmailApp.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            if(user== null)
+            if (user == null)
             {
                 return RedirectToAction("SignIn", "Login");
             }
 
-            if(!user.IsProfileSetupShown)
+            if (!user.IsProfileSetupShown)
             {
                 user.IsProfileSetupShown = true;
-                await _userManager.UpdateAsync(user);
+
+                var updateResult = await _userManager.UpdateAsync(user);
+
+                if (!updateResult.Succeeded)
+                {
+                    foreach (var error in updateResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
             }
 
             var model = new CompleteProfileViewModel
@@ -75,20 +84,19 @@ namespace IdentityEmailApp.Controllers
                 City = user.City,
                 BirthDate = user.BirthDate,
                 Gender = user.Gender,
-                ImageUrl = user.ImageUrl,
+                ImageUrl = string.IsNullOrWhiteSpace(user.ImageUrl)
+                    ? "/images/profile/default.png"
+                    : user.ImageUrl
             };
+
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CompleteProfile(CompleteProfileViewModel model)
+        public async Task<IActionResult> CompleteProfile(
+            CompleteProfileViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
@@ -96,24 +104,40 @@ namespace IdentityEmailApp.Controllers
                 return RedirectToAction("SignIn", "Login");
             }
 
-            if(model.ProfileImage != null)
+            if (!ModelState.IsValid)
             {
-                var extension =Path.GetExtension(model.ProfileImage.FileName).ToLowerInvariant();
+                model.ImageUrl = string.IsNullOrWhiteSpace(user.ImageUrl)
+                    ? "/images/profile/default.png"
+                    : user.ImageUrl;
+
+                return View(model);
+            }
+
+            if (model.ProfileImage != null)
+            {
+                var extension = Path
+                    .GetExtension(model.ProfileImage.FileName)
+                    .ToLowerInvariant();
+
                 var allowedExtensions = new[]
                 {
-                    ".jpg",
-                    ".jpeg",
-                    ".jfif",
-                    ".webp",
-                    ".png"
-                };
+            ".jpg",
+            ".jpeg",
+            ".jfif",
+            ".webp",
+            ".png"
+        };
 
-                if(!allowedExtensions.Contains(extension))
+                if (!allowedExtensions.Contains(extension))
                 {
-                    ModelState.AddModelError(nameof(model.ProfileImage),
-               "Yalnızca JPG, JPEG, PNG veya WEBP dosyası yükleyebilirsiniz.");
+                    ModelState.AddModelError(
+                        nameof(model.ProfileImage),
+                        "Yalnızca JPG, JPEG, JFIF, PNG veya WEBP dosyası yükleyebilirsiniz.");
 
-                    model.ImageUrl = user.ImageUrl;
+                    model.ImageUrl = string.IsNullOrWhiteSpace(user.ImageUrl)
+                        ? "/images/profile/default.png"
+                        : user.ImageUrl;
+
                     return View(model);
                 }
 
@@ -123,47 +147,64 @@ namespace IdentityEmailApp.Controllers
                         nameof(model.ProfileImage),
                         "Profil fotoğrafı en fazla 5 MB olabilir.");
 
-                    model.ImageUrl = user.ImageUrl;
+                    model.ImageUrl = string.IsNullOrWhiteSpace(user.ImageUrl)
+                        ? "/images/profile/default.png"
+                        : user.ImageUrl;
+
                     return View(model);
                 }
 
-                var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "profile");
+                var folderPath = Path.Combine(
+                    _webHostEnvironment.WebRootPath,
+                    "images",
+                    "profile");
+
                 Directory.CreateDirectory(folderPath);
 
                 var fileName = $"{Guid.NewGuid()}{extension}";
-                var filePath = Path.Combine(folderPath, fileName);
 
-                await using var stream = new FileStream(filePath, FileMode.Create);
+                var filePath = Path.Combine(
+                    folderPath,
+                    fileName);
+
+                await using var stream = new FileStream(
+                    filePath,
+                    FileMode.Create);
+
                 await model.ProfileImage.CopyToAsync(stream);
-                user.ImageUrl = $"images/profile/{fileName}";
 
+                user.ImageUrl = $"/images/profile/{fileName}";
             }
 
             user.PhoneNumber = model.PhoneNumber;
             user.City = model.City;
             user.BirthDate = model.BirthDate;
             user.Gender = model.Gender;
-            user.IsProfileCompleted=true;
-            user.IsProfileSetupShown=true;
+            user.IsProfileCompleted = true;
+            user.IsProfileSetupShown = true;
 
             var result = await _userManager.UpdateAsync(user);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                TempData["SuccessMessage"] =
-                    "Profil bilgileriniz başarıyla güncellendi.";
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(
+                        string.Empty,
+                        error.Description);
+                }
 
-                return RedirectToAction("Inbox", "Message");
+                model.ImageUrl = string.IsNullOrWhiteSpace(user.ImageUrl)
+                    ? "/images/profile/default.png"
+                    : user.ImageUrl;
+
+                return View(model);
             }
 
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
+            TempData["SuccessMessage"] =
+                "Profil bilgileriniz başarıyla güncellendi.";
 
-            model.ImageUrl = user.ImageUrl;
-
-            return View(model);
+            return RedirectToAction("Inbox", "Message");
         }
 
 

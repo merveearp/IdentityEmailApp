@@ -15,10 +15,18 @@ namespace IdentityEmailApp.Validator
 
         public override IdentityError PasswordRequiresLower()
         {
-            return new IdentityError()
+            return new IdentityError
             {
                 Code = "PasswordRequiresLower",
-                Description = $"Şifreniz en az 1 tane büyük harf içermelidir!"
+                Description = "Şifreniz en az 1 küçük harf içermelidir!"
+            };
+        }
+        public override IdentityError PasswordRequiresUpper()
+        {
+            return new IdentityError
+            {
+                Code = "PasswordRequiresUpper",
+                Description = "Şifreniz en az 1 büyük harf içermelidir!"
             };
         }
 

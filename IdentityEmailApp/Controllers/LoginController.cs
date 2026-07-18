@@ -36,20 +36,25 @@ namespace IdentityEmailApp.Controllers
                 return View(model);
             }
 
+            var usernameOrEmail = model.UsernameOrEmail.Trim();
+
             AppUser? user;
 
-            if (model.UsernameOrEmail.Contains("@"))
+            if (usernameOrEmail.Contains("@"))
             {
-                user = await _userManager.FindByEmailAsync(model.UsernameOrEmail);
+                user = await _userManager.FindByEmailAsync(usernameOrEmail);
             }
             else
             {
-                user = await _userManager.FindByNameAsync( model.UsernameOrEmail);
+                user = await _userManager.FindByNameAsync(usernameOrEmail);
             }
 
             if (user == null)
             {
-                ModelState.AddModelError( string.Empty, "Kullanıcı adı veya şifre hatalı.");
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Kullanıcı adı, e-posta adresi veya şifre hatalı."
+                );
 
                 return View(model);
             }
@@ -65,7 +70,7 @@ namespace IdentityEmailApp.Controllers
             }
 
             var result = await _signInManager.PasswordSignInAsync(
-                user.UserName!,
+                user,
                 model.Password,
                 model.RememberMe,
                 lockoutOnFailure: true
@@ -73,16 +78,28 @@ namespace IdentityEmailApp.Controllers
 
             if (result.Succeeded)
             {
-                if(!user.IsProfileSetupShown)
+                if (!user.IsProfileSetupShown)
                 {
                     return RedirectToAction("CompleteProfile", "Profile");
                 }
+
                 return RedirectToAction("Inbox", "Message");
-               
             }
 
-           
-            ModelState.AddModelError( string.Empty, "Kullanıcı adı veya şifre hatalı." );
+            if (result.IsLockedOut)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Çok fazla başarısız giriş denemesi yapıldığı için hesabınız geçici olarak kilitlenmiştir."
+                );
+
+                return View(model);
+            }
+
+            ModelState.AddModelError(
+                string.Empty,
+                "Kullanıcı adı, e-posta adresi veya şifre hatalı."
+            );
 
             return View(model);
         }

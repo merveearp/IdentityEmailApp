@@ -5,11 +5,11 @@
 }
 
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html class="light" lang="tr">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Login | Notika Mail</title>
+   <title>Giriş Yap | Notika Mail</title>
     <!-- Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
     <!-- Google Fonts: Roboto -->
@@ -221,15 +221,18 @@
                 <div class="w-full max-w-max-auth">
                     <!-- Heading -->
                     <div class="mb-lg text-center md:text-left">
-                        <h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Welcome Back</h2>
-                        <p class="font-body-lg text-body-lg text-text-muted">Sign in to continue to Notika Productivity.</p>
+                        <h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Tekrar Hoş Geldiniz</h2>
+                        <p class="font-body-lg text-body-lg text-text-muted">Hesabınıza giriş yaparak Notika Mail'i kullanmaya devam edin.</p>
                     </div>
                     <!-- Notika Block Login -->
                     <div class="nk-block relative bg-surface-container-lowest premium-shadow border border-input-border rounded-xl p-lg" id="l-login">
                         <form class="space-y-md" method="post">
-                              <div asp-validation-summary="ModelOnly"
-                             class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">
-                        </div>
+                             @if (!ViewData.ModelState.IsValid)
+                                {
+                                    <div asp-validation-summary="ModelOnly"
+                                         class="bg-red-50 border border-red-300 text-red-700 rounded-lg px-4 py-3 mb-5">
+                                    </div>
+                                }
                             <!-- Username Field -->
                             <div class="input-group flex items-end space-x-md group">
                                 <span class="pb-2 flex items-center justify-center text-text-muted group-focus-within:text-primary transition-colors">
@@ -238,32 +241,69 @@
 
                               
                                 <div class="nk-int-st flex-grow">
-                                    <label class="font-label-md text-label-md text-secondary block uppercase tracking-wider mb-xs">Kullanıcı Adı / Email</label>
-                                   <input asp-for="UsernameOrEmail"
-                                       class="w-full py-2 bg-transparent text-body-lg focus:outline-none placeholder:text-outline/50"
-                                       placeholder="Kullanıcı Adı veya Email"
-                                       type="text">
-                                       <span asp-validation-for="UsernameOrEmail" class="text-red-500 text-xs"></span>
+                                    <label class="font-label-md text-label-md text-secondary block uppercase tracking-wider mb-xs">
+                                        Kullanıcı Adı veya E-posta
+                                    </label>
+
+                                    <input asp-for="UsernameOrEmail"
+                                           class="w-full py-2 bg-transparent text-body-lg focus:outline-none placeholder:text-outline/50"
+                                           placeholder="Kullanıcı adınızı veya e-posta adresinizi giriniz"
+                                           type="text">
+                                      <span asp-validation-for="UsernameOrEmail"
+                                          class="text-red-600 text-sm mt-1 block">
+                                    </span>
                                 </div>
                             </div>
-                            <!-- Password Field -->
-                            <div class="input-group flex items-end space-x-md group">
-                                <span class="pb-2 flex items-center justify-center text-text-muted group-focus-within:text-primary transition-colors">
-                                    <i class="notika-icon notika-edit"></i>
+
+                                                  <!-- Password Field -->
+                        <div class="input-group flex items-start space-x-md group">
+
+                            <span class="pt-8 flex items-center justify-center text-text-muted group-focus-within:text-primary transition-colors">
+                                <i class="notika-icon notika-edit"></i>
+                            </span>
+
+                            <div class="nk-int-st flex-grow">
+
+                                <label class="font-label-md text-label-md text-secondary block uppercase tracking-wider mb-xs">
+                                    Şifre
+                                </label>
+
+                                <div class="relative">
+
+                                    <input asp-for="Password"
+                                           id="password"
+                                           type="password"
+                                           placeholder="Şifrenizi giriniz"
+                                           class="w-full py-2 pr-10 bg-transparent text-body-lg focus:outline-none placeholder:text-outline/50" />
+
+                                    <button type="button"
+                                            id="togglePassword"
+                                            aria-label="Şifreyi göster veya gizle"
+                                            class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary transition-colors">
+
+                                        <span id="eyeIcon"
+                                              class="material-symbols-outlined text-[20px]">
+                                            visibility
+                                        </span>
+
+                                    </button>
+
+                                </div>
+
+                                <span asp-validation-for="Password"
+                                      class="text-red-600 text-sm mt-1 block">
                                 </span>
-                                <div class="nk-int-st flex-grow">
-                                    <label class="font-label-md text-label-md text-secondary block uppercase tracking-wider mb-xs">Şifre</label>
-                                    <input  asp-for="Password"  class="w-full py-2 bg-transparent text-body-lg focus:outline-none placeholder:text-outline/50"placeholder="Password" type="password">
-                                </div>
-                                <span asp-validation-for="Password" class="text-red-500 text-xs"></span>
+
                             </div>
+
+                        </div>
                             <!-- Extra Options -->
                             <div class="flex items-center justify-between mt-md">
                                 <div class="flex items-center space-x-2">
                                     <input asp-for="RememberMe" class="w-4 h-4 border-input-border rounded text-primary focus:ring-primary/20" id="remember" type="checkbox">
-                                    <label class="font-body-sm text-body-sm text-on-surface-variant cursor-pointer" for="remember">Beni HATIRLA</label>
+                                    <label class="font-body-sm text-body-sm text-on-surface-variant cursor-pointer" for="remember">Beni Hatırla</label>
                                 </div>
-                                <a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" asp-controller="Password" asp-action="ForgotPassword">Şifreni Mi Unuttun?</a>
+                                <a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" asp-controller="Password" asp-action="ForgetPassword">Şifreni Mi Unuttun?</a>
                             </div>
                             <!-- Notika Signature Button Flow -->
                             <button type="submit" class="btn-float waves-effect bg-primary text-white shadow-lg hover:scale-110 active:scale-95 transition-all flex items-center justify-center">
@@ -274,22 +314,22 @@
                         <div class="mt-xl pt-md border-t border-input-border">
                           
                             <div class="nk-navigation rg-ic-stl mt-lg flex flex-col items-center gap-sm">
-                                <p class="text-center font-body-sm text-body-sm text-text-muted">
-                                    Henüz Hesabın Yok Mu?
-                                    <a class="text-primary font-bold hover:underline ml-xs flex items-center justify-center gap-1 inline-flex" asp-controller="Register" asp-action="Signup">
-                                        <i class="notika-icon notika-right-arrow !text-[12px]"></i> Kayıt Ol
-                                    </a>
-                                </p>
+                               <p class="text-center font-body-sm text-body-sm text-text-muted">
+                                Henüz bir hesabınız yok mu?
+
+                                <a class="text-primary font-bold hover:underline ml-xs inline-flex items-center gap-1"
+                                   asp-controller="Register"
+                                   asp-action="Signup">
+
+                                    <i class="notika-icon notika-right-arrow !text-[12px]"></i>
+                                    Kayıt Ol
+
+                                </a>
+                            </p>
                             </div>
                         </div>
                     </div>
-                    <!-- Footer Info -->
-                    <div class="mt-xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-md opacity-60">
-                        <span class="font-body-sm text-body-sm text-text-muted">© 2024 Notika Productivity</span>
-                        <a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" href="#">Privacy</a>
-                        <a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" href="#">Terms</a>
-                        <a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" href="#">Security</a>
-                    </div>
+                   
                 </div>
             </div>
         </section>
@@ -304,11 +344,12 @@
                 </div>
                 <h1 class="font-display-lg text-display-lg text-white mb-sm drop-shadow-lg">Notika Mail</h1>
                 <p class="font-title-md text-title-md text-white/90 max-w-md drop-shadow-md">
-                    Precision productivity meets modern design. Experience the fastest way to manage your communication.
+                   Modern tasarım ile güçlü e-posta deneyimini keşfedin.
+Mesajlarınızı hızlı, güvenli ve kolay bir şekilde yönetin.
                 </p>
                 <div class="mt-xl">
                     <div class="glass-panel px-lg py-md rounded-2xl">
-                        <p class="font-label-md text-white/80 uppercase tracking-[0.2em]">High Performance Journey</p>
+                        <p class="font-label-md text-white/80 uppercase tracking-[0.2em]">Güvenli ve Hızlı İletişim</p>
                     </div>
                 </div>
             </div>
@@ -321,17 +362,83 @@
     <div class="fixed top-gutter right-gutter z-50">
         <div class="glass-card px-md py-sm rounded-full flex items-center space-x-sm shadow-lg backdrop-blur-md bg-white/80 border border-input-border">
             <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-            <span class="font-label-md text-label-md text-on-surface">System Online</span>
+            <span class="font-label-md text-label-md text-on-surface">Sistem Aktif</span>
         </div>
     </div>
+
+@using System.Text.Json
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if (TempData["PasswordResetSuccess"] != null)
+{
+    var successMessage = TempData["PasswordResetSuccess"]?.ToString();
+
     <script>
-        document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('focus', () => {
-        input.closest('.nk-int-st').classList.add('active');
-        });
-        input.addEventListener('blur', () => {
-        input.closest('.nk-int-st').classList.remove('active');
-        });
+        document.addEventListener("DOMContentLoaded", function () {
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Şifre Güncellendi',
+                text: @Html.Raw(JsonSerializer.Serialize(successMessage)),
+                confirmButtonText: 'Tamam',
+                confirmButtonColor: '#00c292',
+                allowOutsideClick: false
+            }).then(() => {
+                document.getElementById("password")?.focus();
+            });
+
         });
     </script>
-</body></html>
+}
+
+<script>
+    document.querySelectorAll('.nk-int-st input').forEach(input => {
+
+        input.addEventListener('focus', () => {
+            const inputContainer = input.closest('.nk-int-st');
+
+            if (inputContainer) {
+                inputContainer.classList.add('active');
+            }
+        });
+
+        input.addEventListener('blur', () => {
+            const inputContainer = input.closest('.nk-int-st');
+
+            if (inputContainer) {
+                inputContainer.classList.remove('active');
+            }
+        });
+
+    });
+
+    const passwordInput = document.getElementById("password");
+    const togglePasswordButton = document.getElementById("togglePassword");
+    const eyeIcon = document.getElementById("eyeIcon");
+
+    if (passwordInput && togglePasswordButton && eyeIcon) {
+
+        togglePasswordButton.addEventListener("click", function () {
+
+            const isPasswordHidden = passwordInput.type === "password";
+
+            passwordInput.type = isPasswordHidden ? "text" : "password";
+            eyeIcon.textContent = isPasswordHidden
+                ? "visibility_off"
+                : "visibility";
+
+            togglePasswordButton.setAttribute(
+                "aria-label",
+                isPasswordHidden ? "Şifreyi gizle" : "Şifreyi göster"
+            );
+
+        });
+
+    }
+</script>
+
+
+</body>
+
+</html>
