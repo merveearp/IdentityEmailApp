@@ -16,8 +16,7 @@ builder.Services.AddDbContext<EmailContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<EmailContext>().AddErrorDescriber<CustomErrorValidator>();
-
+builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<EmailContext>().AddErrorDescriber<CustomErrorValidator>().AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
 builder.Services.Configure<JWTSettingsViewModel>(builder.Configuration.GetSection("JwtSettingsKey"));
 
 builder.Services.AddAuthentication(options =>
