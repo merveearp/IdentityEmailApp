@@ -1,6 +1,8 @@
 using IdentityEmailApp.Context;
 using IdentityEmailApp.Entities;
 using IdentityEmailApp.Models.JWTModels;
+using IdentityEmailApp.Services.Abstract;
+using IdentityEmailApp.Services.Concrete;
 using IdentityEmailApp.Validator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +26,7 @@ builder.Services
     .AddErrorDescriber<CustomErrorValidator>()
     .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(
         TokenOptions.DefaultProvider);
+builder.Services.AddScoped<ISystemEventService, SystemEventService>();
 
 builder.Services.Configure<JWTSettingsViewModel>(
     builder.Configuration.GetSection("JwtSettingsKey"));

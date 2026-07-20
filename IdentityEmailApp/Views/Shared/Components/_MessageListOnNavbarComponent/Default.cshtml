@@ -1,0 +1,267 @@
+﻿@using IdentityEmailApp.Models.MessageModels
+@model List<NavbarMessageViewModel>
+
+<style>
+    .navbar-message-menu {
+        width: 380px !important;
+        padding: 0 !important;
+        overflow: hidden;
+        border: none;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    }
+
+        .navbar-message-menu .hd-mg-tt {
+            padding: 16px 18px;
+            background: #00c292;
+        }
+
+            .navbar-message-menu .hd-mg-tt h2 {
+                margin: 0 0 4px;
+                color: #ffffff;
+                font-size: 18px;
+                font-weight: 600;
+            }
+
+            .navbar-message-menu .hd-mg-tt span {
+                display: block;
+                color: rgba(255, 255, 255, 0.85);
+                font-size: 12px;
+            }
+
+    .navbar-message-list {
+        max-height: 350px;
+        overflow-y: auto;
+    }
+
+    .navbar-message-link {
+        display: block;
+        color: inherit !important;
+        text-decoration: none !important;
+    }
+
+    .navbar-message-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-bottom: 1px solid #eeeeee;
+        transition: all 0.2s ease;
+    }
+
+        .navbar-message-item:hover {
+            padding-left: 20px;
+            background: #f1fffb;
+            box-shadow: inset 4px 0 0 #00c292;
+        }
+
+    .navbar-message-avatar {
+        position: relative;
+        flex: 0 0 42px;
+        width: 42px;
+        height: 42px;
+    }
+
+        .navbar-message-avatar img {
+            display: block !important;
+            width: 42px !important;
+            height: 42px !important;
+            max-width: 42px !important;
+            min-width: 42px !important;
+            border: 1px solid #e5e5e5;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+    .navbar-message-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+        .navbar-message-content h3 {
+            margin: 0 0 4px;
+            overflow: hidden;
+            color: #333333;
+            font-size: 13px;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .navbar-message-content p {
+            margin: 0 0 4px !important;
+            overflow: hidden;
+            color: #777777 !important;
+            font-size: 12px !important;
+            line-height: 1.35;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .navbar-message-content small {
+            display: block;
+            color: #999999;
+            font-size: 10px;
+            line-height: 1.2;
+        }
+
+    .navbar-message-menu .hd-mg-va {
+        padding: 12px;
+        text-align: center;
+        background: #fafafa;
+        border-top: 1px solid #eeeeee;
+    }
+
+        .navbar-message-menu .hd-mg-va a {
+            color: #00a982 !important;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+            .navbar-message-menu .hd-mg-va a:hover {
+                color: #007f62 !important;
+            }
+
+    .navbar-message-empty {
+        padding: 30px 15px;
+        text-align: center;
+        color: #888888;
+    }
+
+        .navbar-message-empty i {
+            display: block;
+            margin-bottom: 10px;
+            color: #00c292;
+            font-size: 27px;
+        }
+
+        .navbar-message-empty p {
+            margin: 0;
+            font-size: 13px;
+        }
+</style>
+
+<li class="nav-item dropdown navbar-top-item">
+
+    <a href="#"
+       data-toggle="dropdown"
+       role="button"
+       aria-expanded="false"
+       class="nav-link dropdown-toggle navbar-top-trigger">
+
+        <span>
+            <i class="notika-icon notika-mail"></i>
+        </span>
+
+        @if (ViewBag.UnreadMessageCount > 0)
+        {
+            <span class="navbar-top-badge @(ViewBag.UnreadMessageCount > 9 ? "large-count" : "")">
+                @(ViewBag.UnreadMessageCount > 99
+                    ? "99+"
+                    : ViewBag.UnreadMessageCount)
+            </span>
+        }
+
+    </a>
+
+    <div role="menu"
+         class="dropdown-menu message-dd animated zoomIn navbar-message-menu">
+
+        <div class="hd-mg-tt">
+            <h2>Mesajlar</h2>
+
+            <span>
+                @ViewBag.UnreadMessageCount okunmamış mesaj
+            </span>
+        </div>
+
+        <div class="navbar-message-list">
+
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    var senderFullName =
+                        $"{item.SenderName} {item.SenderSurname}".Trim();
+
+                    var senderImage =
+                        string.IsNullOrWhiteSpace(item.SenderImageUrl)
+                            ? "/images/profile/image.png"
+                            : item.SenderImageUrl;
+
+                    <a asp-controller="Message"
+                       asp-action="MessageDetail"
+                       asp-route-id="@item.MessageId"
+                       class="navbar-message-link">
+
+                        <div class="navbar-message-item">
+
+                            <div class="navbar-message-avatar">
+
+                                <img src="@senderImage"
+                                     alt="@senderFullName"
+                                     onerror="this.onerror=null; this.src='/images/profile/image.png';" />
+
+                            </div>
+
+                            <div class="navbar-message-content">
+
+                                <h3>
+                                    @(string.IsNullOrWhiteSpace(senderFullName)
+                                        ? item.SenderEmail
+                                        : senderFullName)
+                                </h3>
+
+                                <p>
+                                    @(string.IsNullOrWhiteSpace(item.MessageDetail)
+                                        ? "Mesaj içeriği bulunmuyor."
+                                        : item.MessageDetail.Length > 52
+                                            ? item.MessageDetail.Substring(0, 52) + "..."
+                                            : item.MessageDetail)
+                                </p>
+
+                                <small>
+                                    @if (item.SendDate.Date == DateTime.Today)
+                                    {
+                                        @item.SendDate.ToString("HH:mm")
+                                    }
+                                    else if (item.SendDate.Date ==
+                                             DateTime.Today.AddDays(-1))
+                                    {
+                                        <text>
+                                            Dün @item.SendDate.ToString("HH:mm")
+                                        </text>
+                                    }
+                                    else
+                                    {
+                                        @item.SendDate.ToString("dd.MM.yyyy")
+                                    }
+                                </small>
+
+                            </div>
+
+                        </div>
+                    </a>
+                }
+            }
+            else
+            {
+                <div class="navbar-message-empty">
+                    <i class="fa fa-envelope-open-o"></i>
+                    <p>Okunmamış mesajınız bulunmuyor.</p>
+                </div>
+            }
+
+        </div>
+
+        <div class="hd-mg-va">
+            <a asp-controller="Message"
+               asp-action="Inbox">
+                Tüm Mesajları Görüntüle
+            </a>
+        </div>
+
+    </div>
+</li>

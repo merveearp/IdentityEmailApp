@@ -18,5 +18,8 @@ namespace IdentityEmailApp.Entities
         public bool IsProfileCompleted { get; set; }
         public bool IsProfileSetupShown { get; set; }
 
+        public ICollection<Notification> Notifications { get; set; }
+    = new List<Notification>();
+
     }
 }

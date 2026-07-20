@@ -1,5 +1,7 @@
 ﻿using IdentityEmailApp.Entities;
+using IdentityEmailApp.Enums;
 using IdentityEmailApp.Models.UserModels;
+using IdentityEmailApp.Services.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,12 +13,14 @@ namespace IdentityEmailApp.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly ISystemEventService _systemEventService;
 
-        public ProfileController(UserManager<AppUser> userManager, IWebHostEnvironment webHostEnvironment, SignInManager<AppUser> signInManager)
+        public ProfileController(UserManager<AppUser> userManager, IWebHostEnvironment webHostEnvironment, SignInManager<AppUser> signInManager, ISystemEventService systemEventService)
         {
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
             _signInManager = signInManager;
+            _systemEventService = systemEventService;
         }
 
         private int CalculateProfileCompletion(AppUser user)
@@ -362,7 +366,7 @@ namespace IdentityEmailApp.Controllers
             user.BirthDate = model.BirthDate;
             user.Gender = model.Gender;
 
-          
+
             var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
@@ -384,10 +388,14 @@ namespace IdentityEmailApp.Controllers
 
             await _signInManager.RefreshSignInAsync(user);
 
+            await _systemEventService.CreateAsync(
+                user,
+                NotificationType.ProfileUpdated);
+
             TempData["SuccessMessage"] =
                 "Profil bilgileriniz başarıyla güncellendi.";
 
-            return RedirectToAction(nameof(EditProfile));
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -4,6 +4,7 @@ using IdentityEmailApp.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityEmailApp.Migrations
 {
     [DbContext(typeof(EmailContext))]
-    partial class EmailContextModelSnapshot : ModelSnapshot
+    [Migration("20260720142953_newEntity-Notification")]
+    partial class newEntityNotification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,30 +191,15 @@ namespace IdentityEmailApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationId"));
 
-                    b.Property<string>("AppUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Detail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("NotificationType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("NotificationId");
-
-                    b.HasIndex("AppUserId");
 
                     b.ToTable("Notifications");
                 });
@@ -358,17 +346,6 @@ namespace IdentityEmailApp.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("IdentityEmailApp.Entities.Notification", b =>
-                {
-                    b.HasOne("IdentityEmailApp.Entities.AppUser", "AppUser")
-                        .WithMany("Notifications")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -418,11 +395,6 @@ namespace IdentityEmailApp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("IdentityEmailApp.Entities.AppUser", b =>
-                {
-                    b.Navigation("Notifications");
                 });
 #pragma warning restore 612, 618
         }

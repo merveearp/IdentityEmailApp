@@ -1,5 +1,6 @@
 ﻿using IdentityEmailApp.Context;
 using IdentityEmailApp.Models.UserModels;
+using IdentityEmailApp.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,10 +9,12 @@ namespace IdentityEmailApp.Controllers
     public class ActivationController : Controller
     {
         private readonly EmailContext _emailContext;
+        private readonly ISystemEventService _systemEventService;
 
-        public ActivationController(EmailContext emailContext)
+        public ActivationController(EmailContext emailContext, ISystemEventService systemEventService)
         {
             _emailContext = emailContext;
+            _systemEventService = systemEventService;
         }
 
         [HttpGet]
