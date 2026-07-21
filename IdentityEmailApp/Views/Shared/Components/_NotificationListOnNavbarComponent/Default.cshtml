@@ -1,81 +1,517 @@
 ﻿@using IdentityEmailApp.Enums
+@using IdentityEmailApp.Entities
 @model List<Notification>
 
+@{
+    var notificationCount = ViewBag.NotificationCount ?? 0;
+}
+
+<style>
+
+    .notification-trigger {
+        position: relative;
+    }
+
+    .notification-bell {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        transition: all 0.25s ease;
+    }
+
+    .notification-trigger:hover .notification-bell {
+        background-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .notification-count {
+        position: absolute;
+        top: 1px;
+        right: 0;
+        min-width: 19px;
+        height: 19px;
+        padding: 0 5px;
+        border-radius: 20px;
+        background-color: #ff4d4f;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 19px;
+        text-align: center;
+        border: 2px solid #ffffff;
+        box-shadow: 0 2px 6px rgba(255, 77, 79, 0.35);
+    }
+
+    .navbar-notification-menu {
+        width: 390px !important;
+        padding: 0 !important;
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+    }
+
+    .notification-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px;
+        background: linear-gradient(135deg, #00c292, #00a67d);
+        color: #ffffff;
+    }
+
+        .notification-header h2 {
+            margin: 0 0 4px;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .notification-header span {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+    .mark-all-read {
+        color: #ffffff !important;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: 20px;
+        padding: 6px 10px;
+        transition: all 0.25s ease;
+    }
+
+        .mark-all-read:hover {
+            color: #00a67d !important;
+            background-color: #ffffff;
+        }
+
+    .notification-list {
+        max-height: 430px;
+        overflow-y: auto;
+        background-color: #ffffff;
+    }
+
+        .notification-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .notification-list::-webkit-scrollbar-thumb {
+            background-color: #d5d9dd;
+            border-radius: 20px;
+        }
+
+    .notification-item-link {
+        display: block;
+        color: inherit;
+        text-decoration: none !important;
+    }
+
+    .notification-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        padding: 15px 18px;
+        border-bottom: 1px solid #eef1f4;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+
+        .notification-item:hover {
+            background-color: #f7fafc;
+            transform: translateX(2px);
+        }
+
+        .notification-item.notification-unread {
+            background-color: #f0fbf8;
+            border-left: 3px solid #00c292;
+        }
+
+            .notification-item.notification-unread:hover {
+                background-color: #e9f8f4;
+            }
+
+    .notification-icon-wrapper {
+        min-width: 43px;
+        width: 43px;
+        height: 43px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-size: 17px;
+    }
+
+        .notification-icon-wrapper i {
+            color: #ffffff;
+        }
+
+    .notification-blue {
+        background: linear-gradient(135deg, #4d9eff, #2878d6);
+    }
+
+    .notification-green {
+        background: linear-gradient(135deg, #35d4a4, #00a67d);
+    }
+
+    .notification-red {
+        background: linear-gradient(135deg, #ff6b6b, #dc3545);
+    }
+
+    .notification-orange {
+        background: linear-gradient(135deg, #ffb347, #f28b00);
+    }
+
+    .notification-purple {
+        background: linear-gradient(135deg, #a879ff, #7452c8);
+    }
+
+    .notification-gray {
+        background: linear-gradient(135deg, #9ba6b2, #6c757d);
+    }
+
+    .notification-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .notification-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .notification-content h3 {
+        margin: 0 0 5px;
+        color: #2f3542;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .notification-content p {
+        margin: 0 0 7px;
+        color: #747d8c;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .unread-dot {
+        min-width: 8px;
+        width: 8px;
+        height: 8px;
+        background-color: #00c292;
+        border-radius: 50%;
+        box-shadow: 0 0 0 4px rgba(0, 194, 146, 0.12);
+    }
+
+    .notification-date {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #a0a7af;
+        font-size: 11px;
+    }
+
+    .notification-empty {
+        padding: 45px 25px;
+        text-align: center;
+    }
+
+    .notification-empty-icon {
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #eff8f6;
+        color: #00a67d;
+        border-radius: 50%;
+        font-size: 27px;
+    }
+
+    .notification-empty h4 {
+        margin-bottom: 8px;
+        color: #343a40;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .notification-empty p {
+        max-width: 270px;
+        margin: 0 auto;
+        color: #8a929b;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .notification-footer {
+        padding: 0 !important;
+        border-top: 1px solid #eef1f4;
+        background-color: #ffffff;
+    }
+
+        .notification-footer a {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 20px !important;
+            color: #00a67d !important;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+            .notification-footer a:hover {
+                background-color: #f0fbf8;
+                color: #008d6a !important;
+            }
+
+    @@media (max-width: 576px) {
+        .navbar-notification-menu {
+            width: 330px !important;
+            right: -65px !important;
+        }
+
+        .notification-header {
+            padding: 15px;
+        }
+
+        .mark-all-read {
+            font-size: 10px;
+        }
+    }
+</style>
 <li class="nav-item dropdown navbar-top-item">
 
     <a href="#"
            data-toggle="dropdown"
            role="button"
            aria-expanded="false"
-           class="nav-link dropdown-toggle navbar-top-trigger">
+           class="nav-link dropdown-toggle navbar-top-trigger notification-trigger">
 
-        <span>
+        <span class="notification-bell">
             <i class="notika-icon notika-alarm"></i>
         </span>
 
-        <span class="navbar-top-badge">
-            @ViewBag.NotificationCount
-        </span>
+        @if (notificationCount > 0)
+        {
+            <span class="navbar-top-badge notification-count">
+                @(notificationCount > 99 ? "99+" : notificationCount)
+            </span>
+        }
 
     </a>
 
     <div role="menu"
          class="dropdown-menu message-dd notification-dd animated zoomIn navbar-notification-menu">
 
-        <div class="hd-mg-tt">
-            <h2>Bildirimler</h2>
+        <div class="notification-header">
+
+            <div class="notification-header-content">
+
+                <div class="notification-header-icon">
+                    <i class="fa fa-bell"></i>
+                </div>
+
+                <div>
+                    <h2>Bildirimler</h2>
+
+                    @if (notificationCount > 0)
+                    {
+                        <span>
+                            @notificationCount okunmamış bildiriminiz var
+                        </span>
+                    }
+                    else
+                    {
+                        <span>
+                            Yeni bildiriminiz bulunmuyor
+                        </span>
+                    }
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="hd-message-info">
+        <div class="hd-message-info notification-list">
 
-            @foreach (var item in Model)
+            @if (Model != null && Model.Any())
             {
-                <a href="#">
+                @foreach (var item in Model)
+                {
+                    string iconClass;
+                    string iconColorClass;
 
-                    <div class="hd-message-sn">
+                    switch (item.NotificationType)
+                    {
+                        case NotificationType.AccountCreated:
+                            iconClass = "fa fa-user-plus";
+                            iconColorClass = "notification-blue";
+                            break;
 
-                        <div class="hd-message-img">
+                        case NotificationType.EmailVerified:
+                            iconClass = "fa fa-envelope";
+                            iconColorClass = "notification-green";
+                            break;
 
-   
-                             
-                    
+                        case NotificationType.LoginSucceeded:
+                            iconClass = "fa fa-sign-in";
+                            iconColorClass = "notification-green";
+                            break;
+
+                        case NotificationType.LoginFailed:
+                            iconClass = "fa fa-exclamation-triangle";
+                            iconColorClass = "notification-red";
+                            break;
+
+                        case NotificationType.PasswordChanged:
+                            iconClass = "fa fa-key";
+                            iconColorClass = "notification-orange";
+                            break;
+
+                        case NotificationType.PasswordResetRequested:
+                            iconClass = "fa fa-refresh";
+                            iconColorClass = "notification-orange";
+                            break;
+
+                        case NotificationType.ProfileUpdated:
+                            iconClass = "fa fa-user";
+                            iconColorClass = "notification-purple";
+                            break;
+
+                        case NotificationType.RoleAssigned:
+                            iconClass = "fa fa-id-badge";
+                            iconColorClass = "notification-purple";
+                            break;
+
+                        case NotificationType.NewMessageReceived:
+                            iconClass = "fa fa-comments";
+                            iconColorClass = "notification-blue";
+                            break;
+
+                        case NotificationType.SecurityAlert:
+                            iconClass = "fa fa-shield";
+                            iconColorClass = "notification-red";
+                            break;
+
+                        case NotificationType.ProfilePhotoUpdated:
+                            iconClass = "fa fa-camera";
+                            iconColorClass = "notification-purple";
+                            break;
+
+                        case NotificationType.NewUser:
+                            iconClass = "fa fa-users";
+                            iconColorClass = "notification-blue";
+                            break;
+
+                        default:
+                            iconClass = "fa fa-bell";
+                            iconColorClass = "notification-gray";
+                            break;
+                    }
+
+                    var detail = string.IsNullOrWhiteSpace(item.Detail)
+                        ? "Bildirim detayı bulunmuyor."
+                        : item.Detail;
+
+                    var shortDetail = detail.Length > 60
+                        ? detail.Substring(0, 60) + "..."
+                        : detail;
+
+                    var notificationUrl = $"/Notification/Detail/{item.NotificationId}";
+
+                    <a href="@notificationUrl"
+                           class="notification-item-link">
+
+                        <div class="hd-message-sn notification-item @(item.IsRead ? "" : "notification-unread")">
+
+                            <div class="hd-message-img notification-icon-wrapper @iconColorClass">
+
+                                <i class="@iconClass"></i>
+
+                            </div>
+
+                            <div class="hd-mg-ctn notification-content">
+
+                                <div class="notification-title-row">
+
+                                    <h3>@item.Title</h3>
+
+                                    @if (!item.IsRead)
+                                    {
+                                        <span class="unread-dot"></span>
+                                    }
+
+                                </div>
+
+                                <p>@shortDetail</p>
+
+                                <small class="notification-date">
+
+                                    <i class="fa fa-clock-o"></i>
+
+                                    @if (item.CreatedDate.Date == DateTime.Today)
+                                    {
+                                        <span>
+                                            Bugün @item.CreatedDate.ToString("HH:mm")
+                                        </span>
+                                    }
+                                    else if (item.CreatedDate.Date == DateTime.Today.AddDays(-1))
+                                    {
+                                        <span>
+                                            Dün @item.CreatedDate.ToString("HH:mm")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span>
+                                            @item.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                                        </span>
+                                    }
+
+                                </small>
+
+                            </div>
 
                         </div>
 
-                        <div class="hd-mg-ctn">
+                    </a>
+                }
+            }
+            else
+            {
+                <div class="notification-empty">
 
-                            <h3>@item.Title</h3>
-
-                            <p>
-                                @(item.Detail.Length > 45
-                                    ? item.Detail.Substring(0, 45) + "..."
-                                    : item.Detail)
-                            </p>
-
-                            <small class="text-muted">
-                                @item.CreatedDate.ToString("dd.MM.yyyy HH:mm")
-                            </small>
-
-                        </div>
-
+                    <div class="notification-empty-icon">
+                        <i class="fa fa-bell-slash-o"></i>
                     </div>
 
-                </a>
-            }
+                    <h4>Yeni bildiriminiz bulunmuyor</h4>
 
-            @if (!Model.Any())
-            {
-                <div class="text-center p-3">
-                    Bildirim bulunamadı.
+                    <p>
+                        Yeni bir işlem gerçekleştiğinde bildirimlerinizi burada görebilirsiniz.
+                    </p>
+
                 </div>
             }
 
         </div>
 
-        <div class="hd-mg-va">
+        <div class="hd-mg-va notification-footer">
+
             <a href="/Notification/Index">
-                Tüm Bildirimleri Görüntüle
+                <span>Tüm Bildirimleri Görüntüle</span>
+                <i class="fa fa-angle-right"></i>
             </a>
+
         </div>
 
     </div>

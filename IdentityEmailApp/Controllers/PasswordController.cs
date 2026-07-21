@@ -1,5 +1,7 @@
 ﻿using IdentityEmailApp.Entities;
+using IdentityEmailApp.Enums;
 using IdentityEmailApp.Models.PasswordModels;
+using IdentityEmailApp.Services.Abstract;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +13,13 @@ namespace IdentityEmailApp.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly ISystemEventService _systemEventService;
 
-        public PasswordController(UserManager<AppUser> userManager, IConfiguration configuration)
+        public PasswordController(UserManager<AppUser> userManager, IConfiguration configuration, ISystemEventService systemEventService)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _systemEventService = systemEventService;
         }
 
         [HttpGet]
@@ -221,6 +225,8 @@ namespace IdentityEmailApp.Controllers
             await client.SendAsync(mimeMessage);
             await client.DisconnectAsync(true);
 
+            await _systemEventService.CreateAsync(user, NotificationType.PasswordResetRequested);
+
             return RedirectToAction("PasswordResetLinkSent");
         }
 
@@ -295,6 +301,7 @@ namespace IdentityEmailApp.Controllers
 
                 TempData["PasswordResetSuccess"] =
                     "Şifreniz başarıyla yenilendi. Yeni şifrenizle giriş yapabilirsiniz.";
+                await _systemEventService.CreateAsync(user,NotificationType.PasswordChanged);
 
                 return RedirectToAction("SignIn", "Login");
             }

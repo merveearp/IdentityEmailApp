@@ -1,4 +1,5 @@
 ﻿using IdentityEmailApp.Context;
+using IdentityEmailApp.Enums;
 using IdentityEmailApp.Models.UserModels;
 using IdentityEmailApp.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
@@ -86,6 +87,9 @@ namespace IdentityEmailApp.Controllers
 
             TempData["SuccessMessage"] =
                 "Hesabınız başarıyla doğrulandı. Giriş yapabilirsiniz.";
+
+            await _systemEventService.CreateAsync(user, NotificationType.EmailVerified);
+
 
             return RedirectToAction("SignIn", "Login");
         }

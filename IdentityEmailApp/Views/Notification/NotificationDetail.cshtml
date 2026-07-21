@@ -1,0 +1,441 @@
+﻿@using IdentityEmailApp.Entities
+@using IdentityEmailApp.Enums
+
+@model Notification
+
+@{
+    ViewData["Title"] = "Bildirim Detayı";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var timeDiff = DateTime.Now - Model.CreatedDate;
+    string timeAgoText;
+
+    if (timeDiff.TotalMinutes < 1)
+    {
+        timeAgoText = "Şimdi";
+    }
+    else if (timeDiff.TotalMinutes < 60)
+    {
+        timeAgoText = $"{(int)timeDiff.TotalMinutes} dakika önce";
+    }
+    else if (timeDiff.TotalHours < 24)
+    {
+        timeAgoText = $"{(int)timeDiff.TotalHours} saat önce";
+    }
+    else if (timeDiff.TotalDays < 7)
+    {
+        timeAgoText = $"{(int)timeDiff.TotalDays} gün önce";
+    }
+    else
+    {
+        timeAgoText = Model.CreatedDate.ToString("dd.MM.yyyy HH:mm");
+    }
+
+    string notificationTypeText;
+    string labelClass;
+    string iconClass;
+    string iconName;
+
+    switch (Model.NotificationType)
+    {
+        case NotificationType.AccountCreated:
+            notificationTypeText = "Hesap Oluşturma";
+            labelClass = "label-success";
+            iconClass = "notification-icon-success";
+            iconName = "notika-checked";
+            break;
+
+        case NotificationType.EmailVerified:
+            notificationTypeText = "E-posta Doğrulama";
+            labelClass = "label-info";
+            iconClass = "notification-icon-info";
+            iconName = "notika-mail";
+            break;
+
+        case NotificationType.LoginSucceeded:
+            notificationTypeText = "Başarılı Giriş";
+            labelClass = "label-success";
+            iconClass = "notification-icon-success";
+            iconName = "notika-checked";
+            break;
+
+        case NotificationType.LoginFailed:
+            notificationTypeText = "Başarısız Giriş";
+            labelClass = "label-danger";
+            iconClass = "notification-icon-danger";
+            iconName = "notika-close";
+            break;
+
+        case NotificationType.PasswordChanged:
+            notificationTypeText = "Şifre Değişikliği";
+            labelClass = "label-warning";
+            iconClass = "notification-icon-warning";
+            iconName = "notika-lock";
+            break;
+
+        case NotificationType.PasswordResetRequested:
+            notificationTypeText = "Şifre Sıfırlama";
+            labelClass = "label-warning";
+            iconClass = "notification-icon-warning";
+            iconName = "notika-refresh";
+            break;
+
+        case NotificationType.ProfileUpdated:
+            notificationTypeText = "Profil Güncelleme";
+            labelClass = "label-primary";
+            iconClass = "notification-icon-primary";
+            iconName = "notika-support";
+            break;
+
+        case NotificationType.RoleAssigned:
+            notificationTypeText = "Rol Atama";
+            labelClass = "label-info";
+            iconClass = "notification-icon-info";
+            iconName = "notika-support";
+            break;
+
+        case NotificationType.NewMessageReceived:
+            notificationTypeText = "Yeni Mesaj";
+            labelClass = "label-primary";
+            iconClass = "notification-icon-primary";
+            iconName = "notika-mail";
+            break;
+
+        case NotificationType.SecurityAlert:
+            notificationTypeText = "Güvenlik Uyarısı";
+            labelClass = "label-danger";
+            iconClass = "notification-icon-danger";
+            iconName = "notika-close";
+            break;
+
+        case NotificationType.ProfilePhotoUpdated:
+            notificationTypeText = "Profil Fotoğrafı";
+            labelClass = "label-info";
+            iconClass = "notification-icon-info";
+            iconName = "notika-support";
+            break;
+
+        case NotificationType.NewUser:
+            notificationTypeText = "Yeni Kullanıcı";
+            labelClass = "label-success";
+            iconClass = "notification-icon-success";
+            iconName = "notika-support";
+            break;
+
+        default:
+            notificationTypeText = "Sistem Bildirimi";
+            labelClass = "label-default";
+            iconClass = "notification-icon-default";
+            iconName = "notika-alarm";
+            break;
+    }
+}
+
+@await Component.InvokeAsync("_LayoutBreadcombComponent")
+
+<style>
+    .notification-detail-card {
+        background-color: #fff;
+        border: 1px solid #eeeeee;
+        border-radius: 6px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .notification-detail-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    .notification-detail-title {
+        margin: 0 0 8px 0;
+        color: #333;
+        font-size: 23px;
+        font-weight: 600;
+    }
+
+    .notification-detail-subtitle {
+        margin: 0;
+        color: #666;
+        font-size: 15px;
+    }
+
+    .notification-detail-date {
+        color: #999;
+        font-size: 13px;
+        white-space: nowrap;
+        text-align: right;
+    }
+
+    .notification-info-area {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 18px 0;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    .notification-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 19px;
+    }
+
+    .notification-icon-success {
+        background-color: #00c292;
+    }
+
+    .notification-icon-info {
+        background-color: #03a9f4;
+    }
+
+    .notification-icon-primary {
+        background-color: #337ab7;
+    }
+
+    .notification-icon-warning {
+        background-color: #ffb22b;
+    }
+
+    .notification-icon-danger {
+        background-color: #fb3a3a;
+    }
+
+    .notification-icon-default {
+        background-color: #777;
+    }
+
+    .notification-info {
+        flex: 1;
+    }
+
+        .notification-info p {
+            margin: 2px 0;
+        }
+
+    .notification-status {
+        margin-top: 7px;
+    }
+
+    .notification-content {
+        margin-top: 30px;
+        padding: 35px;
+        background: #fcfcfc;
+        border: 1px solid #ececec;
+        border-left: 5px solid #00c292;
+        border-radius: 6px;
+        font-size: 18px;
+        line-height: 2;
+        color: #444;
+    }
+
+        .notification-content p {
+            margin: 0;
+            font-size: 18px;
+            line-height: 2;
+        }
+
+        .notification-content p {
+            margin: 0 0 10px 0;
+            text-align: left !important;
+        }
+
+    .notification-action-area {
+        padding-top: 20px;
+        border-top: 1px solid #eeeeee;
+    }
+
+        .notification-action-area form {
+            display: inline-block;
+            margin: 0;
+        }
+
+    .back-notification-button {
+        float: left;
+    }
+
+    .mark-unread-button {
+        margin-right: 5px;
+    }
+
+    @@media (max-width: 767px) {
+        .notification-detail-header {
+            display: block;
+        }
+
+        .notification-detail-date {
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .notification-info-area {
+            align-items: flex-start;
+        }
+
+        .notification-action-area {
+            text-align: left !important;
+        }
+
+        .back-notification-button {
+            float: none;
+            display: block;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+<div class="inbox-area">
+    <div class="container">
+        <div class="row">
+            @await Component.InvokeAsync("_MessageSidebarComponent")
+
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+
+                <div class="notification-detail-card sm-res-mg-t-30">
+
+                    <!-- Başlık Alanı -->
+                    <div class="notification-detail-header">
+
+                        <div>
+                            <h2 class="notification-detail-title">
+                                Bildirim Detayı
+                            </h2>
+
+                            <p class="notification-detail-subtitle">
+                                <strong>Başlık:</strong> @Model.Title
+                            </p>
+                        </div>
+
+                        <div class="notification-detail-date">
+                            <span>@timeAgoText</span>
+                        </div>
+
+                    </div>
+
+                    <!-- Bildirim Bilgileri -->
+                    <div class="notification-info-area">
+
+                        <div class="notification-icon @iconClass">
+                            <i class="notika-icon @iconName"></i>
+                        </div>
+
+                        <div class="notification-info">
+
+                            <p>
+                                <strong>Bildirim Türü:</strong>
+
+                                <span class="label @labelClass">
+                                    @notificationTypeText
+                                </span>
+                            </p>
+
+                            <p>
+                                <strong>Oluşturulma Tarihi:</strong>
+                                @Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                            </p>
+
+                            <div class="notification-status">
+
+                                <strong>Durum:</strong>
+
+                                @if (Model.IsRead)
+                                {
+                                    <span class="label label-default">
+                                        Okundu
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="label label-success">
+                                        Yeni Bildirim
+                                    </span>
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Bildirim İçeriği -->
+                    <div class="notification-content">
+
+                        <h4 style="margin-top:0;margin-bottom:20px;font-weight:600;">
+                            <i class="notika-icon notika-alarm"></i>
+                            Bildirim İçeriği
+                        </h4>
+
+                        <div class="alert alert-info" style="margin-bottom:0;padding:25px;font-size:18px;line-height:2;">
+                            @Html.Raw(Model.Detail)
+                        </div>
+
+                    </div>
+                    <!-- İşlem Butonları -->
+                    <div class="notification-action-area text-right">
+
+                        <a asp-controller="Notification"
+                               asp-action="Index"
+                               class="btn btn-default btn-sm back-notification-button">
+
+                            <i class="fa fa-arrow-left"></i>
+                            Bildirimlere Dön
+                        </a>
+
+                        <form asp-controller="Notification"
+                              asp-action="MarkAsUnread"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@Model.NotificationId" />
+
+                            <button type="submit"
+                                    class="btn btn-default btn-sm mark-unread-button">
+
+                                <i class="fa fa-envelope"></i>
+                                Okunmadı Olarak İşaretle
+                            </button>
+
+                        </form>
+
+                        <form asp-controller="Notification"
+                              asp-action="Delete"
+                              method="post"
+                              onsubmit="return confirm('Bu bildirimi silmek istediğinize emin misiniz?');">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@Model.NotificationId" />
+
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm">
+
+                                <i class="notika-icon notika-trash"></i>
+                                Sil
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

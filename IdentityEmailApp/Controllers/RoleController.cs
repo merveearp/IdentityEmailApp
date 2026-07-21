@@ -1,5 +1,6 @@
 ﻿using IdentityEmailApp.Entities;
 using IdentityEmailApp.Models.RoleModels;
+using IdentityEmailApp.Services.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,12 @@ namespace IdentityEmailApp.Controllers
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly ISystemEventService _systemEventService;
+
+        public RoleController(ISystemEventService systemEventService)
+        {
+            _systemEventService = systemEventService;
+        }
 
         public RoleController(RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager)
         {
@@ -135,6 +142,8 @@ namespace IdentityEmailApp.Controllers
                 }
 
             }
+
+            await _systemEventService.CreateAsync(user, Enums.NotificationType.RoleAssigned);
             return RedirectToAction("UserList");
         }
     }

@@ -1,0 +1,690 @@
+﻿@using System.Text.RegularExpressions
+@using IdentityEmailApp.Entities
+@using IdentityEmailApp.Enums
+
+@model List<Notification>
+
+@{
+    ViewData["Title"] = "Bildirimler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@await Component.InvokeAsync("_LayoutBreadcombComponent")
+
+<style>
+    .unread-notification {
+        background-color: #f2f6fc;
+    }
+
+        .unread-notification td {
+            font-weight: 600;
+            color: #202124;
+        }
+
+    .read-notification {
+        background-color: #ffffff;
+    }
+
+        .read-notification td {
+            font-weight: 400;
+            color: #666;
+        }
+
+    .notification-link {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+    }
+
+        .notification-link:hover {
+            color: #00c292;
+            text-decoration: none;
+        }
+
+    .notification-title {
+        display: block;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .notification-preview {
+        display: block;
+        margin-top: 4px;
+        color: #777;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    .unread-notification .notification-preview {
+        color: #444;
+    }
+
+    .notification-date {
+        white-space: nowrap;
+    }
+
+    .notification-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        font-size: 15px;
+        color: #fff;
+    }
+
+    .notification-icon-success {
+        background-color: #00c292;
+    }
+
+    .notification-icon-info {
+        background-color: #03a9f4;
+    }
+
+    .notification-icon-primary {
+        background-color: #337ab7;
+    }
+
+    .notification-icon-warning {
+        background-color: #ffb22b;
+    }
+
+    .notification-icon-danger {
+        background-color: #fb3a3a;
+    }
+
+    .notification-icon-default {
+        background-color: #777;
+    }
+
+    .notification-empty {
+        padding: 40px !important;
+        color: #999;
+    }
+
+        .notification-empty i {
+            display: block;
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+    .notification-type-label {
+        min-width: 85px;
+        display: inline-block;
+        text-align: center;
+    }
+</style>
+
+<div class="inbox-area">
+    <div class="container">
+        <div class="row">
+            @await Component.InvokeAsync("_MessageSidebarComponent")
+
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+
+                <div class="inbox-text-list sm-res-mg-t-30">
+
+                    <div class="form-group">
+                        <div class="nk-int-st search-input search-overt">
+
+                            <input type="text"
+                                   id="notificationSearchInput"
+                                   class="form-control"
+                                   placeholder="Bildirimlerde ara..." />
+
+                            <button type="button"
+                                    id="notificationSearchButton"
+                                    class="btn search-ib">
+                                Ara
+                            </button>
+
+                        </div>
+                    </div>
+
+
+                    <div class="inbox-btn-st-ls btn-toolbar">
+
+                        <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
+
+                            <a asp-controller="Notification"
+                                   asp-action="Index"
+                                   class="btn btn-default btn-sm"
+                                   title="Yenile">
+
+                                <i class="notika-icon notika-refresh"></i>
+                                Yenile
+
+                            </a>
+
+                            <button type="button"
+                                    id="selectAllButton"
+                                    class="btn btn-default btn-sm"
+                                    title="Tümünü Seç">
+
+                                <i class="notika-icon notika-checked"></i>
+
+                            </button>
+
+                            <button type="button"
+                                    id="markAsReadButton"
+                                    class="btn btn-default btn-sm"
+                                    title="Okundu Olarak İşaretle">
+
+                                <i class="notika-icon notika-next"></i>
+
+                            </button>
+
+                            <button type="button"
+                                    id="markAsUnreadButton"
+                                    class="btn btn-default btn-sm"
+                                    title="Okunmadı Olarak İşaretle">
+
+                                <i class="notika-icon notika-down-arrow"></i>
+
+                            </button>
+
+                            <button type="button"
+                                    id="deleteSelectedButton"
+                                    class="btn btn-default btn-sm"
+                                    title="Seçilenleri Sil">
+
+                                <i class="notika-icon notika-trash"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Bildirim Tablosu -->
+                    <div class="table-responsive">
+
+                        <table class="table table-hover"
+                               id="notificationTable">
+
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">Seç</th>
+                                    <th style="width: 60px;">Durum</th>
+                                    <th>Bildirim</th>
+                                    <th style="width: 140px;">Tür</th>
+                                    <th>Açıklama</th>
+                                    <th class="text-right"
+                                        style="width: 160px;">
+                                        Tarih
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var item in Model.OrderByDescending(x => x.CreatedDate))
+                                    {
+                                        var rowClass = item.IsRead
+                                            ? "read-notification"
+                                            : "unread-notification";
+
+                                        var plainText = Regex.Replace(
+                                            item.Detail ?? "",
+                                            "<.*?>",
+                                            ""
+                                        );
+
+                                        var notificationPreview =
+                                            string.IsNullOrWhiteSpace(plainText)
+                                                ? "Bildirim açıklaması bulunmuyor."
+                                                : plainText.Length > 60
+                                                    ? plainText.Substring(0, 60) + "..."
+                                                    : plainText;
+
+                                        var iconClass = "notification-icon-default";
+                                        var icon = "notika-alarm";
+                                        var typeText = "Sistem";
+                                        var labelClass = "label-default";
+
+                                        switch (item.NotificationType)
+                                        {
+                                            case NotificationType.AccountCreated:
+
+                                                iconClass = "notification-icon-success";
+                                                icon = "notika-checked";
+                                                typeText = "Hesap";
+                                                labelClass = "label-success";
+
+                                                break;
+
+                                            case NotificationType.EmailVerified:
+
+                                                iconClass = "notification-icon-info";
+                                                icon = "notika-mail";
+                                                typeText = "Doğrulama";
+                                                labelClass = "label-info";
+
+                                                break;
+
+                                            case NotificationType.LoginSucceeded:
+
+                                                iconClass = "notification-icon-success";
+                                                icon = "notika-checked";
+                                                typeText = "Giriş";
+                                                labelClass = "label-success";
+
+                                                break;
+
+                                            case NotificationType.LoginFailed:
+
+                                                iconClass = "notification-icon-danger";
+                                                icon = "notika-close";
+                                                typeText = "Başarısız Giriş";
+                                                labelClass = "label-danger";
+
+                                                break;
+
+                                            case NotificationType.PasswordChanged:
+
+                                                iconClass = "notification-icon-warning";
+                                                icon = "notika-lock";
+                                                typeText = "Şifre";
+                                                labelClass = "label-warning";
+
+                                                break;
+
+                                            case NotificationType.PasswordResetRequested:
+
+                                                iconClass = "notification-icon-warning";
+                                                icon = "notika-refresh";
+                                                typeText = "Şifre Sıfırlama";
+                                                labelClass = "label-warning";
+
+                                                break;
+
+                                            case NotificationType.ProfileUpdated:
+
+                                                iconClass = "notification-icon-primary";
+                                                icon = "notika-support";
+                                                typeText = "Profil";
+                                                labelClass = "label-primary";
+
+                                                break;
+
+                                            case NotificationType.RoleAssigned:
+
+                                                iconClass = "notification-icon-info";
+                                                icon = "notika-support";
+                                                typeText = "Rol";
+                                                labelClass = "label-info";
+
+                                                break;
+
+                                            case NotificationType.NewMessageReceived:
+
+                                                iconClass = "notification-icon-primary";
+                                                icon = "notika-mail";
+                                                typeText = "Mesaj";
+                                                labelClass = "label-primary";
+
+                                                break;
+
+                                            case NotificationType.SecurityAlert:
+
+                                                iconClass = "notification-icon-danger";
+                                                icon = "notika-close";
+                                                typeText = "Güvenlik";
+                                                labelClass = "label-danger";
+
+                                                break;
+
+                                            case NotificationType.ProfilePhotoUpdated:
+
+                                                iconClass = "notification-icon-info";
+                                                icon = "notika-support";
+                                                typeText = "Profil Fotoğrafı";
+                                                labelClass = "label-info";
+
+                                                break;
+
+                                            case NotificationType.NewUser:
+
+                                                iconClass = "notification-icon-success";
+                                                icon = "notika-support";
+                                                typeText = "Yeni Kullanıcı";
+                                                labelClass = "label-success";
+
+                                                break;
+                                        }
+
+                                        <tr class="@rowClass notification-row"
+                                            data-search="@($"{item.Title} {item.Detail} {typeText}".ToLower())">
+
+                                            <!-- Seçim -->
+                                            <td>
+                                                <label>
+                                                    <input type="checkbox"
+                                                           class="i-checks notification-checkbox"
+                                                           value="@item.NotificationId" />
+                                                </label>
+                                            </td>
+
+                                            <!-- İkon -->
+                                            <td>
+                                                <span class="notification-icon @iconClass">
+
+                                                    <i class="notika-icon @icon"></i>
+
+                                                </span>
+                                            </td>
+
+                                            <!-- Başlık -->
+                                            <td>
+
+                                                <a asp-controller="Notification"
+                                                       asp-action="NotificationDetail"
+                                                       asp-route-id="@item.NotificationId"
+                                                       class="notification-link">
+
+                                                    <span class="notification-title">
+
+                                                        @if (!item.IsRead)
+                                                        {
+                                                            <strong>
+                                                                @item.Title
+                                                            </strong>
+                                                        }
+                                                        else
+                                                        {
+                                                            @item.Title
+                                                        }
+
+                                                    </span>
+
+                                                </a>
+
+                                            </td>
+
+                                            <!-- Bildirim Türü -->
+                                            <td>
+
+                                                <span class="label @labelClass notification-type-label">
+                                                    @typeText
+                                                </span>
+
+                                            </td>
+
+                                            <!-- Açıklama -->
+                                            <td>
+
+                                                <a asp-controller="Notification"
+                                                       asp-action="NotificationDetail"
+                                                       asp-route-id="@item.NotificationId"
+                                                       class="notification-link">
+
+                                                    <span class="notification-preview">
+                                                        @notificationPreview
+                                                    </span>
+
+                                                </a>
+
+                                            </td>
+                                          
+
+                                            <!-- Tarih -->
+                                            <td class="text-right notification-date">
+
+                                                @if (item.CreatedDate.Date == DateTime.Today)
+                                                {
+                                                    <span>
+                                                        Bugün @item.CreatedDate.ToString("HH:mm")
+                                                    </span>
+                                                }
+                                                else if (item.CreatedDate.Date == DateTime.Today.AddDays(-1))
+                                                {
+                                                    <span>
+                                                        Dün @item.CreatedDate.ToString("HH:mm")
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span>
+                                                        @item.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                                                    </span>
+                                                }
+
+                                            </td>
+
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6"
+                                            class="text-center notification-empty">
+
+                                            <i class="notika-icon notika-alarm"></i>
+
+                                            Henüz bir bildiriminiz bulunmuyor.
+
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<form id="notificationActionForm"
+      method="post">
+
+    @Html.AntiForgeryToken()
+
+    <input type="hidden"
+           id="selectedNotificationIds"
+           name="notificationIds" />
+
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput =
+            document.getElementById("notificationSearchInput");
+
+        const searchButton =
+            document.getElementById("notificationSearchButton");
+
+        const selectAllButton =
+            document.getElementById("selectAllButton");
+
+        const markAsReadButton =
+            document.getElementById("markAsReadButton");
+
+        const markAsUnreadButton =
+            document.getElementById("markAsUnreadButton");
+
+        const deleteSelectedButton =
+            document.getElementById("deleteSelectedButton");
+
+        const actionForm =
+            document.getElementById("notificationActionForm");
+
+        const selectedIdsInput =
+            document.getElementById("selectedNotificationIds");
+
+        function filterNotifications() {
+
+            const searchValue =
+                searchInput.value.toLocaleLowerCase("tr-TR").trim();
+
+            const rows =
+                document.querySelectorAll(".notification-row");
+
+            rows.forEach(function (row) {
+
+                const rowText =
+                    row.getAttribute("data-search") || "";
+
+                row.style.display =
+                    rowText.includes(searchValue)
+                        ? ""
+                        : "none";
+            });
+        }
+
+        function getSelectedNotificationIds() {
+
+            return Array.from(
+                document.querySelectorAll(
+                    ".notification-checkbox:checked"
+                )
+            ).map(function (checkbox) {
+
+                return checkbox.value;
+
+            });
+        }
+
+        function submitNotificationAction(actionUrl) {
+
+            const selectedIds =
+                getSelectedNotificationIds();
+
+            if (selectedIds.length === 0) {
+
+                alert("Lütfen en az bir bildirim seçiniz.");
+                return;
+            }
+
+            selectedIdsInput.value =
+                selectedIds.join(",");
+
+            actionForm.action =
+                actionUrl;
+
+            actionForm.submit();
+        }
+
+        searchButton.addEventListener(
+            "click",
+            filterNotifications
+        );
+
+        searchInput.addEventListener(
+            "keyup",
+            function (event) {
+
+                if (event.key === "Enter") {
+                    filterNotifications();
+                }
+
+                if (searchInput.value.trim() === "") {
+                    filterNotifications();
+                }
+            }
+        );
+
+        selectAllButton.addEventListener(
+            "click",
+            function () {
+
+                const visibleCheckboxes =
+                    Array.from(
+                        document.querySelectorAll(
+                            ".notification-row"
+                        )
+                    )
+                    .filter(function (row) {
+
+                        return row.style.display !== "none";
+
+                    })
+                    .map(function (row) {
+
+                        return row.querySelector(
+                            ".notification-checkbox"
+                        );
+
+                    });
+
+                const allSelected =
+                    visibleCheckboxes.length > 0 &&
+                    visibleCheckboxes.every(
+                        function (checkbox) {
+
+                            return checkbox.checked;
+
+                        }
+                    );
+
+                visibleCheckboxes.forEach(
+                    function (checkbox) {
+
+                        checkbox.checked = !allSelected;
+
+                    }
+                );
+            }
+        );
+
+        markAsReadButton.addEventListener(
+            "click",
+            function () {
+
+                submitNotificationAction(
+                    '@Url.Action("MarkSelectedAsRead", "Notification")'
+                );
+            }
+        );
+
+        markAsUnreadButton.addEventListener(
+            "click",
+            function () {
+
+                submitNotificationAction(
+                    '@Url.Action("MarkSelectedAsUnread", "Notification")'
+                );
+            }
+        );
+
+        deleteSelectedButton.addEventListener(
+            "click",
+            function () {
+
+                const selectedIds =
+                    getSelectedNotificationIds();
+
+                if (selectedIds.length === 0) {
+
+                    alert("Lütfen silmek istediğiniz bildirimleri seçiniz.");
+                    return;
+                }
+
+                const result = confirm(
+                    "Seçilen bildirimleri silmek istediğinize emin misiniz?"
+                );
+
+                if (!result) {
+                    return;
+                }
+
+                submitNotificationAction(
+                    '@Url.Action("DeleteSelected", "Notification")'
+                );
+            }
+        );
+
+    });
+</script>

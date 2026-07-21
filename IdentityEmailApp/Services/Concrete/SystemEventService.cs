@@ -2,6 +2,7 @@
 using IdentityEmailApp.Entities;
 using IdentityEmailApp.Enums;
 using IdentityEmailApp.Services.Abstract;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityEmailApp.Services.Concrete
 {
@@ -26,7 +27,7 @@ namespace IdentityEmailApp.Services.Concrete
                 CreatedDate = DateTime.Now
             };
 
-            switch (notificationType)
+          switch (notificationType)
             {
                 case NotificationType.AccountCreated:
                     notification.Title = "Hesabınız Oluşturuldu";
@@ -49,7 +50,7 @@ namespace IdentityEmailApp.Services.Concrete
                 case NotificationType.PasswordResetRequested:
                     notification.Title = "Şifre Sıfırlama İşlemi";
                     notification.Detail =
-                        "Şifre sıfırlama talebiniz başarıyla tamamlandı.";
+                        "Şifre sıfırlama işleminiz başarıyla tamamlandı.";
                     break;
 
                 case NotificationType.ProfileUpdated:
@@ -65,9 +66,16 @@ namespace IdentityEmailApp.Services.Concrete
                     break;
 
                 case NotificationType.LoginSucceeded:
-                    notification.Title = "Yeni Oturum Açıldı";
+                    notification.Title = "Başarılı Giriş";
                     notification.Detail =
-                        "Hesabınıza başarılı bir giriş gerçekleştirildi.";
+                        $"Hesabınıza {DateTime.Now:dd.MM.yyyy HH:mm} tarihinde başarıyla giriş yapıldı. Bu işlem size ait değilse lütfen şifrenizi değiştirin.";
+                    break;
+
+
+                case NotificationType.LoginFailed:
+                    notification.Title = "Başarısız Giriş Denemesi";
+                    notification.Detail =
+                        "Hesabınıza başarısız bir giriş denemesi gerçekleştirildi.";
                     break;
 
                 case NotificationType.SecurityAlert:
@@ -82,23 +90,55 @@ namespace IdentityEmailApp.Services.Concrete
                         "Profil fotoğrafınız başarıyla değiştirildi.";
                     break;
 
+                case NotificationType.NewMessageReceived:
+                    notification.Title = "Yeni Mesajınız Var";
+                    notification.Detail =
+                        "Gelen kutunuza yeni bir mesaj ulaştı.";
+                    break;
+
+                case NotificationType.NewUser:
+                    notification.Title = "Notika'ya Hoş Geldiniz";
+                    notification.Detail =
+                        "Notika'nın güçlü ve güvenilir kullanıcı deneyimine hoş geldiniz.";
+                    break;
+
+                case NotificationType.ProfileCompletionReminder:
+                    notification.Title = "Profilinizi Tamamlayın";
+                    notification.Detail =
+                        "Eksik profil bilgilerinizi doldurarak profilinizi tamamlayabilirsiniz.";
+                    break;
+
                 default:
                     notification.Title = "Sistem Bildirimi";
                     notification.Detail =
                         "Hesabınızla ilgili yeni bir sistem bildirimi bulunuyor.";
                     break;
             }
-
             return notification;
         }
 
-        public async Task CreateAsync(AppUser user, NotificationType notificationType)
+        public async Task CreateAsync(AppUser user,NotificationType notificationType)
         {
+            if (notificationType == NotificationType.ProfileCompletionReminder)
+            {
+                var notificationExists = await _context.Notifications
+                    .AnyAsync(x =>
+                        x.AppUserId == user.Id &&
+                        x.NotificationType == notificationType &&
+                        x.IsRead == false);
+
+                if (notificationExists)
+                {
+                    return;
+                }
+            }
+
             var notification = CreateNotification(user.Id,notificationType);
+
             _logger.LogInformation(
-               "Sistem olayı oluştu. EventType: {EventType}, UserId: {UserId}",
-               notificationType,
-               user.Id);
+                "Sistem olayı oluştu. EventType: {EventType}, UserId: {UserId}",
+                notificationType,
+                user.Id);
 
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();

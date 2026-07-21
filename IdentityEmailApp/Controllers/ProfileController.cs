@@ -221,6 +221,8 @@ namespace IdentityEmailApp.Controllers
                 return RedirectToAction("SignIn", "Login");
             }
 
+            var profileCompletion = CalculateProfileCompletion(user);
+
             var model = new EditUserViewModel
             {
                 Name = user.Name,
@@ -233,7 +235,15 @@ namespace IdentityEmailApp.Controllers
                 Gender = user.Gender,
                 ImageUrl = user.ImageUrl
             };
-            ViewBag.ProfileCompletion = CalculateProfileCompletion(user);
+
+            ViewBag.ProfileCompletion = profileCompletion;
+
+            if (profileCompletion != 100)
+            {
+                await _systemEventService.CreateAsync(
+                    user,
+                    NotificationType.ProfileCompletionReminder);
+            }
 
             return View(model);
         }
@@ -356,6 +366,7 @@ namespace IdentityEmailApp.Controllers
                 await model.ProfileImage.CopyToAsync(stream);
 
                 user.ImageUrl = $"/images/profile/{fileName}";
+                await _systemEventService.CreateAsync(user, NotificationType.ProfilePhotoUpdated);
             }
 
             user.Name = model.Name;

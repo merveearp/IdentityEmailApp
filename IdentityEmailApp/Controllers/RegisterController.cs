@@ -14,6 +14,7 @@ namespace IdentityEmailApp.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
 
+
         public RegisterController( UserManager<AppUser> userManager,IConfiguration configuration)
         {
             _userManager = userManager;
@@ -52,6 +53,7 @@ namespace IdentityEmailApp.Controllers
             };
 
             var result = await _userManager.CreateAsync(appUser, model.Password);
+
 
             if (!result.Succeeded)
             {
@@ -242,7 +244,7 @@ namespace IdentityEmailApp.Controllers
 
                 return View(model);
             }
-            return RedirectToAction( "UserActivation", "Activation"  );
+            return RedirectToAction( "UserActivation", "Activation");
         }
     }
 }

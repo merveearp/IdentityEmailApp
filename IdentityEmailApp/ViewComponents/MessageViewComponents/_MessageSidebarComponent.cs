@@ -35,6 +35,7 @@ namespace IdentityEmailApp.ViewComponents.MessageViewComponents
                 .CountAsync(x => x.SenderEmail == user.Email);
             ViewBag.receivedMessageCount = await _context.Messages
                 .CountAsync(x => x.ReceiverEmail == user.Email);
+            ViewBag.notificationCount = await _context.Notifications.Where(x => x.IsRead == false && x.AppUserId==user.Id).CountAsync();
 
             return View();
         }

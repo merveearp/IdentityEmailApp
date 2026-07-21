@@ -1,6 +1,8 @@
 ﻿using IdentityEmailApp.Context;
 using IdentityEmailApp.Entities;
+using IdentityEmailApp.Enums;
 using IdentityEmailApp.Models.UserModels;
+using IdentityEmailApp.Services.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,13 +14,15 @@ namespace IdentityEmailApp.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly EmailContext _emailContext;
+        private readonly ISystemEventService _systemEventService;
 
 
-        public LoginController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, EmailContext emailContext)
+        public LoginController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, EmailContext emailContext, ISystemEventService systemEventService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailContext = emailContext;
+            _systemEventService = systemEventService;
         }
 
         [HttpGet]
@@ -80,9 +84,12 @@ namespace IdentityEmailApp.Controllers
             {
                 if (!user.IsProfileSetupShown)
                 {
+                    await _systemEventService.CreateAsync(user, NotificationType.NewUser);
                     return RedirectToAction("CompleteProfile", "Profile");
                 }
 
+                await _systemEventService.CreateAsync(user, NotificationType.LoginSucceeded);
+                
                 return RedirectToAction("Inbox", "Message");
             }
 
