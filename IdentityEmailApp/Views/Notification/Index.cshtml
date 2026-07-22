@@ -116,16 +116,17 @@
         text-align: center;
     }
 </style>
-
 <div class="inbox-area">
     <div class="container">
         <div class="row">
+
             @await Component.InvokeAsync("_MessageSidebarComponent")
 
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
 
                 <div class="inbox-text-list sm-res-mg-t-30">
 
+                    <!-- Arama Alanı -->
                     <div class="form-group">
                         <div class="nk-int-st search-input search-overt">
 
@@ -143,340 +144,360 @@
                         </div>
                     </div>
 
+                    <form asp-controller="Notification"
+                          method="post"
+                          id="notificationForm">
 
-                    <div class="inbox-btn-st-ls btn-toolbar">
+                        @Html.AntiForgeryToken()
 
-                        <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
+                        <!-- İşlem Butonları -->
+                        <div class="inbox-btn-st-ls btn-toolbar">
 
-                            <a asp-controller="Notification"
-                                   asp-action="Index"
-                                   class="btn btn-default btn-sm"
-                                   title="Yenile">
+                            <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
 
-                                <i class="notika-icon notika-refresh"></i>
-                                Yenile
+                                <a asp-controller="Notification"
+                                       asp-action="Index"
+                                       class="btn btn-default btn-sm"
+                                       title="Yenile">
 
-                            </a>
+                                    <i class="notika-icon notika-refresh"></i>
+                                    Yenile
 
-                            <button type="button"
-                                    id="selectAllButton"
-                                    class="btn btn-default btn-sm"
-                                    title="Tümünü Seç">
+                                </a>
 
-                                <i class="notika-icon notika-checked"></i>
+                                <button type="button"
+                                        id="selectAllButton"
+                                        class="btn btn-default btn-sm"
+                                        title="Tümünü Seç">
 
-                            </button>
+                                    <i class="notika-icon notika-checked"></i>
 
-                            <button type="button"
-                                    id="markAsReadButton"
-                                    class="btn btn-default btn-sm"
-                                    title="Okundu Olarak İşaretle">
+                                </button>
 
-                                <i class="notika-icon notika-next"></i>
+                                <button type="submit"
+                                        asp-controller="Notification"
+                                        asp-action="MarkSelectedAsRead"
+                                        class="btn btn-default btn-sm"
+                                        title="Okundu Olarak İşaretle">
 
-                            </button>
+                                    <i class="notika-icon notika-next"></i>
 
-                            <button type="button"
-                                    id="markAsUnreadButton"
-                                    class="btn btn-default btn-sm"
-                                    title="Okunmadı Olarak İşaretle">
+                                </button>
 
-                                <i class="notika-icon notika-down-arrow"></i>
+                                <button type="submit"
+                                        asp-controller="Notification"
+                                        asp-action="MarkSelectedAsUnread"
+                                        class="btn btn-default btn-sm"
+                                        title="Okunmadı Olarak İşaretle">
 
-                            </button>
+                                    <i class="notika-icon notika-down-arrow"></i>
 
-                            <button type="button"
-                                    id="deleteSelectedButton"
-                                    class="btn btn-default btn-sm"
-                                    title="Seçilenleri Sil">
+                                </button>
 
-                                <i class="notika-icon notika-trash"></i>
+                                <button type="submit"
+                                        asp-controller="Notification"
+                                        asp-action="DeleteSelected"
+                                        class="btn btn-default btn-sm"
+                                        title="Seçilenleri Sil"
+                                        onclick="return confirm('Seçilen bildirimleri silmek istediğinize emin misiniz?');">
 
-                            </button>
+                                    <i class="notika-icon notika-trash"></i>
+
+                                </button>
+
+                            </div>
 
                         </div>
 
-                    </div>
+                        <!-- Bildirim Tablosu -->
+                        <div class="table-responsive">
 
-                    <!-- Bildirim Tablosu -->
-                    <div class="table-responsive">
+                            <table class="table table-hover"
+                                   id="notificationTable">
 
-                        <table class="table table-hover"
-                               id="notificationTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width:50px;">Seç</th>
+                                        <th style="width:60px;">Durum</th>
+                                        <th>Bildirim</th>
+                                        <th style="width:140px;">Tür</th>
+                                        <th>Açıklama</th>
 
-                            <thead>
-                                <tr>
-                                    <th style="width: 50px;">Seç</th>
-                                    <th style="width: 60px;">Durum</th>
-                                    <th>Bildirim</th>
-                                    <th style="width: 140px;">Tür</th>
-                                    <th>Açıklama</th>
-                                    <th class="text-right"
-                                        style="width: 160px;">
-                                        Tarih
-                                    </th>
-                                </tr>
-                            </thead>
+                                        <th class="text-right"
+                                            style="width:160px;">
+                                            Tarih
+                                        </th>
+                                    </tr>
+                                </thead>
 
-                            <tbody>
+                                <tbody>
 
-                                @if (Model != null && Model.Any())
-                                {
-                                    @foreach (var item in Model.OrderByDescending(x => x.CreatedDate))
+                                    @if (Model != null && Model.Any())
                                     {
-                                        var rowClass = item.IsRead
-                                            ? "read-notification"
-                                            : "unread-notification";
-
-                                        var plainText = Regex.Replace(
-                                            item.Detail ?? "",
-                                            "<.*?>",
-                                            ""
-                                        );
-
-                                        var notificationPreview =
-                                            string.IsNullOrWhiteSpace(plainText)
-                                                ? "Bildirim açıklaması bulunmuyor."
-                                                : plainText.Length > 60
-                                                    ? plainText.Substring(0, 60) + "..."
-                                                    : plainText;
-
-                                        var iconClass = "notification-icon-default";
-                                        var icon = "notika-alarm";
-                                        var typeText = "Sistem";
-                                        var labelClass = "label-default";
-
-                                        switch (item.NotificationType)
+                                        @foreach (var item in Model.OrderByDescending(x => x.CreatedDate))
                                         {
-                                            case NotificationType.AccountCreated:
+                                            var rowClass = item.IsRead
+                                                ? "read-notification"
+                                                : "unread-notification";
 
-                                                iconClass = "notification-icon-success";
-                                                icon = "notika-checked";
-                                                typeText = "Hesap";
-                                                labelClass = "label-success";
+                                            var plainText = Regex.Replace(
+                                                item.Detail ?? "",
+                                                "<.*?>",
+                                                ""
+                                            );
 
-                                                break;
+                                            var notificationPreview =
+                                                string.IsNullOrWhiteSpace(plainText)
+                                                    ? "Bildirim açıklaması bulunmuyor."
+                                                    : plainText.Length > 60
+                                                        ? plainText.Substring(0, 60) + "..."
+                                                        : plainText;
 
-                                            case NotificationType.EmailVerified:
+                                            var iconClass = "notification-icon-default";
+                                            var icon = "notika-alarm";
+                                            var typeText = "Sistem";
+                                            var labelClass = "label-default";
 
-                                                iconClass = "notification-icon-info";
-                                                icon = "notika-mail";
-                                                typeText = "Doğrulama";
-                                                labelClass = "label-info";
+                                            switch (item.NotificationType)
+                                            {
+                                                case NotificationType.AccountCreated:
 
-                                                break;
+                                                    iconClass = "notification-icon-success";
+                                                    icon = "notika-checked";
+                                                    typeText = "Hesap";
+                                                    labelClass = "label-success";
 
-                                            case NotificationType.LoginSucceeded:
+                                                    break;
 
-                                                iconClass = "notification-icon-success";
-                                                icon = "notika-checked";
-                                                typeText = "Giriş";
-                                                labelClass = "label-success";
+                                                case NotificationType.EmailVerified:
 
-                                                break;
+                                                    iconClass = "notification-icon-info";
+                                                    icon = "notika-mail";
+                                                    typeText = "Doğrulama";
+                                                    labelClass = "label-info";
 
-                                            case NotificationType.LoginFailed:
+                                                    break;
 
-                                                iconClass = "notification-icon-danger";
-                                                icon = "notika-close";
-                                                typeText = "Başarısız Giriş";
-                                                labelClass = "label-danger";
+                                                case NotificationType.LoginSucceeded:
 
-                                                break;
+                                                    iconClass = "notification-icon-success";
+                                                    icon = "notika-checked";
+                                                    typeText = "Giriş";
+                                                    labelClass = "label-success";
 
-                                            case NotificationType.PasswordChanged:
+                                                    break;
 
-                                                iconClass = "notification-icon-warning";
-                                                icon = "notika-lock";
-                                                typeText = "Şifre";
-                                                labelClass = "label-warning";
+                                                case NotificationType.LoginFailed:
 
-                                                break;
+                                                    iconClass = "notification-icon-danger";
+                                                    icon = "notika-close";
+                                                    typeText = "Başarısız Giriş";
+                                                    labelClass = "label-danger";
 
-                                            case NotificationType.PasswordResetRequested:
+                                                    break;
 
-                                                iconClass = "notification-icon-warning";
-                                                icon = "notika-refresh";
-                                                typeText = "Şifre Sıfırlama";
-                                                labelClass = "label-warning";
+                                                case NotificationType.PasswordChanged:
 
-                                                break;
+                                                    iconClass = "notification-icon-warning";
+                                                    icon = "notika-lock";
+                                                    typeText = "Şifre";
+                                                    labelClass = "label-warning";
 
-                                            case NotificationType.ProfileUpdated:
+                                                    break;
 
-                                                iconClass = "notification-icon-primary";
-                                                icon = "notika-support";
-                                                typeText = "Profil";
-                                                labelClass = "label-primary";
+                                                case NotificationType.PasswordResetRequested:
 
-                                                break;
+                                                    iconClass = "notification-icon-warning";
+                                                    icon = "notika-refresh";
+                                                    typeText = "Şifre Sıfırlama";
+                                                    labelClass = "label-warning";
 
-                                            case NotificationType.RoleAssigned:
+                                                    break;
 
-                                                iconClass = "notification-icon-info";
-                                                icon = "notika-support";
-                                                typeText = "Rol";
-                                                labelClass = "label-info";
+                                                case NotificationType.ProfileUpdated:
 
-                                                break;
+                                                    iconClass = "notification-icon-primary";
+                                                    icon = "notika-support";
+                                                    typeText = "Profil";
+                                                    labelClass = "label-primary";
 
-                                            case NotificationType.NewMessageReceived:
+                                                    break;
 
-                                                iconClass = "notification-icon-primary";
-                                                icon = "notika-mail";
-                                                typeText = "Mesaj";
-                                                labelClass = "label-primary";
+                                                case NotificationType.RoleAssigned:
 
-                                                break;
+                                                    iconClass = "notification-icon-info";
+                                                    icon = "notika-support";
+                                                    typeText = "Rol";
+                                                    labelClass = "label-info";
 
-                                            case NotificationType.SecurityAlert:
+                                                    break;
 
-                                                iconClass = "notification-icon-danger";
-                                                icon = "notika-close";
-                                                typeText = "Güvenlik";
-                                                labelClass = "label-danger";
+                                                case NotificationType.NewMessageReceived:
 
-                                                break;
+                                                    iconClass = "notification-icon-primary";
+                                                    icon = "notika-mail";
+                                                    typeText = "Mesaj";
+                                                    labelClass = "label-primary";
 
-                                            case NotificationType.ProfilePhotoUpdated:
+                                                    break;
 
-                                                iconClass = "notification-icon-info";
-                                                icon = "notika-support";
-                                                typeText = "Profil Fotoğrafı";
-                                                labelClass = "label-info";
+                                                case NotificationType.SecurityAlert:
 
-                                                break;
+                                                    iconClass = "notification-icon-danger";
+                                                    icon = "notika-close";
+                                                    typeText = "Güvenlik";
+                                                    labelClass = "label-danger";
 
-                                            case NotificationType.NewUser:
+                                                    break;
 
-                                                iconClass = "notification-icon-success";
-                                                icon = "notika-support";
-                                                typeText = "Yeni Kullanıcı";
-                                                labelClass = "label-success";
+                                                case NotificationType.ProfilePhotoUpdated:
 
-                                                break;
-                                        }
+                                                    iconClass = "notification-icon-info";
+                                                    icon = "notika-support";
+                                                    typeText = "Profil Fotoğrafı";
+                                                    labelClass = "label-info";
 
-                                        <tr class="@rowClass notification-row"
-                                            data-search="@($"{item.Title} {item.Detail} {typeText}".ToLower())">
+                                                    break;
 
-                                            <!-- Seçim -->
-                                            <td>
-                                                <label>
-                                                    <input type="checkbox"
-                                                           class="i-checks notification-checkbox"
-                                                           value="@item.NotificationId" />
-                                                </label>
-                                            </td>
+                                                case NotificationType.NewUser:
 
-                                            <!-- İkon -->
-                                            <td>
-                                                <span class="notification-icon @iconClass">
+                                                    iconClass = "notification-icon-success";
+                                                    icon = "notika-support";
+                                                    typeText = "Yeni Kullanıcı";
+                                                    labelClass = "label-success";
 
-                                                    <i class="notika-icon @icon"></i>
+                                                    break;
+                                            }
 
-                                                </span>
-                                            </td>
+                                            <tr class="@rowClass notification-row"
+                                                data-search="@($"{item.Title} {item.Detail} {typeText}".ToLower())">
 
-                                            <!-- Başlık -->
-                                            <td>
+                                                <!-- Seçim -->
+                                                <td>
+                                                    <label>
 
-                                                <a asp-controller="Notification"
-                                                       asp-action="NotificationDetail"
-                                                       asp-route-id="@item.NotificationId"
-                                                       class="notification-link">
+                                                        <input type="checkbox"
+                                                               name="ids"
+                                                               value="@item.NotificationId"
+                                                               class="i-checks notification-checkbox" />
 
-                                                    <span class="notification-title">
+                                                    </label>
+                                                </td>
 
-                                                        @if (!item.IsRead)
-                                                        {
-                                                            <strong>
+                                                <!-- İkon -->
+                                                <td>
+
+                                                    <span class="notification-icon @iconClass">
+
+                                                        <i class="notika-icon @icon"></i>
+
+                                                    </span>
+
+                                                </td>
+
+                                                <!-- Başlık -->
+                                                <td>
+
+                                                    <a asp-controller="Notification"
+                                                           asp-action="NotificationDetail"
+                                                           asp-route-id="@item.NotificationId"
+                                                           class="notification-link">
+
+                                                        <span class="notification-title">
+
+                                                            @if (!item.IsRead)
+                                                            {
+                                                                <strong>
+                                                                    @item.Title
+                                                                </strong>
+                                                            }
+                                                            else
+                                                            {
                                                                 @item.Title
-                                                            </strong>
-                                                        }
-                                                        else
-                                                        {
-                                                            @item.Title
-                                                        }
+                                                            }
 
+                                                        </span>
+
+                                                    </a>
+
+                                                </td>
+
+                                                <!-- Bildirim Türü -->
+                                                <td>
+
+                                                    <span class="label @labelClass notification-type-label">
+                                                        @typeText
                                                     </span>
 
-                                                </a>
+                                                </td>
 
-                                            </td>
+                                                <!-- Açıklama -->
+                                                <td>
 
-                                            <!-- Bildirim Türü -->
-                                            <td>
+                                                    <a asp-controller="Notification"
+                                                           asp-action="NotificationDetail"
+                                                           asp-route-id="@item.NotificationId"
+                                                           class="notification-link">
 
-                                                <span class="label @labelClass notification-type-label">
-                                                    @typeText
-                                                </span>
+                                                        <span class="notification-preview">
+                                                            @notificationPreview
+                                                        </span>
 
-                                            </td>
+                                                    </a>
 
-                                            <!-- Açıklama -->
-                                            <td>
+                                                </td>
 
-                                                <a asp-controller="Notification"
-                                                       asp-action="NotificationDetail"
-                                                       asp-route-id="@item.NotificationId"
-                                                       class="notification-link">
+                                                <!-- Tarih -->
+                                                <td class="text-right notification-date">
 
-                                                    <span class="notification-preview">
-                                                        @notificationPreview
-                                                    </span>
+                                                    @if (item.CreatedDate.Date == DateTime.Today)
+                                                    {
+                                                        <span>
+                                                            Bugün @item.CreatedDate.ToString("HH:mm")
+                                                        </span>
+                                                    }
+                                                    else if (item.CreatedDate.Date ==
+                                                             DateTime.Today.AddDays(-1))
+                                                    {
+                                                        <span>
+                                                            Dün @item.CreatedDate.ToString("HH:mm")
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>
+                                                            @item.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                                                        </span>
+                                                    }
 
-                                                </a>
+                                                </td>
 
-                                            </td>
-                                          
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
 
-                                            <!-- Tarih -->
-                                            <td class="text-right notification-date">
+                                            <td colspan="6"
+                                                class="text-center notification-empty">
 
-                                                @if (item.CreatedDate.Date == DateTime.Today)
-                                                {
-                                                    <span>
-                                                        Bugün @item.CreatedDate.ToString("HH:mm")
-                                                    </span>
-                                                }
-                                                else if (item.CreatedDate.Date == DateTime.Today.AddDays(-1))
-                                                {
-                                                    <span>
-                                                        Dün @item.CreatedDate.ToString("HH:mm")
-                                                    </span>
-                                                }
-                                                else
-                                                {
-                                                    <span>
-                                                        @item.CreatedDate.ToString("dd.MM.yyyy HH:mm")
-                                                    </span>
-                                                }
+                                                <i class="notika-icon notika-alarm"></i>
+
+                                                Henüz bir bildiriminiz bulunmuyor.
 
                                             </td>
 
                                         </tr>
                                     }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="6"
-                                            class="text-center notification-empty">
 
-                                            <i class="notika-icon notika-alarm"></i>
+                                </tbody>
 
-                                            Henüz bir bildiriminiz bulunmuyor.
+                            </table>
 
-                                        </td>
-                                    </tr>
-                                }
+                        </div>
 
-                            </tbody>
-
-                        </table>
-
-                    </div>
+                    </form>
 
                 </div>
 
@@ -485,18 +506,6 @@
         </div>
     </div>
 </div>
-
-<form id="notificationActionForm"
-      method="post">
-
-    @Html.AntiForgeryToken()
-
-    <input type="hidden"
-           id="selectedNotificationIds"
-           name="notificationIds" />
-
-</form>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
@@ -509,25 +518,12 @@
         const selectAllButton =
             document.getElementById("selectAllButton");
 
-        const markAsReadButton =
-            document.getElementById("markAsReadButton");
-
-        const markAsUnreadButton =
-            document.getElementById("markAsUnreadButton");
-
-        const deleteSelectedButton =
-            document.getElementById("deleteSelectedButton");
-
-        const actionForm =
-            document.getElementById("notificationActionForm");
-
-        const selectedIdsInput =
-            document.getElementById("selectedNotificationIds");
-
         function filterNotifications() {
 
             const searchValue =
-                searchInput.value.toLocaleLowerCase("tr-TR").trim();
+                searchInput.value
+                    .toLocaleLowerCase("tr-TR")
+                    .trim();
 
             const rows =
                 document.querySelectorAll(".notification-row");
@@ -544,39 +540,6 @@
             });
         }
 
-        function getSelectedNotificationIds() {
-
-            return Array.from(
-                document.querySelectorAll(
-                    ".notification-checkbox:checked"
-                )
-            ).map(function (checkbox) {
-
-                return checkbox.value;
-
-            });
-        }
-
-        function submitNotificationAction(actionUrl) {
-
-            const selectedIds =
-                getSelectedNotificationIds();
-
-            if (selectedIds.length === 0) {
-
-                alert("Lütfen en az bir bildirim seçiniz.");
-                return;
-            }
-
-            selectedIdsInput.value =
-                selectedIds.join(",");
-
-            actionForm.action =
-                actionUrl;
-
-            actionForm.submit();
-        }
-
         searchButton.addEventListener(
             "click",
             filterNotifications
@@ -587,6 +550,7 @@
             function (event) {
 
                 if (event.key === "Enter") {
+                    event.preventDefault();
                     filterNotifications();
                 }
 
@@ -602,9 +566,7 @@
 
                 const visibleCheckboxes =
                     Array.from(
-                        document.querySelectorAll(
-                            ".notification-row"
-                        )
+                        document.querySelectorAll(".notification-row")
                     )
                     .filter(function (row) {
 
@@ -617,10 +579,18 @@
                             ".notification-checkbox"
                         );
 
+                    })
+                    .filter(function (checkbox) {
+
+                        return checkbox !== null;
+
                     });
 
+                if (visibleCheckboxes.length === 0) {
+                    return;
+                }
+
                 const allSelected =
-                    visibleCheckboxes.length > 0 &&
                     visibleCheckboxes.every(
                         function (checkbox) {
 
@@ -636,53 +606,11 @@
 
                     }
                 );
-            }
-        );
 
-        markAsReadButton.addEventListener(
-            "click",
-            function () {
-
-                submitNotificationAction(
-                    '@Url.Action("MarkSelectedAsRead", "Notification")'
-                );
-            }
-        );
-
-        markAsUnreadButton.addEventListener(
-            "click",
-            function () {
-
-                submitNotificationAction(
-                    '@Url.Action("MarkSelectedAsUnread", "Notification")'
-                );
-            }
-        );
-
-        deleteSelectedButton.addEventListener(
-            "click",
-            function () {
-
-                const selectedIds =
-                    getSelectedNotificationIds();
-
-                if (selectedIds.length === 0) {
-
-                    alert("Lütfen silmek istediğiniz bildirimleri seçiniz.");
-                    return;
-                }
-
-                const result = confirm(
-                    "Seçilen bildirimleri silmek istediğinize emin misiniz?"
-                );
-
-                if (!result) {
-                    return;
-                }
-
-                submitNotificationAction(
-                    '@Url.Action("DeleteSelected", "Notification")'
-                );
+                selectAllButton.title =
+                    allSelected
+                        ? "Tümünü Seç"
+                        : "Seçimi Kaldır";
             }
         );
 

@@ -122,5 +122,147 @@ namespace IdentityEmailApp.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-    }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAsUnRead(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            var notification = await _context.Notifications
+                .FirstOrDefaultAsync(x =>
+                    x.NotificationId == id &&
+                    x.AppUserId == user.Id);
+
+            if (notification == null)
+            {
+                return NotFound();
+            }
+
+            notification.IsRead = false;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkSelectedAsRead(List<int> ids)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            if(ids==null || !ids.Any())
+            {
+                TempData["ErrorMessage"] = "Lütfen en az bir bildirim seçiniz.";
+                return RedirectToAction("Index");
+            }
+
+            var notifications = await _context.Notifications.Where(x => ids.Contains(x.NotificationId) && x.AppUserId == user.Id).ToListAsync();
+
+            if(!notifications.Any())
+            {
+                TempData["ErrorMessage"] = "Seçilen bildirimler bulunamadı.";
+                return RedirectToAction("Index");
+            }
+
+            foreach(var notification in notifications)
+            {
+              
+                notification.IsRead= true;
+            }
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                $"{notifications.Count} bildirim okundu olarak işaretlendi.";
+
+            return RedirectToAction("Index");
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkSelectedAsUnRead(List<int> ids)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            if (ids == null || !ids.Any())
+            {
+                TempData["ErrorMessage"] = "Lütfen en az bir bildirim seçiniz.";
+                return RedirectToAction("Index");
+            }
+
+            var notifications = await _context.Notifications.Where(x => ids.Contains(x.NotificationId) && x.AppUserId == user.Id).ToListAsync();
+
+            if (!notifications.Any())
+            {
+                TempData["ErrorMessage"] = "Seçilen bildirimler bulunamadı.";
+                return RedirectToAction("Index");
+            }
+
+            foreach (var notification in notifications)
+            {
+
+                notification.IsRead = false;
+            }
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                $"{notifications.Count} bildirim okunmadı olarak işaretlendi.";
+
+            return RedirectToAction("Index");
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSelected(List<int> ids)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            if (ids == null || !ids.Any())
+            {
+                TempData["ErrorMessage"] = "Lütfen en az bir bildirim seçiniz.";
+                return RedirectToAction("Index");
+            }
+
+            var notifications = await _context.Notifications
+                .Where(x => ids.Contains(x.NotificationId) &&
+                            x.AppUserId == user.Id)
+                .ToListAsync();
+
+            if (!notifications.Any())
+            {
+                TempData["ErrorMessage"] = "Seçilen bildirimler bulunamadı.";
+                return RedirectToAction("Index");
+            }
+
+            _context.Notifications.RemoveRange(notifications);
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                $"{notifications.Count} bildirim başarıyla silindi.";
+
+            return RedirectToAction("Index");
+        }
+    } 
 }

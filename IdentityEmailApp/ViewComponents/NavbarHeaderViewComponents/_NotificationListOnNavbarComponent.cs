@@ -27,9 +27,8 @@ namespace IdentityEmailApp.ViewComponents.NavbarHeaderViewComponents
                 return View(new List<Notification>());
 
             var values = await _context.Notifications
-                .Where(x => x.AppUserId == user.Id)
+                .Where(x => x.AppUserId == user.Id && x.IsRead==false)
                 .OrderByDescending(x => x.CreatedDate)
-                .Take(5)
                 .ToListAsync();
 
             ViewBag.NotificationCount = values.Count(x => !x.IsRead);

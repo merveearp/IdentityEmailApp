@@ -21,7 +21,14 @@ builder.Services.AddDbContext<EmailContext>(options =>
 });
 
 builder.Services
-    .AddIdentity<AppUser, IdentityRole>()
+    .AddIdentity<AppUser, IdentityRole>(options =>
+    {
+        options.Password.RequiredLength = 8;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireDigit = true;
+        options.Password.RequireNonAlphanumeric = true;
+    })
     .AddEntityFrameworkStores<EmailContext>()
     .AddErrorDescriber<CustomErrorValidator>()
     .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(

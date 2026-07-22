@@ -3,8 +3,11 @@ using IdentityEmailApp.Enums;
 using IdentityEmailApp.Models.PasswordModels;
 using IdentityEmailApp.Services.Abstract;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Build.Tasks;
 using MimeKit;
 
 namespace IdentityEmailApp.Controllers
@@ -12,14 +15,16 @@ namespace IdentityEmailApp.Controllers
     public class PasswordController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly ISystemEventService _systemEventService;
 
-        public PasswordController(UserManager<AppUser> userManager, IConfiguration configuration, ISystemEventService systemEventService)
+        public PasswordController(UserManager<AppUser> userManager, IConfiguration configuration, ISystemEventService systemEventService, SignInManager<AppUser> signInManager)
         {
             _userManager = userManager;
             _configuration = configuration;
             _systemEventService = systemEventService;
+            _signInManager = signInManager;
         }
 
         [HttpGet]
@@ -312,6 +317,74 @@ namespace IdentityEmailApp.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangePassword()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByIdAsync(model.UserId);
+
+            var isCurrentPassword =
+               await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
+
+            if(!isCurrentPassword)
+            {
+                ModelState.AddModelError(nameof(model.CurrentPassword), "Mevcut Şifrenizi yanlış girdiniz.Lütfen Kontrol Ediniz.");
+                return View(model);
+            }
+
+            if(model.NewPassword == model.CurrentPassword)
+            {
+                ModelState.AddModelError(string.Empty, "Mevcut şifreniz yeni şifrenizle aynı olamaz");
+                return View(model);
+            }
+
+            if(model.NewPassword != model.ConfirmNewPassword)
+            {
+                return View(model);
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(
+                        nameof(model.NewPassword),
+                        error.Description
+                    );
+                }
+
+                return View(model);
+            }
+
+
+            await _signInManager.SignOutAsync();
+
+            return RedirectToAction(nameof(PasswordChanged));
+
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> PasswordChanged()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            await _systemEventService.CreateAsync(user, NotificationType.PasswordChanged);
+            return View();
         }
 
 

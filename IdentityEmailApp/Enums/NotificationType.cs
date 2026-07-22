@@ -10,6 +10,7 @@
         PasswordChanged = 5,
         PasswordResetRequested = 6,
 
+
         // Profil
         ProfileUpdated = 7,
         ProfilePhotoUpdated = 8,
@@ -28,6 +29,8 @@
         NewUser = 13,
 
         // Bilgilendirme
-        WelcomeTip = 14
+        WelcomeTip = 14,
+
+        
     }
 }

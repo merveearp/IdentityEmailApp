@@ -110,5 +110,15 @@ namespace IdentityEmailApp.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+
+            return RedirectToAction("SignIn", "Login");
+        }
+
     }
 }

@@ -3,6 +3,151 @@
 *@
 
 <style>
+
+    .navbar-user-item {
+        position: relative;
+        margin-left: 8px;
+    }
+
+    .navbar-user-profile {
+        display: flex !important;
+        align-items: center;
+        gap: 9px;
+        min-height: 58px;
+        padding: 7px 12px !important;
+        color: #ffffff !important;
+        text-decoration: none !important;
+        border-radius: 6px;
+        transition: background-color 0.2s ease;
+    }
+
+        .navbar-user-profile:hover,
+        .navbar-user-profile:focus {
+            background-color: rgba(255, 255, 255, 0.10) !important;
+        }
+
+    .navbar-user-image {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.85);
+    }
+
+    .navbar-user-info {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .navbar-user-name {
+        max-width: 145px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .navbar-user-title {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 3px;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 11px;
+    }
+
+    /* Dropdown kutusu */
+    .navbar-user-dropdown {
+        right: 0 !important;
+        left: auto !important;
+        width: 225px;
+        min-width: 225px;
+        margin-top: 0;
+        padding: 8px;
+        border: 0;
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 10px 30px rgba(34, 46, 60, 0.18);
+    }
+
+        /* Tema kaynaklı büyük yazıları ezmek için */
+        .navbar-user-dropdown > li > a,
+        .navbar-user-dropdown-link {
+            display: flex !important;
+            align-items: center;
+            gap: 11px;
+            width: 100%;
+            min-height: 42px;
+            padding: 10px 12px !important;
+            margin: 0;
+            border: 0;
+            border-radius: 7px;
+            background: transparent;
+            color: #444444 !important;
+            font-size: 14px !important;
+            font-weight: 400;
+            line-height: 20px !important;
+            text-align: left;
+            text-decoration: none !important;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+            .navbar-user-dropdown > li > a:hover,
+            .navbar-user-dropdown > li > a:focus,
+            .navbar-user-dropdown-link:hover,
+            .navbar-user-dropdown-link:focus {
+                background-color: #f0faf7 !important;
+                color: #00a982 !important;
+            }
+
+            .navbar-user-dropdown-link i {
+                width: 18px;
+                color: #6f7b87;
+                font-size: 15px !important;
+                text-align: center;
+            }
+
+            .navbar-user-dropdown-link:hover i {
+                color: #00a982;
+            }
+
+        .navbar-user-dropdown .divider {
+            height: 1px;
+            margin: 7px 4px;
+            background-color: #eeeeee;
+        }
+
+    /* Çıkış formu ve butonu */
+    .navbar-dropdown-logout-form {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar-dropdown-logout {
+        appearance: none;
+        -webkit-appearance: none;
+        font-family: inherit;
+        color: #e25561 !important;
+    }
+
+        .navbar-dropdown-logout i {
+            color: #e25561;
+        }
+
+        .navbar-dropdown-logout:hover,
+        .navbar-dropdown-logout:focus {
+            background-color: #fff1f2 !important;
+            color: #d94350 !important;
+            outline: none;
+        }
+
     .navbar-top-item {
         position: relative;
     }
@@ -110,6 +255,7 @@
     .navbar-notification-menu {
         width: 360px;
     }
+
     .header-top-area,
 .header-top-menu,
 .notika-top-nav,
@@ -135,110 +281,123 @@
 
                 <div class="header-top-menu">
 
-                    <ul class="nav navbar-nav notika-top-nav">
+                   <ul class="nav navbar-nav notika-top-nav">
 
-                        <!-- Arama -->
-                        <li class="nav-item dropdown navbar-top-item">
+    <!-- Arama -->
+    <li class="nav-item dropdown navbar-top-item">
+
+        <a href="#"
+           data-toggle="dropdown"
+           role="button"
+           aria-expanded="false"
+           class="nav-link dropdown-toggle navbar-top-trigger">
+
+            <span>
+                <i class="notika-icon notika-search"></i>
+            </span>
+
+        </a>
+
+        <div role="menu"
+             class="dropdown-menu search-dd animated flipInX">
+
+            <div class="search-input">
+                <i class="notika-icon notika-left-arrow"></i>
+
+                <input type="text"
+                       placeholder="Arama yapın..." />
+            </div>
+
+        </div>
+
+    </li>
+
+    <!-- Mesaj -->
+    @await Component.InvokeAsync("_MessageListOnNavbarComponent")
+
+    <!-- Bildirim -->
+    @await Component.InvokeAsync("_NotificationListOnNavbarComponent")
+                        <li class="nav-item dropdown navbar-user-item">
 
                             <a href="#"
+                                   class="navbar-user-profile dropdown-toggle"
                                    data-toggle="dropdown"
                                    role="button"
-                                   aria-expanded="false"
-                                   class="nav-link dropdown-toggle navbar-top-trigger">
+                                   aria-haspopup="true"
+                                   aria-expanded="false">
 
-                                <span>
-                                    <i class="notika-icon notika-search"></i>
+                                <img class="navbar-user-image"
+                                     src="@(string.IsNullOrEmpty(ViewBag.ImageUrl)
+                                                              ? "/images/profile/default-user.png"
+                                                              : ViewBag.ImageUrl)"
+                                     alt="@ViewBag.FullName" />
+
+                                <span class="navbar-user-info">
+                                    <span class="navbar-user-name">
+                                        @ViewBag.FullName
+                                    </span>
+
+                                    <span class="navbar-user-title">
+                                        Hesabım
+                                        <i class="fa fa-angle-down"></i>
+                                    </span>
                                 </span>
-
                             </a>
 
-                            <div role="menu"
-                                 class="dropdown-menu search-dd animated flipInX">
+                            <ul class="dropdown-menu navbar-user-dropdown">
 
-                                <div class="search-input">
-                                    <i class="notika-icon notika-left-arrow"></i>
-                                    <input type="text"
-                                           placeholder="Arama yapın..." />
-                                </div>
+                                <li>
+                                    <a asp-controller="Profile"
+                                           asp-action="Index"
+                                           class="navbar-user-dropdown-link">
+                                        <i class="fa fa-user"></i>
+                                        <span>Profilim</span>
+                                    </a>
+                                </li>
 
-                            </div>
+                                <li>
+                                    <a asp-controller="Profile"
+                                           asp-action="EditProfile"
+                                           class="navbar-user-dropdown-link">
+                                        <i class="fa fa-pencil"></i>
+                                        <span>Profili Düzenle</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a asp-controller="Password"
+                                           asp-action="ChangePassword"
+                                           class="navbar-user-dropdown-link">
+                                        <i class="fa fa-lock"></i>
+                                        <span>Şifre Değiştir</span>
+                                    </a>
+                                </li>
+
+                                <li class="divider"></li>
+
+                                <li>
+                                    <form asp-controller="Login"
+                                          asp-action="Logout"
+                                          method="post"
+                                          class="navbar-dropdown-logout-form">
+
+                                        <button type="submit"
+                                                class="navbar-user-dropdown-link navbar-dropdown-logout">
+                                            <i class="fa fa-sign-out"></i>
+                                            <span>Çıkış Yap</span>
+                                        </button>
+
+                                    </form>
+                                </li>
+
+                            </ul>
                         </li>
 
-                        <!-- Mesaj -->
-                     @await Component.InvokeAsync("_MessageListOnNavbarComponent")
-
-                        <!-- Bildirim -->
-                     
-                     @await Component.InvokeAsync("_NotificationListOnNavbarComponent")
-
-                        <!-- Chat -->
-                        <li class="nav-item dropdown navbar-top-item">
-
-                            <a href="#"
-                                   data-toggle="dropdown"
-                                   role="button"
-                                   aria-expanded="false"
-                                   class="nav-link dropdown-toggle navbar-top-trigger">
-
-                                <span>
-                                    <i class="notika-icon notika-chat"></i>
-                                </span>
-
-                            </a>
-
-                            <div role="menu"
-                                 class="dropdown-menu message-dd chat-dd animated zoomIn">
-
-                                <div class="hd-mg-tt">
-                                    <h2>Sohbet</h2>
-                                </div>
-
-                                <div class="search-people">
-                                    <i class="notika-icon notika-left-arrow"></i>
-
-                                    <input type="text"
-                                           placeholder="Kişi ara..." />
-                                </div>
-
-                                <div class="hd-message-info">
-
-                                    <a href="#">
-                                        <div class="hd-message-sn">
-
-                                            <div class="hd-message-img chat-img">
-
-                                                <img src="/notika-master/notika/green-horizotal/img/post/1.jpg"
-                                                     alt="Kullanıcı" />
-
-                                                <div class="chat-avaible">
-                                                    <i class="notika-icon notika-dot"></i>
-                                                </div>
-
-                                            </div>
-
-                                            <div class="hd-mg-ctn">
-                                                <h3>David Belle</h3>
-                                                <p>Çevrim içi</p>
-                                            </div>
-
-                                        </div>
-                                    </a>
-
-                                </div>
-
-                                <div class="hd-mg-va">
-                                    <a href="#">
-                                        Tüm Sohbetleri Görüntüle
-                                    </a>
-                                </div>
-
-                            </div>
-                        </li>
-
-                    </ul>
-
+</ul>
                 </div>
             </div>
+
+            
 
         </div>
     </div>
