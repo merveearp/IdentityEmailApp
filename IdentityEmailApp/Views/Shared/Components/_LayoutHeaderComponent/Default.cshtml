@@ -262,6 +262,165 @@
 .notika-top-nav > li {
     overflow: visible !important;
 }
+
+    /* =========================================
+       NOTIKA UYGULAMALAR MENÜSÜ
+    ========================================= */
+
+    .notika-apps-item {
+        position: relative;
+    }
+
+    .notika-apps-trigger {
+        width: 48px;
+        height: 48px;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        padding: 0 !important;
+        margin-right: 8px;
+        border-radius: 50%;
+        transition: background-color 0.2s ease;
+    }
+
+        .notika-apps-trigger:hover,
+        .notika-apps-item.open .notika-apps-trigger {
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+
+    /* 9 noktalı ikon */
+    .notika-apps-grid {
+        width: 20px;
+        height: 20px;
+        display: grid;
+        grid-template-columns: repeat(3, 4px);
+        grid-template-rows: repeat(3, 4px);
+        gap: 4px;
+        justify-content: center;
+        align-content: center;
+    }
+
+        .notika-apps-grid span {
+            width: 4px;
+            height: 4px;
+            display: block;
+            background-color: #ffffff;
+            border-radius: 50%;
+        }
+
+    /* Açılan uygulama kutusu */
+    .notika-apps-dropdown {
+        width: 330px;
+        padding: 0;
+        margin-top: 12px;
+        right: 0;
+        left: auto;
+        border: none;
+        border-radius: 16px;
+        background-color: #ffffff;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+
+    .notika-apps-header {
+        padding: 18px 20px 14px;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+        .notika-apps-header h4 {
+            margin: 0 0 4px;
+            color: #222222;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .notika-apps-header span {
+            color: #888888;
+            font-size: 12px;
+        }
+
+    .notika-apps-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        padding: 14px;
+    }
+
+    .notika-app-card {
+        min-height: 92px;
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 10px 5px !important;
+        color: #444444 !important;
+        text-align: center;
+        text-decoration: none !important;
+        border-radius: 12px;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+        .notika-app-card:hover {
+            background-color: #f5f7fa !important;
+            transform: translateY(-2px);
+        }
+
+        .notika-app-card > span:last-child {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+    .notika-app-icon {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-size: 20px;
+    }
+
+    .mail-app {
+        color: #ffffff;
+        background-color: #00c292;
+    }
+
+    .calendar-app {
+        color: #ffffff;
+        background-color: #4285f4;
+    }
+
+    .contact-app {
+        color: #ffffff;
+        background-color: #7e57c2;
+    }
+
+    .file-app {
+        color: #ffffff;
+        background-color: #f4b400;
+    }
+
+    .task-app {
+        color: #ffffff;
+        background-color: #ef5350;
+    }
+
+    .dashboard-app {
+        color: #ffffff;
+        background-color: #26a69a;
+    }
+
+    /* Mobil */
+    @@media (max-width: 767px) {
+        .notika-apps-dropdown {
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            left: 10px;
+            width: auto;
+        }
+    }
 </style>
 
 <div class="header-top-area">
@@ -317,7 +476,9 @@
 
     <!-- Bildirim -->
     @await Component.InvokeAsync("_NotificationListOnNavbarComponent")
-                        <li class="nav-item dropdown navbar-user-item">
+                      
+    
+    <li class="nav-item dropdown navbar-user-item">
 
                             <a href="#"
                                    class="navbar-user-profile dropdown-toggle"
@@ -393,6 +554,107 @@
                             </ul>
                         </li>
 
+
+                        <!-- Notika Uygulamaları -->
+                        <li class="nav-item dropdown notika-apps-item">
+
+                            <a href="#"
+                                   class="nav-link dropdown-toggle notika-apps-trigger"
+                                   data-toggle="dropdown"
+                                   role="button"
+                                   aria-haspopup="true"
+                                   aria-expanded="false"
+                                   title="Notika Uygulamaları">
+
+                                <span class="notika-apps-grid">
+                                    @for (int i = 0; i < 9; i++)
+                                    {
+                                        <span></span>
+                                    }
+                                </span>
+
+                            </a>
+
+                            <div class="dropdown-menu notika-apps-dropdown">
+
+                                <div class="notika-apps-header">
+                                    <h4>Notika Uygulamaları</h4>
+                                    <span>Diğer servislere geçiş yapın</span>
+                                </div>
+
+                                <div class="notika-apps-list">
+
+                                    <a asp-controller="Message"
+                                           asp-action="Inbox"
+                                           class="notika-app-card">
+
+                                        <span class="notika-app-icon mail-app">
+                                            <i class="fa fa-envelope"></i>
+                                        </span>
+
+                                        <span>Mail</span>
+                                    </a>
+
+                                    <a asp-controller="Calendar"
+                                           asp-action="Index"
+                                           class="notika-app-card">
+
+                                        <span class="notika-app-icon calendar-app">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+
+                                        <span>Takvim</span>
+                                    </a>
+
+                                    <a asp-controller="Contact"
+                                           asp-action="Index"
+                                           class="notika-app-card">
+
+                                        <span class="notika-app-icon contact-app">
+                                            <i class="fa fa-address-book"></i>
+                                        </span>
+
+                                        <span>Kişiler</span>
+                                    </a>
+
+                                    <a asp-controller="File"
+                                           asp-action="Index"
+                                           class="notika-app-card">
+
+                                        <span class="notika-app-icon file-app">
+                                            <i class="fa fa-folder"></i>
+                                        </span>
+
+                                        <span>Dosyalar</span>
+                                    </a>
+
+                                    <a asp-controller="Task"
+                                           asp-action="Index"
+                                           class="notika-app-card">
+
+                                        <span class="notika-app-icon task-app">
+                                            <i class="fa fa-check-square-o"></i>
+                                        </span>
+
+                                        <span>Görevler</span>
+                                    </a>
+
+                                    <a asp-controller="Dashboard"
+                                           asp-action="Index"
+                                           class="notika-app-card">
+
+                                        <span class="notika-app-icon dashboard-app">
+                                            <i class="fa fa-bar-chart"></i>
+                                        </span>
+
+                                        <span>Panel</span>
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </li>
 </ul>
                 </div>
             </div>

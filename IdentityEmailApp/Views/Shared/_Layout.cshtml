@@ -4,6 +4,136 @@
 @await Component.InvokeAsync("_LayoutHeadComponent")
 
 <body>
+<style>
+            .page-loader {
+                position: fixed;
+                inset: 0;
+                z-index: 99999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #ffffff;
+                opacity: 1;
+                visibility: visible;
+                transition: opacity 0.45s ease, visibility 0.45s ease;
+            }
+
+                .page-loader.loader-hidden {
+                    opacity: 0;
+                    visibility: hidden;
+                    pointer-events: none;
+                }
+
+            /* Üst progress alanı */
+            .loader-progress {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background-color: #edf1f0;
+                overflow: hidden;
+            }
+
+            .loader-progress-bar {
+                width: 0;
+                height: 100%;
+                background-color: #00c292;
+                animation: loaderProgress 1.4s ease-in-out forwards;
+            }
+
+            /* Orta alan */
+            .loader-content {
+                text-align: center;
+                padding: 30px;
+            }
+
+            .loader-logo {
+                width: 125px;
+                height: 125px;
+                margin: 0 auto 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 30px;
+                background: linear-gradient( 135deg, #00c292, #00a983 );
+                color: #ffffff;
+                font-size: 58px;
+                box-shadow: 0 18px 45px rgba(0, 194, 146, 0.22);
+                animation: loaderPulse 1.2s ease-in-out infinite alternate;
+            }
+
+            .loader-content h1 {
+                margin: 0;
+                font-family: "Montserrat", sans-serif;
+                font-size: 38px;
+                font-weight: 800;
+                color: #333333;
+                letter-spacing: 1px;
+            }
+
+                .loader-content h1 span {
+                    display: block;
+                    margin-top: 7px;
+                    color: #00c292;
+                    font-size: 14px;
+                    font-weight: 500;
+                    letter-spacing: 5px;
+                }
+
+            
+
+            /* Progress animasyonu */
+            @@keyframes loaderProgress {
+                0% {
+                    width: 0;
+                }
+
+                30% {
+                    width: 35%;
+                }
+
+                70% {
+                    width: 75%;
+                }
+
+                100% {
+                    width: 100%;
+                }
+            }
+
+            /* Logo animasyonu */
+            @@keyframes loaderPulse {
+                from {
+                    transform: scale(1);
+                }
+
+                to {
+                    transform: scale(1.05);
+                }
+            }
+</style>
+
+    <div id="pageLoader" class="page-loader">
+
+        <div class="loader-progress">
+            <div class="loader-progress-bar"></div>
+        </div>
+
+        <div class="loader-content">
+
+            <div class="loader-logo">
+                <i class="fa fa-envelope"></i>
+            </div>
+
+            <h1>
+                NOTIKA
+                <span>EMAIL APP</span>
+            </h1>
+
+        </div>
+
+    </div>
  
     @await Component.InvokeAsync("_LayoutHeaderComponent")
 
@@ -26,6 +156,21 @@
     <!-- End Footer area-->
 
     @await Component.InvokeAsync("_LayoutScriptsComponent")
+    <script>
+            window.addEventListener("load", function () {
+
+                const loader = document.getElementById("pageLoader");
+
+                if (!loader) {
+                    return;
+                }
+
+                setTimeout(function () {
+                    loader.classList.add("loader-hidden");
+                }, 900);
+
+            });
+    </script>
 
 </body>
 

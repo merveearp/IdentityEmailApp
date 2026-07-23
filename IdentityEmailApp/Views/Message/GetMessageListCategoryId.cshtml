@@ -1,0 +1,294 @@
+﻿@using System.Text.RegularExpressions
+@using IdentityEmailApp.Models.MessageModels
+@model List<MessageWithSenderInfoModel>
+@{
+    ViewData["Title"] = "GetMessageListCategoryId";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@await Component.InvokeAsync("_LayoutBreadcombComponent")
+
+<style>
+    .unread-message {
+        background-color: #f2f6fc;
+    }
+
+        .unread-message td {
+            font-weight: 600;
+            color: #202124;
+        }
+
+    .read-message {
+        background-color: #ffffff;
+    }
+
+        .read-message td {
+            font-weight: 400;
+            color: #666;
+        }
+
+    .sender-link,
+    .message-link {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+    }
+
+        .sender-link:hover,
+        .message-link:hover {
+            color: #00c292;
+            text-decoration: none;
+        }
+
+    .sender-email {
+        display: block;
+        margin-top: 3px;
+        font-size: 12px;
+        color: #999;
+        font-weight: 400;
+    }
+
+    .message-preview {
+        display: block;
+        margin-top: 4px;
+        color: #777;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    .unread-message .message-preview {
+        color: #444;
+    }
+
+    .mail-date {
+        white-space: nowrap;
+    }
+</style>
+
+<div class="inbox-area">
+    <div class="container">
+        <div class="row">
+
+            @await Component.InvokeAsync("_MessageSidebarComponent")
+
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                <div class="inbox-text-list sm-res-mg-t-30">
+
+                    <div class="form-group">
+                        <div class="nk-int-st search-input search-overt">
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Aranacak kelimeyi giriniz..." />
+
+                            <button type="button" class="btn search-ib">
+                                Ara
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="inbox-btn-st-ls btn-toolbar">
+                        <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
+
+                            <a asp-controller="Message"
+                                   asp-action="Inbox"
+                                   class="btn btn-default btn-sm">
+                                <i class="notika-icon notika-refresh"></i>
+                                Yenile
+                            </a>
+
+                            <button type="button" class="btn btn-default btn-sm">
+                                <i class="notika-icon notika-next"></i>
+                            </button>
+
+                            <button type="button" class="btn btn-default btn-sm">
+                                <i class="notika-icon notika-down-arrow"></i>
+                            </button>
+
+                            <button type="button" class="btn btn-default btn-sm">
+                                <i class="notika-icon notika-trash"></i>
+                            </button>
+
+                            <button type="button" class="btn btn-default btn-sm">
+                                <i class="notika-icon notika-checked"></i>
+                            </button>
+
+                            <button type="button" class="btn btn-default btn-sm">
+                                <i class="notika-icon notika-promos"></i>
+                            </button>
+
+                        </div>
+
+                        <div class="btn-group ib-btn-gp active-hook nk-act nk-email-inbox">
+
+                            <button type="button" class="btn btn-default btn-sm">
+                                <i class="notika-icon notika-left-arrow"></i>
+                            </button>
+
+                            <button type="button" class="btn btn-default btn-sm">
+                                <i class="notika-icon notika-right-arrow"></i>
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <div class="basic-tb-hd">
+                                <h2>
+                                    
+                                    
+                                    @if (string.IsNullOrEmpty(@ViewBag.CategoryName))
+                                    {
+                                        <span class="label label-default">
+                                            Kategori Yok
+                                        </span>
+                                    }
+                                    else if (ViewBag.CategoryName == "Eğitim")
+                                    {
+                                        <span class="label label-info">
+                                            @ViewBag.CategoryName Mesajları
+                                        </span>
+                                    }
+                                    else if (ViewBag.CategoryName == "Sosyal")
+                                    {
+                                        <span class="label label-success">
+                                            @ViewBag.CategoryName Mesajları
+                                        </span>
+                                    }
+                                    else if (ViewBag.CategoryName == "Kampanyalar")
+                                    {
+                                        <span class="label label-warning">
+                                            @ViewBag.CategoryName Mesajları
+                                        </span>
+                                    }
+                                    else if (ViewBag.CategoryName == "Finans")
+                                    {
+                                        <span class="label label-primary">
+                                            @ViewBag.CategoryName Mesajları
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="label label-default">
+                                            @ViewBag.CategoryName Mesajları
+                                        </span>
+                                    }
+                                   
+                                </h2>
+
+                                <p>
+                                    @ViewBag.CategoryName kategorisindeki mesajlarınız listeleniyor.
+                                </p>
+
+                               
+                            </div>
+                            <thead>
+                                <tr>
+                                    <th>Seç</th>
+                                    <th>Gönderen</th>
+                                   
+                                    <th>Mesaj</th>
+                                    <th class="text-right">Tarih</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        var rowClass = item.IsRead
+                                            ? "read-message"
+                                            : "unread-message";
+
+                                        var plainText = Regex.Replace(item.MessageDetail ?? "", "<.*?>", "");
+
+                                        var messagePreview =
+                                            string.IsNullOrWhiteSpace(plainText)
+                                                ? "Mesaj içeriği bulunmuyor."
+                                                : plainText.Length > 40
+                                                    ? plainText.Substring(0, 40) + "..."
+                                                    : plainText;
+
+                                        <tr class="@rowClass">
+
+                                            <td>
+                                                <label>
+                                                    <input type="checkbox"
+                                                           class="i-checks"
+                                                           value="@item.MessageId" />
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                <a asp-controller="Message"
+                                                       asp-action="MessageDetail"
+                                                       asp-route-id="@item.MessageId"
+                                                       class="sender-link">
+
+                                                    @item.SenderName @item.SenderSurname
+
+                                                    <span class="sender-email">
+                                                        @item.SenderEmail
+                                                    </span>
+                                                </a>
+                                            </td>
+
+
+                                            <td>
+                                                <a asp-controller="Message"
+                                                       asp-action="MessageDetail"
+                                                       asp-route-id="@item.MessageId"
+                                                       class="message-link">
+
+                                                    <strong>
+                                                        Konu: @item.Subject
+                                                    </strong>
+
+                                                    <span class="message-preview">
+                                                        @messagePreview
+                                                    </span>
+                                                </a>
+                                            </td>
+
+                                            <td class="text-right mail-date">
+                                                @if (item.SendDate.Date == DateTime.Today)
+                                                {
+                                                    <span>Bugün @item.SendDate.ToString("HH:mm")</span>
+                                                }
+                                                else if (item.SendDate.Date == DateTime.Today.AddDays(-1))
+                                                {
+                                                    <span>Dün @item.SendDate.ToString("HH:mm")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@item.SendDate.ToString("dd.MM.yyyy HH:mm")</span>
+                                                }
+                                            </td>
+
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5"
+                                            class="text-center"
+                                            style="padding: 30px;">
+                                            Gelen kutunuzda mesaj bulunmuyor.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

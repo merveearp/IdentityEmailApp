@@ -197,5 +197,58 @@ namespace IdentityEmailApp.Controllers
                 Value = x.CategoryId.ToString()
             }).ToList();
         }
+    
+        public async Task<IActionResult> GetMessageListCategoryId(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            var messageCategory = await _context.Categories.FirstOrDefaultAsync(x => x.CategoryId == id);
+
+            if (messageCategory == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.CategoryName = messageCategory.CategoryName;
+
+
+            var values = await (
+                from m in _context.Messages
+                join u in _context.Users
+                    on m.SenderEmail equals u.Email into userGroup
+                from sender in userGroup.DefaultIfEmpty()
+
+                join c in _context.Categories
+                on m.CategoryId equals c.CategoryId into catgeoryGroup
+                from category in catgeoryGroup.DefaultIfEmpty()
+
+
+                where m.ReceiverEmail == user.Email && m.CategoryId ==id
+
+                
+                select new MessageWithSenderInfoModel
+                {
+                    MessageId = m.MessageId,
+                    MessageDetail = m.MessageDetail,
+                    Subject = m.Subject,
+                    SendDate = m.SendDate,
+                    SenderEmail = m.SenderEmail,
+                    SenderName = sender != null ? sender.Name : "Bilinmeyen",
+                    SenderSurname = sender != null ? sender.Surname : "Kullanıcı",
+                    IsRead = m.IsRead,
+                    CategoryName = category.CategoryName
+
+                }).ToListAsync();
+
+
+
+            return View(values);
+        }
+    
     }
 }
