@@ -1,12 +1,11 @@
 ﻿@using System.Text.RegularExpressions
-@using IdentityEmailApp.Models.MessageModels
-@model List<MessageWithSenderInfoModel>
 
+@model List<Message>
 @{
-    ViewData["Title"] = "Gelen Kutusu";
+    ViewData["Title"] = "Yıldızlı Mesajlar";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
+
 
 <style>
 
@@ -176,7 +175,9 @@
                             </thead>
 
                             <tbody>
-                                @foreach (var item in Model)
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var item in Model)
                                     {
                                         var rowClass = item.IsRead
                                             ? "read-message"
@@ -201,11 +202,9 @@
                                                            value="@item.MessageId" />
                                                 </label>
 
-                                                <!-- Yıldız -->
                                                 <a href="javascript:void(0)"
                                                        class="mail-star"
-                                                       data-id="@item.MessageId"
-                                                       title="Yıldızla">
+                                                       data-id="@item.MessageId">
 
                                                     @if (item.IsStarred)
                                                     {
@@ -218,74 +217,70 @@
 
                                                 </a>
 
-                                                <!-- Spam -->
-                                                <a href="javascript:void(0)"
-                                                       class="mail-spam"
-                                                       data-id="@item.MessageId"
-                                                       title="Spam olarak işaretle">
-
-                                                    @if (item.IsSpam)
-                                                    {
-                                                        <i class="fa fa-flag spam-active"></i>
-                                                    }
-                                                    else
-                                                    {
-                                                        <i class="fa fa-flag-o"></i>
-                                                    }
-
-                                                </a>
-
                                             </td>
 
                                             <td>
                                                 <a asp-controller="Message"
                                                        asp-action="MessageDetail"
                                                        asp-route-id="@item.MessageId"
-                                                       class="sender-link">
+                                                       class="message-link">
 
-                                                    @item.SenderName @item.SenderSurname
+                                                    @if (item.SenderEmail == User.Identity.Name)
+                                                    {
+                                                        <small class="text-muted">📤 Gönderilen</small>
+                                                    }
+                                                    else
+                                                    {
+                                                        <small class="text-muted">📥 Gelen</small>
+                                                    }
 
-                                                    <span class="sender-email">
-                                                        @item.SenderEmail
+                                                  
+                                                    <strong>
+                                                        Konu: @item.Subject
+                                                    </strong>
+
+                                                    <span class="message-preview">
+                                                        @messagePreview
                                                     </span>
+
                                                 </a>
                                             </td>
 
                                             <td>
-                                                @if (string.IsNullOrEmpty(item.CategoryName))
+                                                @if (string.IsNullOrEmpty(item.Category.CategoryName))
                                                 {
                                                     <span class="label label-default">
                                                         Kategori Yok
                                                     </span>
                                                 }
-                                                else if (item.CategoryName == "Eğitim")
+                                                else if (item.Category.CategoryName == "Eğitim")
                                                 {
                                                     <span class="label label-info">
-                                                        @item.CategoryName
+                                                        @item.Category.CategoryName
                                                     </span>
                                                 }
-                                                else if (item.CategoryName == "Sosyal")
+                                                else if (item.Category.CategoryName == "Sosyal")
                                                 {
                                                     <span class="label label-success">
-                                                        @item.CategoryName
+                                                        @item.Category.CategoryName
                                                     </span>
                                                 }
-                                                else if (item.CategoryName == "Kampanyalar")
+                                                else if (item.Category.CategoryName == "Kampanyalar")
                                                 {
                                                     <span class="label label-warning">
-                                                        @item.CategoryName
+                                                        @item.Category.CategoryName
                                                     </span>
                                                 }
-                                                else if (item.CategoryName == "Finans")
+                                                else if (item.Category.CategoryName == "Finans")
                                                 {
                                                     <span class="label label-primary">
-                                                        @item.CategoryName
+                                                        @item.Category.CategoryName
                                                     </span>
                                                 }
                                                 else
                                                 {
                                                     <span class="label label-default">
-                                                        @item.CategoryName
+                                                        @item.Category.CategoryName
                                                     </span>
                                                 }
                                             </td>
@@ -346,7 +341,6 @@
     </div>
 </div>
 
-
 <script>
     $(document).on("click", ".mail-star", function () {
 
@@ -357,72 +351,32 @@
             url: "/Message/ToggleStar",
             type: "POST",
             data: { id: id },
+
             success: function () {
 
-                var icon = star.find("i");
+              
+                    star.closest("tr").fadeOut(300, function () {
 
-                if (icon.hasClass("fa-star")) {
-                    icon.removeClass("fa-star starred")
-                        .addClass("fa-star-o");
-                }
-                else {
-                    icon.removeClass("fa-star-o")
-                        .addClass("fa-star starred");
-                }
+        $(this).remove();
+
+        if ($("tbody tr").length === 0) {
+            $("tbody").html(`
+                <tr>
+                    <td colspan="5" class="text-center" style="padding:30px;">
+                        Yıldızlı mesajınız bulunmuyor.
+                    </td>
+                </tr>
+            `);
+        }
+
+    });
 
             },
+
             error: function () {
                 alert("Bir hata oluştu.");
             }
-        });
 
-    });
-</script>
-
-<script>
-    $(document).on("click", ".mail-spam", function () {
-
-        var spamButton = $(this);
-        var id = spamButton.data("id");
-
-        spamButton.css("pointer-events", "none");
-
-        $.ajax({
-            url: "/Message/ToggleSpam",
-            type: "POST",
-            data: { id: id },
-
-            success: function (response) {
-
-                if (response.isSpam) {
-
-                    spamButton.find("i")
-                        .removeClass("fa-flag-o")
-                        .addClass("fa-flag spam-active");
-
-                    spamButton.closest("tr").fadeOut(300, function () {
-
-                        $(this).remove();
-
-                        if ($("#messageTableBody tr").length === 0) {
-                            $("#messageTableBody").html(`
-                                <tr>
-                                    <td colspan="5"
-                                        class="text-center"
-                                        style="padding:30px;">
-                                        Gelen kutunuzda mesaj bulunmuyor.
-                                    </td>
-                                </tr>
-                            `);
-                        }
-                    });
-                }
-            },
-
-            error: function () {
-                spamButton.css("pointer-events", "auto");
-                alert("Mesaj spam olarak işaretlenirken bir hata oluştu.");
-            }
         });
 
     });

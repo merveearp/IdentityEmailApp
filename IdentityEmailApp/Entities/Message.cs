@@ -9,7 +9,10 @@
         public string MessageDetail { get; set; }
         public DateTime SendDate { get; set; }
         public bool IsRead { get; set; }
-
+        public bool IsStarred { get; set; }
+        public bool IsDraft { get; set; }
+        public bool IsSpam { get; set; }
+        public bool IsDeleted { get; set; }
 
 
         public int? CategoryId { get; set; }

@@ -32,10 +32,13 @@ namespace IdentityEmailApp.ViewComponents.MessageViewComponents
             }
 
             ViewBag.sendMessageCount = await _context.Messages
-                .CountAsync(x => x.SenderEmail == user.Email);
+                .CountAsync(x => x.SenderEmail == user.Email && !x.IsRead && !x.IsDraft);
             ViewBag.receivedMessageCount = await _context.Messages
-                .CountAsync(x => x.ReceiverEmail == user.Email);
-            ViewBag.notificationCount = await _context.Notifications.Where(x => x.IsRead == false && x.AppUserId==user.Id).CountAsync();
+                .CountAsync(x => x.ReceiverEmail == user.Email && !x.IsRead && !x.IsSpam && !x.IsDeleted );
+            ViewBag.notificationCount = await _context.Notifications.Where(x => !x.IsRead&& x.AppUserId==user.Id).CountAsync();
+            ViewBag.starredMessageCount = await _context.Messages.Where(x => x.IsStarred && x.SenderEmail == user.Email || x.ReceiverEmail == user.Email && !x.IsRead).CountAsync();
+            ViewBag.spamMessageCount = await _context.Messages.Where(x => x.IsSpam &&  x.ReceiverEmail == user.Email && !x.IsRead).CountAsync();
+
 
             return View();
         }

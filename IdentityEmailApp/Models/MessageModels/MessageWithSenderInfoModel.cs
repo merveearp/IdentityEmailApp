@@ -11,6 +11,8 @@
         public string SenderSurname { get; set; }
         public string? CategoryName { get; set; }
         public bool IsRead { get; set; }
+        public bool IsStarred { get; set; }
+        public bool IsSpam { get; set; }
 
     }
 }
