@@ -1,45 +1,128 @@
-﻿@model Message
+﻿@using IdentityEmailApp.Entities
+@model List<Message>
 
 @{
     ViewData["Title"] = "Mesaj Detayı";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    bool isReceiver = ViewBag.IsReceiver == true;
-}
-@{
-    var timeDiff = DateTime.Now - Model.SendDate;
-    string timeAgoText;
+    var currentUserEmail = ViewBag.CurrentUserEmail as string;
 
-    if (timeDiff.TotalMinutes < 1)
-    {
-        timeAgoText = "Şimdi";
-    }
-    else if (timeDiff.TotalMinutes < 60)
-    {
-        timeAgoText = $"{(int)timeDiff.TotalMinutes} dakika önce";
-    }
-    else if (timeDiff.TotalHours < 24)
-    {
-        timeAgoText = $"{(int)timeDiff.TotalHours} saat önce";
-    }
-    else if (timeDiff.TotalDays < 7)
-    {
-        timeAgoText = $"{(int)timeDiff.TotalDays} gün önce";
-    }
-    else
-    {
-        timeAgoText = Model.SendDate.ToString("dd.MM.yyyy HH:mm");
-    }
+    var firstMessage = Model.FirstOrDefault();
+    var lastMessage = Model.LastOrDefault();
+
+    var isReceiver = lastMessage?.ReceiverEmail == currentUserEmail;
 }
-@await Component.InvokeAsync("_LayoutBreadcombComponent")
 
 <style>
+
+    .message-action-area {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid #eeeeee;
+}
+
+.message-action-area form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.message-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 7px 13px;
+    border: 1px solid #dfe3e7;
+    border-radius: 18px;
+    background-color: #ffffff;
+    color: #555555;
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.message-action-button:hover,
+.message-action-button:focus {
+    background-color: #f5f7f9;
+    border-color: #cfd5da;
+    color: #222222;
+    text-decoration: none;
+}
+
+.message-action-button i {
+    font-size: 14px;
+}
+
+.back-action {
+    margin-right: auto;
+}
+
+.reply-action {
+    background-color: #00c292;
+    border-color: #00c292;
+    color: #ffffff;
+}
+
+.reply-action:hover,
+.reply-action:focus {
+    background-color: #00a983;
+    border-color: #00a983;
+    color: #ffffff;
+}
+
+.mail-star .starred,
+.mail-star:hover {
+    color: #f0ad4e;
+}
+
+.mail-spam .spam-active,
+.mail-spam:hover {
+    color: #d9534f;
+}
+
+.mail-trash:hover {
+    border-color: #d9534f;
+    color: #d9534f;
+}
+
+.reply-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+@@media (max-width: 767px) {
+    .message-action-area {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .message-action-area form {
+        display: block;
+    }
+
+    .message-action-button {
+        width: 100%;
+    }
+
+    .back-action {
+        margin-right: 0;
+    }
+}
     .message-detail-card {
-        background-color: #fff;
+        background-color: #ffffff;
         border: 1px solid #eeeeee;
-        border-radius: 6px;
+        border-radius: 8px;
         padding: 25px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     }
 
     .message-detail-header {
@@ -48,52 +131,89 @@
         justify-content: space-between;
         gap: 20px;
         padding-bottom: 18px;
+        margin-bottom: 20px;
         border-bottom: 1px solid #eeeeee;
     }
 
     .message-detail-title {
         margin: 0 0 8px 0;
-        color: #333;
+        color: #333333;
         font-size: 23px;
         font-weight: 600;
     }
 
     .message-detail-subject {
         margin: 0;
-        color: #666;
+        color: #666666;
         font-size: 15px;
     }
 
     .message-detail-date {
-        color: #999;
+        color: #999999;
         font-size: 13px;
         white-space: nowrap;
         text-align: right;
     }
 
+    .conversation-thread {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .conversation-message {
+        background-color: #ffffff;
+        border: 1px solid #e8e8e8;
+        border-radius: 7px;
+        padding: 0 20px;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+        .conversation-message:hover {
+            border-color: #d8d8d8;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .conversation-message.my-message {
+            border-left: 4px solid #00c292;
+            background-color: #fbfffd;
+        }
+
+        .conversation-message.received-message {
+            border-left: 4px solid #337ab7;
+            background-color: #fbfdff;
+        }
+
     .message-sender-area {
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 18px 0;
+        padding: 16px 0;
         border-bottom: 1px solid #eeeeee;
     }
 
     .message-avatar {
-        width: 45px;
-        height: 45px;
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
         border-radius: 50%;
         background-color: #00c292;
-        color: #fff;
+        color: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 18px;
         font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .received-message .message-avatar {
+        background-color: #337ab7;
     }
 
     .message-sender-info {
         flex: 1;
+        min-width: 0;
     }
 
         .message-sender-info p {
@@ -101,18 +221,19 @@
         }
 
     .message-email {
-        color: #777;
+        color: #777777;
         font-size: 13px;
+        word-break: break-word;
     }
 
     .message-category {
-        margin-top: 6px;
+        margin-top: 7px;
     }
 
     .message-content {
-        min-height: 180px;
-        padding: 25px 5px;
-        color: #444;
+        min-height: 90px;
+        padding: 22px 5px;
+        color: #444444;
         font-size: 15px;
         line-height: 1.8;
         white-space: pre-wrap;
@@ -125,8 +246,19 @@
             text-align: left !important;
         }
 
+        .message-content img {
+            max-width: 100%;
+            height: auto;
+        }
+
     .message-action-area {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 7px;
         padding-top: 20px;
+        margin-top: 22px;
         border-top: 1px solid #eeeeee;
     }
 
@@ -135,15 +267,23 @@
             margin: 0;
         }
 
+        .message-action-area .btn {
+            margin: 0;
+        }
+
     .back-inbox-button {
-        float: left;
+        margin-right: auto !important;
     }
 
     .mark-unread-button {
-        margin-right: 5px;
+        margin-right: 0;
     }
 
     @@media (max-width: 767px) {
+        .message-detail-card {
+            padding: 16px;
+        }
+
         .message-detail-header {
             display: block;
         }
@@ -151,19 +291,48 @@
         .message-detail-date {
             margin-top: 10px;
             text-align: left;
+            white-space: normal;
+        }
+
+        .conversation-message {
+            padding: 0 14px;
+        }
+
+        .message-sender-area {
+            align-items: flex-start;
+        }
+
+        .message-avatar {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            font-size: 15px;
+        }
+
+        .message-content {
+            padding: 18px 2px;
         }
 
         .message-action-area {
+            display: block;
             text-align: left !important;
         }
 
+            .message-action-area form,
+            .message-action-area .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 8px;
+            }
+
         .back-inbox-button {
             float: none;
-            display: block;
-            margin-bottom: 10px;
+            margin-right: 0 !important;
         }
     }
 </style>
+
+@await Component.InvokeAsync("_LayoutBreadcombComponent")
 
 <div class="inbox-area">
     <div class="container">
@@ -172,166 +341,456 @@
             @await Component.InvokeAsync("_MessageSidebarComponent")
 
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+
                 <div class="message-detail-card sm-res-mg-t-30">
 
-                    <div class="message-detail-header">
-
-                        <div>
-                            <h2 class="message-detail-title">
-                                Mesaj Detayı
-                            </h2>
-
-                            <p class="message-detail-subject">
-                                <strong>Konu:</strong> @Model.Subject
-                            </p>
+                    @if (firstMessage == null)
+                    {
+                        <div class="alert alert-warning">
+                            Bu ileti dizisinde gösterilecek mesaj bulunamadı.
                         </div>
-                        <div class="message-detail-date">
-                            <span>@timeAgoText</span>
-                        </div>
+                    }
+                    else
+                    {
+                        <!-- İleti dizisi başlığı -->
+                        <div class="message-detail-header">
 
-                    </div>
+                            <div>
+                                <h2 class="message-detail-title">
+                                    İleti Dizisi
+                                </h2>
 
-                    <div class="message-sender-area">
+                                <p class="message-detail-subject">
+                                    <strong>Konu:</strong>
+                                    @firstMessage.Subject
+                                </p>
+                            </div>
 
-                        <div class="message-avatar">
-                            @Model.SenderEmail?.Substring(0, 1).ToUpper()
-                        </div>
-
-                        <div class="message-sender-info">
-
-                            <p>
-                                <strong>Gönderen:</strong>
-                                @Model.SenderEmail
-                            </p>
-
-                            <p class="message-email">
-                                <strong>Alıcı:</strong>
-                                @Model.ReceiverEmail
-                            </p>
-
-                            <div class="message-category">
-                                @if (Model.Category == null)
-                                {
-                                    <span class="label label-default">
-                                        Kategori Yok
-                                    </span>
-                                }
-                                else if (Model.Category.CategoryName == "Eğitim")
-                                {
-                                    <span class="label label-info">
-                                        @Model.Category.CategoryName
-                                    </span>
-                                }
-                                else if (Model.Category.CategoryName == "Sosyal")
-                                {
-                                    <span class="label label-success">
-                                        @Model.Category.CategoryName
-                                    </span>
-                                }
-                                else if (Model.Category.CategoryName == "Kampanyalar")
-                                {
-                                    <span class="label label-warning">
-                                        @Model.Category.CategoryName
-                                    </span>
-                                }
-                                else if (Model.Category.CategoryName == "Finans")
-                                {
-                                    <span class="label label-primary">
-                                        @Model.Category.CategoryName
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="label label-default">
-                                        @Model.Category.CategoryName
-                                    </span>
-                                }
+                            <div class="message-detail-date">
+                                <span>
+                                    @Model.Count ileti
+                                </span>
                             </div>
 
                         </div>
 
-                    </div>
+                        <!-- Konuşmadaki mesajlar -->
+                        <div class="conversation-thread">
 
-                    <div class="message-content">
-                        <p>@Html.Raw(Model.MessageDetail)</p>
-                    </div>
+                            @foreach (var item in Model)
+                            {
+                                var isMyMessage =
+                                    item.SenderEmail == currentUserEmail;
 
-                    <div class="message-action-area text-right">
+                                var timeDiff = DateTime.Now - item.SendDate;
 
-                        <a asp-controller="Message"
-                               asp-action="@(isReceiver ? "Inbox" : "SendBox")"
-                               class="btn btn-default btn-sm back-inbox-button">
+                                string timeAgoText;
 
-                            <i class="fa fa-arrow-left"></i>
+                                if (timeDiff.TotalMinutes < 1)
+                                {
+                                    timeAgoText = "Şimdi";
+                                }
+                                else if (timeDiff.TotalMinutes < 60)
+                                {
+                                    timeAgoText =
+                                        $"{(int)timeDiff.TotalMinutes} dakika önce";
+                                }
+                                else if (timeDiff.TotalHours < 24)
+                                {
+                                    timeAgoText =
+                                        $"{(int)timeDiff.TotalHours} saat önce";
+                                }
+                                else if (timeDiff.TotalDays < 7)
+                                {
+                                    timeAgoText =
+                                        $"{(int)timeDiff.TotalDays} gün önce";
+                                }
+                                else
+                                {
+                                    timeAgoText =
+                                        item.SendDate.ToString("dd.MM.yyyy HH:mm");
+                                }
 
-                            @(isReceiver
-                                ? "Gelen Kutusuna Dön"
-                                : "Gönderilen Kutusuna Dön")
-                        </a>
+                                <div class="conversation-message
+                                    @(isMyMessage
+                                                ? "my-message"
+                                                : "received-message")">
 
-                        @if (isReceiver)
+                                    <div class="message-sender-area">
+
+                                        <div class="message-avatar">
+
+                                            @if (!string.IsNullOrWhiteSpace(item.SenderEmail))
+                                            {
+                                                @item.SenderEmail.Substring(0, 1).ToUpper()
+                                            }
+                                            else
+                                            {
+                                                <span>?</span>
+                                            }
+
+                                        </div>
+
+                                        <div class="message-sender-info">
+
+                                            <p>
+                                                <strong>Gönderen:</strong>
+
+                                                @if (isMyMessage)
+                                                {
+                                                    <span>Ben</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@item.SenderEmail</span>
+                                                }
+                                            </p>
+
+                                            <p class="message-email">
+                                                <strong>Alıcı:</strong>
+
+                                                @if (item.ReceiverEmail == currentUserEmail)
+                                                {
+                                                    <span>Ben</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@item.ReceiverEmail</span>
+                                                }
+                                            </p>
+
+                                            <div class="message-category">
+
+                                                @if (item.Category == null)
+                                                {
+                                                    <span class="label label-default">
+                                                        Kategori Yok
+                                                    </span>
+                                                }
+                                                else if (item.Category.CategoryName == "Eğitim")
+                                                {
+                                                    <span class="label label-info">
+                                                        @item.Category.CategoryName
+                                                    </span>
+                                                }
+                                                else if (item.Category.CategoryName == "Sosyal")
+                                                {
+                                                    <span class="label label-success">
+                                                        @item.Category.CategoryName
+                                                    </span>
+                                                }
+                                                else if (item.Category.CategoryName == "Kampanyalar")
+                                                {
+                                                    <span class="label label-warning">
+                                                        @item.Category.CategoryName
+                                                    </span>
+                                                }
+                                                else if (item.Category.CategoryName == "Finans")
+                                                {
+                                                    <span class="label label-primary">
+                                                        @item.Category.CategoryName
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="label label-default">
+                                                        @item.Category.CategoryName
+                                                    </span>
+                                                }
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="message-detail-date">
+                                            <span>@timeAgoText</span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="message-content">
+                                        @Html.Raw(item.MessageDetail)
+                                    </div>
+
+                                </div>
+                            }
+
+                        </div>
+                        <!-- İşlem butonları -->
+                        @if (lastMessage != null)
                         {
-                            <form asp-controller="Message"
-                                  asp-action="MarkAsUnread"
-                                  method="post">
+                            <div class="message-action-area">
 
-                                @Html.AntiForgeryToken()
+                                <!-- Geri dön -->
+                                <a asp-controller="Message"
+                                       asp-action="@(isReceiver ? "Inbox" : "SendBox")"
+                                       class="message-action-button back-action"
+                                       title="@(isReceiver ? "Gelen Kutusuna Dön" : "Gönderilen Kutusuna Dön")">
 
-                                <input type="hidden"
-                                       name="id"
-                                       value="@Model.MessageId" />
+                                    <i class="fa fa-arrow-left"></i>
+                                    <span>Geri</span>
 
-                                <button type="submit"
-                                        class="btn btn-default btn-sm mark-unread-button">
+                                </a>
 
-                                    <i class="fa fa-envelope"></i>
-                                    Okunmadı Olarak İşaretle
+                                <!-- Okundu / okunmadı -->
+                                @if (isReceiver)
+                                {
+                                    <form asp-controller="Message"
+                                          asp-action="MarkAsRead"
+                                          method="post">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@lastMessage.MessageId" />
+
+                                        <button type="submit"
+                                                class="message-action-button"
+                                                title="@(lastMessage.IsRead
+                                                                                                ? "Okunmadı Olarak İşaretle"
+                                                                                                : "Okundu Olarak İşaretle")">
+
+                                            @if (lastMessage.IsRead)
+                                            {
+                                                <i class="fa fa-envelope"></i>
+                                                <span>Okunmadı</span>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-envelope-open"></i>
+                                                <span>Okundu</span>
+                                            }
+
+                                        </button>
+
+                                    </form>
+                                }
+
+                                <!-- Yıldızla -->
+                                <button type="button"
+                                        class="message-action-button mail-action mail-star"
+                                        data-url="@Url.Action("ToggleStar", "Message")"
+                                        data-id="@lastMessage.MessageId"
+                                        title="@(lastMessage.IsStarred
+                                                                        ? "Yıldızı Kaldır"
+                                                                        : "Yıldızla")">
+
+                                    @if (lastMessage.IsStarred)
+                                    {
+                                        <i class="fa fa-star starred"></i>
+                                        <span>Yıldızlı</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-star-o"></i>
+                                        <span>Yıldızla</span>
+                                    }
+
                                 </button>
 
-                            </form>
+                                <!-- Spam -->
+                                @if (isReceiver)
+                                {
+                                    <button type="button"
+                                            class="message-action-button mail-action mail-spam"
+                                            data-url="@Url.Action("ToggleSpam", "Message")"
+                                            data-id="@lastMessage.MessageId"
+                                            title="@(lastMessage.IsSpam
+                                                                                    ? "Spamdan Çıkar"
+                                                                                    : "Spam Olarak İşaretle")">
+
+                                        @if (lastMessage.IsSpam)
+                                        {
+                                            <i class="fa fa-ban spam-active"></i>
+                                            <span>Spamdan Çıkar</span>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-ban"></i>
+                                            <span>Spam</span>
+                                        }
+
+                                    </button>
+                                }
+
+                                <!-- Yanıtla -->
+                                <button type="button"
+                                        id="showReplyButton"
+                                        class="message-action-button reply-action"
+                                        title="Bu ileti dizisine yanıt ver">
+
+                                    <i class="fa fa-reply"></i>
+                                    <span>Yanıtla</span>
+
+                                </button>
+
+                                <!-- Çöp kutusuna taşı -->
+                                <button type="button"
+                                        class="message-action-button mail-action mail-trash"
+                                        data-url="@Url.Action("ToggleDeleted", "Message")"
+                                        data-id="@lastMessage.MessageId"
+                                        title="@(lastMessage.IsDeleted
+                                                                        ? "Gelen Kutusuna Taşı"
+                                                                        : "Çöp Kutusuna Gönder")">
+
+                                    @if (lastMessage.IsDeleted)
+                                    {
+                                        <i class="fa fa-undo"></i>
+                                        <span>Geri Al</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-trash"></i>
+                                        <span>Çöp Kutusu</span>
+                                    }
+
+                                </button>
+
+                            </div>
+
+                            <div id="replyArea"
+                                 class="reply-area"
+                                 style="display:none;">
+
+                                <form asp-controller="Message"
+                                      asp-action="ReplyMessage"
+                                      method="post"
+                                      id="replyForm">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="ReplyMessageId"
+                                           value="@lastMessage.MessageId" />
+
+                                    <textarea name="MessageDetail"
+                                              id="replySummernote"
+                                              class="form-control summernote"
+                                              placeholder="Yanıtınızı yazınız..."></textarea>
+
+                                    <div class="reply-buttons">
+
+                                        <button type="button"
+                                                id="cancelReplyButton"
+                                                class="btn btn-default btn-sm">
+
+                                            <i class="fa fa-times"></i>
+                                            Vazgeç
+
+                                        </button>
+
+                                        <button type="submit"
+                                                class="btn btn-success btn-sm">
+
+                                            <i class="fa fa-paper-plane"></i>
+                                            Yanıtı Gönder
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
                         }
-
-                        <a asp-controller="Message"
-                               asp-action="Compose"
-                               asp-route-receiverEmail="@Model.SenderEmail"
-                               class="btn btn-default btn-sm">
-
-                            <i class="notika-icon notika-next"></i>
-                            Yanıtla
-                        </a>
-
-                        <button type="button"
-                                class="btn btn-default btn-sm">
-
-                            <i class="notika-icon notika-right-arrow"></i>
-                            Yönlendir
-                        </button>
-
-                        <button type="button"
-                                class="btn btn-default btn-sm">
-
-                            <i class="notika-icon notika-print"></i>
-                            Spamla
-                        </button>
-                        <button type="button"
-                                class="btn btn-default btn-sm">
-
-                            <i class="notika-icon notika-star"></i>
-                            Yıldızla
-                        </button>
-
-                        <button type="button"
-                                class="btn btn-danger btn-sm">
-
-                            <i class="notika-icon notika-trash"></i>
-                            Çöp Kutusuna Gönder
-                        </button>
-
-                    </div>
+                    }
 
                 </div>
+
             </div>
 
         </div>
     </div>
 </div>
+
+<!-- Summernote CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css" rel="stylesheet" />
+
+<!-- jQuery + Bootstrap + Summernote JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-tr-TR.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+    $('.summernote').summernote({
+    height : 250
+    });
+    });
+
+</script>
+
+
+                                        
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        $(document).on("click", ".mail-action", function () {
+
+            var button = $(this);
+            var icon = button.find("i");
+
+            $.post(button.data("url"), {
+                id: button.data("id"),
+                __RequestVerificationToken:
+                    $("#tokenForm input[name='__RequestVerificationToken']").val()
+            })
+            .done(function () {
+
+                if (button.hasClass("mail-star")) {
+
+                    if (icon.hasClass("fa-star")) {
+                        icon.removeClass("fa-star starred")
+                            .addClass("fa-star-o");
+                    }
+                    else {
+                        icon.removeClass("fa-star-o")
+                            .addClass("fa-star starred");
+                    }
+                }
+
+                if (button.hasClass("mail-spam") ||
+                    button.hasClass("mail-trash")) {
+
+                    button.closest("tr").fadeOut(200);
+                }
+            })
+            .fail(function (xhr) {
+                console.log(xhr.status);
+                console.log(xhr.responseText);
+            });
+
+        });
+
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const showReplyButton =
+            document.getElementById("showReplyButton");
+
+        const cancelReplyButton =
+            document.getElementById("cancelReplyButton");
+
+        const replyArea =
+            document.getElementById("replyArea");
+
+        showReplyButton.addEventListener("click", function () {
+            replyArea.style.display = "block";
+
+            const textarea =
+                replyArea.querySelector("textarea");
+
+            textarea.focus();
+        });
+
+        cancelReplyButton.addEventListener("click", function () {
+            replyArea.style.display = "none";
+        });
+
+    });
+</script>

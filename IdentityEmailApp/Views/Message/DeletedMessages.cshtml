@@ -1,14 +1,31 @@
 ﻿@using System.Text.RegularExpressions
-@using IdentityEmailApp.Models.MessageModels
-@model List<MessageWithSenderInfoModel>
 
+@model List<Message>
 @{
-    ViewData["Title"] = "Gelen Kutusu";
+    ViewData["Title"] = "Çöp Kutusu ";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
 
+
 <style>
+
+    .mail-restore {
+        color: #777;
+    }
+
+        .mail-restore:hover,
+        .mail-restore:focus {
+            color: #00c292;
+        }
+
+    .mail-permanent-delete {
+        color: #777;
+    }
+
+        .mail-permanent-delete:hover,
+        .mail-permanent-delete:focus {
+            color: #d9534f;
+        }
 
     .mail-actions {
         display: flex;
@@ -83,27 +100,27 @@
     justify-content: space-between;
     margin-bottom: 18px;
     padding: 18px 20px;
-    background: #fff;
+    background-color: #ffffff;
     border: 1px solid #eeeeee;
-    border-left: 4px solid #337ab7;
+    border-left: 4px solid #d9534f;
     border-radius: 6px;
 }
 
 .mail-page-header h3 {
-    margin: 0 0 6px;
-    font-size: 22px;
+    margin: 0 0 6px 0;
+    color: #333333;
+    font-size: 21px;
     font-weight: 600;
-    color: #333;
 }
 
 .mail-page-header h3 i {
     margin-right: 8px;
-    color: #337ab7;
+    color: #d9534f;
 }
 
 .mail-page-header p {
     margin: 0;
-    color: #777;
+    color: #777777;
     font-size: 13px;
 }
     .unread-message {
@@ -190,7 +207,7 @@
                         <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
 
                             <a asp-controller="Message"
-                                   asp-action="Inbox"
+                                   asp-action="DeletedMessages"
                                    class="btn btn-default btn-sm">
                                 <i class="notika-icon notika-refresh"></i>
                                 Yenile
@@ -230,21 +247,24 @@
 
                         </div>
                     </div>
-                 
+                  
                     <div class="mail-page-header">
                         <div>
                             <h3>
-                                <i class="fa fa-inbox"></i>
-                                Gelen Kutusu
+                                <i class="fa fa-trash"></i>
+                                Çöp Kutusu
                             </h3>
 
                             <p>
-                                Size gönderilen mesajları görüntüleyebilir, okuyabilir ve yönetebilirsiniz.
+                                Sildiğiniz mesajları görüntüleyebilir, geri taşıyabilir veya kalıcı olarak silebilirsiniz.
                             </p>
                         </div>
                     </div>
                     
+                    
                     <div class="table-responsive">
+                       
+                        
                         <form id="tokenForm" style="display:none;">
                             @Html.AntiForgeryToken()
                         </form>
@@ -252,8 +272,9 @@
 
                             <thead>
                                 <tr>
+
                                     <th style="width:120px;">Seç</th>
-                                    <th>Gönderen</th>
+                                    <th>Kişi</th>
                                     <th>Kategori</th>
                                     <th>Mesaj</th>
                                     <th class="text-right">Tarih</th>
@@ -317,7 +338,7 @@
                                                         class="mail-action mail-spam"
                                                         data-url="@Url.Action("ToggleSpam", "Message")"
                                                         data-id="@item.MessageId"
-                                                        title="@(item.IsSpam ? "Spamdan Çıkar" : "Spam Olarak İşaretle")">
+                                                        title="@(item.IsSpam ? "Spamı Kaldır" : "Spam")">
 
                                                     @if (item.IsSpam)
                                                     {
@@ -337,68 +358,89 @@
                                                        asp-route-id="@item.MessageId"
                                                        class="sender-link">
 
-                                                    @item.SenderName @item.SenderSurname
-
-                                                    <span class="sender-email">
-                                                        @item.SenderEmail
-                                                    </span>
+                                                   
+                                                        @if (item.SenderEmail == ViewBag.UserMail)
+                                                        {
+                                                            <span>
+                                                                <strong>Alıcı:</strong>
+                                                                @item.ReceiverEmail
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>
+                                                                <strong>Gönderen:</strong>
+                                                                @item.SenderEmail
+                                                            </span>
+                                                        }
+                                                    
                                                 </a>
                                             </td>
 
+
                                             <td>
-                                                @if (string.IsNullOrEmpty(item.CategoryName))
+                                                @if (item.Category == null ||
+                                                    string.IsNullOrEmpty(item.Category.CategoryName))
                                                 {
                                                     <span class="label label-default">
                                                         Kategori Yok
                                                     </span>
                                                 }
-                                                else if (item.CategoryName == "Eğitim")
+                                                else if (item.Category.CategoryName == "Eğitim")
                                                 {
                                                     <span class="label label-info">
-                                                        @item.CategoryName
+                                                        @item.Category.CategoryName
                                                     </span>
                                                 }
-                                                else if (item.CategoryName == "Sosyal")
+                                                else if (item.Category.CategoryName == "Sosyal")
                                                 {
                                                     <span class="label label-success">
-                                                        @item.CategoryName
+                                                        @item.Category.CategoryName
                                                     </span>
                                                 }
-                                                else if (item.CategoryName == "Kampanyalar")
+                                                else if (item.Category.CategoryName == "Kampanyalar")
                                                 {
                                                     <span class="label label-warning">
-                                                        @item.CategoryName
+                                                        @item.Category.CategoryName
                                                     </span>
                                                 }
-                                                else if (item.CategoryName == "Finans")
+                                                else if (item.Category.CategoryName == "Finans")
                                                 {
                                                     <span class="label label-primary">
-                                                        @item.CategoryName
+                                                        @item.Category.CategoryName
                                                     </span>
                                                 }
                                                 else
                                                 {
                                                     <span class="label label-default">
-                                                        @item.CategoryName
+                                                        @item.Category.CategoryName
                                                     </span>
                                                 }
                                             </td>
-
+                                           
+                                            <!-- Mesaj -->
                                             <td>
                                                 <a asp-controller="Message"
                                                        asp-action="MessageDetail"
                                                        asp-route-id="@item.MessageId"
                                                        class="message-link">
 
+                                                    <span class="spam-indicator">
+                                                        <i class="fa fa-exclamation-triangle"></i>
+                                                        Spam
+                                                    </span>
+
                                                     <strong>
-                                                        Konu: @item.Subject
+                                                        @item.Subject
                                                     </strong>
 
                                                     <span class="message-preview">
-                                                        @messagePreview
+                                                        - @messagePreview
                                                     </span>
+
                                                 </a>
                                             </td>
+
 
                                             <td class="text-right mail-date">
                                                 @if (item.SendDate.Date == DateTime.Today)
@@ -423,14 +465,26 @@
 
                                             <td class="text-center">
 
-                                                <!-- Çöp kutusuna taşı -->
+                                                <!-- Çöp kutusundan geri taşı -->
                                                 <button type="button"
-                                                        class="mail-action mail-trash"
+                                                        class="mail-action mail-restore"
                                                         data-url="@Url.Action("ToggleDeleted", "Message")"
                                                         data-id="@item.MessageId"
-                                                        title="Çöp Kutusuna Taşı">
+                                                        title="Mesajı geri taşı">
 
-                                                    <i class="fa fa-trash-o"></i>
+                                                    <i class="fa fa-undo"></i>
+
+                                                </button>
+
+                                                <!-- Kalıcı sil -->
+                                                <button type="button"
+                                                        class="mail-action mail-permanent-delete"
+                                                        data-url="@Url.Action("Delete", "Message")"
+                                                        data-id="@item.MessageId"
+                                                        title="Kalıcı olarak sil">
+
+                                                    <i class="fa fa-trash"></i>
+
                                                 </button>
 
                                             </td>
@@ -445,7 +499,7 @@
                                             class="text-center"
                                             style="padding:30px;">
 
-                                            Gelen kutunuzda mesaj bulunmuyor.
+                                            Çöp kutunuzda mesaj bulunmuyor.
                                         </td>
                                     </tr>
                                 }
@@ -498,6 +552,32 @@
                 console.log(xhr.status);
                 console.log(xhr.responseText);
             });
+
+        });
+
+    });
+</script>
+<script>
+
+        $(document).on('click', '.mail-permanent-delete', function () {
+
+        const button = $(this);
+
+        Swal.fire({
+            title: 'Kalıcı sil?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sil'
+        }).then((r) => {
+
+            if (!r.isConfirmed) return;
+
+            $.post(button.data('url'),
+                {
+                    id: button.data('id'),
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').first().val()
+                },
+                () => button.closest('tr').fadeOut());
 
         });
 

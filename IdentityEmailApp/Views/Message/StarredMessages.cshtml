@@ -2,7 +2,7 @@
 
 @model List<Message>
 @{
-    ViewData["Title"] = "Yıldızlı Mesajlar";
+    ViewData["Title"] = "Yıldızlı Mesajlar ";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -20,25 +20,90 @@
         margin: 0;
     }
 
-    .mail-star {
+    .mail-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 25px;
+        height: 25px;
+        padding: 0;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
         font-size: 18px;
-        color: #c8c8c8;
-        transition: .2s;
-        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Boş yıldız */
+    .mail-star {
+        color: #b7b7b7;
     }
 
         .mail-star:hover {
             color: #f4b400;
         }
 
+        /* Dolu yıldız */
         .mail-star .starred {
             color: #f4b400;
         }
+
+    /* Spam değil */
+    .mail-spam {
+        color: #b7b7b7;
+    }
+
+        .mail-spam:hover {
+            color: #d9534f;
+        }
+
+        /* Spam */
+        .mail-spam .spam-active {
+            color: #d9534f;
+        }
+
+    /* Çöp kutusu */
+    .mail-trash {
+        color: #777;
+    }
+
+        .mail-trash:hover {
+            color: #d9534f;
+        }
 </style>
 
-@await Component.InvokeAsync("_LayoutBreadcombComponent")
 
 <style>
+    .starred-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding: 18px 20px;
+    background-color: #ffffff;
+    border: 1px solid #eeeeee;
+    border-left: 4px solid #f0ad4e;
+    border-radius: 6px;
+}
+
+.starred-header h3 {
+    margin: 0 0 6px 0;
+    color: #333333;
+    font-size: 21px;
+    font-weight: 600;
+}
+
+.starred-header h3 i {
+    margin-right: 8px;
+    color: #f0ad4e;
+}
+
+.starred-header p {
+    margin: 0;
+    color: #777777;
+    font-size: 13px;
+}
     .unread-message {
         background-color: #f2f6fc;
     }
@@ -95,6 +160,9 @@
     }
 </style>
 
+@await Component.InvokeAsync("_LayoutBreadcombComponent")
+
+
 <div class="inbox-area">
     <div class="container">
         <div class="row">
@@ -120,7 +188,7 @@
                         <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
 
                             <a asp-controller="Message"
-                                   asp-action="Inbox"
+                                   asp-action="StarredMessages"
                                    class="btn btn-default btn-sm">
                                 <i class="notika-icon notika-refresh"></i>
                                 Yenile
@@ -161,20 +229,39 @@
                         </div>
                     </div>
 
+
+                    <div class="mail-page-header starred-header">
+                        <div>
+                            <h3>
+                                <i class="fa fa-star"></i>
+                                Yıldızlı Mesajlar
+                            </h3>
+
+                            <p>
+                                Önemli olarak işaretlediğiniz mesajları hızlıca görüntüleyebilirsiniz.
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
+                        <form id="tokenForm" style="display:none;">
+                            @Html.AntiForgeryToken()
+                        </form>
                         <table class="table table-hover">
 
                             <thead>
                                 <tr>
-                                    <th style="width:80px;">Seç</th>
+                                    <th style="width:120px;">Seç</th>
                                     <th>Gönderen</th>
                                     <th>Kategori</th>
                                     <th>Mesaj</th>
                                     <th class="text-right">Tarih</th>
+                                    <th class="text-center" style="width:90px;">İşlemler</th>
                                 </tr>
                             </thead>
 
                             <tbody>
+
                                 @if (Model != null && Model.Any())
                                 {
                                     @foreach (var item in Model)
@@ -183,7 +270,11 @@
                                             ? "read-message"
                                             : "unread-message";
 
-                                        var plainText = Regex.Replace(item.MessageDetail ?? "", "<.*?>", "");
+                                        var plainText = Regex.Replace(
+                                            item.MessageDetail ?? "",
+                                            "<.*?>",
+                                            ""
+                                        );
 
                                         var messagePreview =
                                             string.IsNullOrWhiteSpace(plainText)
@@ -199,12 +290,16 @@
                                                 <label class="mail-checkbox">
                                                     <input type="checkbox"
                                                            class="i-checks"
+                                                           name="selectedIds"
                                                            value="@item.MessageId" />
                                                 </label>
 
-                                                <a href="javascript:void(0)"
-                                                       class="mail-star"
-                                                       data-id="@item.MessageId">
+                                                <!-- Yıldızlama -->
+                                                <button type="button"
+                                                        class="mail-action mail-star"
+                                                        data-url="@Url.Action("ToggleStar", "Message")"
+                                                        data-id="@item.MessageId"
+                                                        title="@(item.IsStarred ? "Yıldızı Kaldır" : "Yıldızla")">
 
                                                     @if (item.IsStarred)
                                                     {
@@ -214,8 +309,25 @@
                                                     {
                                                         <i class="fa fa-star-o"></i>
                                                     }
+                                                </button>
 
-                                                </a>
+                                                <!-- Spam -->
+                                                <button type="button"
+                                                        class="mail-action mail-spam"
+                                                        data-url="@Url.Action("ToggleSpam", "Message")"
+                                                        data-id="@item.MessageId"
+                                                        title="@(item.IsSpam ? "Spamı Kaldır" : "Spam Olarak İşaretle")">
+
+                                                    @if (item.IsSpam)
+                                                    {
+                                                        <i class="fa fa-flag spam-active"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="fa fa-flag-o"></i>
+                                                    }
+                                                    
+                                                </button>
 
                                             </td>
 
@@ -246,8 +358,9 @@
                                                 </a>
                                             </td>
 
+
                                             <td>
-                                                @if (string.IsNullOrEmpty(item.Category.CategoryName))
+                                                @if (string.IsNullOrEmpty(item.Category?.CategoryName))
                                                 {
                                                     <span class="label label-default">
                                                         Kategori Yok
@@ -284,36 +397,64 @@
                                                     </span>
                                                 }
                                             </td>
-
+                                           
+                                            <!-- Mesaj -->
                                             <td>
                                                 <a asp-controller="Message"
                                                        asp-action="MessageDetail"
                                                        asp-route-id="@item.MessageId"
                                                        class="message-link">
 
+                                                    <span class="spam-indicator">
+                                                        <i class="fa fa-exclamation-triangle"></i>
+                                                        Önemli
+                                                    </span>
+
                                                     <strong>
-                                                        Konu: @item.Subject
+                                                        @item.Subject
                                                     </strong>
 
                                                     <span class="message-preview">
-                                                        @messagePreview
+                                                        - @messagePreview
                                                     </span>
+
                                                 </a>
                                             </td>
+
 
                                             <td class="text-right mail-date">
                                                 @if (item.SendDate.Date == DateTime.Today)
                                                 {
-                                                    <span>Bugün @item.SendDate.ToString("HH:mm")</span>
+                                                    <span>
+                                                        Bugün @item.SendDate.ToString("HH:mm")
+                                                    </span>
                                                 }
                                                 else if (item.SendDate.Date == DateTime.Today.AddDays(-1))
                                                 {
-                                                    <span>Dün @item.SendDate.ToString("HH:mm")</span>
+                                                    <span>
+                                                        Dün @item.SendDate.ToString("HH:mm")
+                                                    </span>
                                                 }
                                                 else
                                                 {
-                                                    <span>@item.SendDate.ToString("dd.MM.yyyy HH:mm")</span>
+                                                    <span>
+                                                        @item.SendDate.ToString("dd.MM.yyyy HH:mm")
+                                                    </span>
                                                 }
+                                            </td>
+
+                                            <td class="text-center">
+
+                                                <!-- Çöp kutusuna taşı -->
+                                                <button type="button"
+                                                        class="mail-action mail-trash"
+                                                        data-url="@Url.Action("ToggleDeleted", "Message")"
+                                                        data-id="@item.MessageId"
+                                                        title="Çöp Kutusuna Taşı">
+
+                                                    <i class="fa fa-trash-o"></i>
+                                                </button>
+
                                             </td>
 
                                         </tr>
@@ -322,18 +463,19 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="5"
+                                        <td colspan="6"
                                             class="text-center"
-                                            style="padding: 30px;">
+                                            style="padding:30px;">
+
                                             Gelen kutunuzda mesaj bulunmuyor.
                                         </td>
                                     </tr>
                                 }
+
                             </tbody>
 
                         </table>
                     </div>
-
                 </div>
             </div>
 
@@ -342,40 +484,42 @@
 </div>
 
 <script>
-    $(document).on("click", ".mail-star", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-        var star = $(this);
-        var id = star.data("id");
+        $(document).on("click", ".mail-action", function () {
 
-        $.ajax({
-            url: "/Message/ToggleStar",
-            type: "POST",
-            data: { id: id },
+            var button = $(this);
+            var icon = button.find("i");
 
-            success: function () {
+            $.post(button.data("url"), {
+                id: button.data("id"),
+                __RequestVerificationToken:
+                    $("#tokenForm input[name='__RequestVerificationToken']").val()
+            })
+            .done(function () {
 
-              
-                    star.closest("tr").fadeOut(300, function () {
+                if (button.hasClass("mail-star")) {
 
-        $(this).remove();
+                    if (icon.hasClass("fa-star")) {
+                        icon.removeClass("fa-star starred")
+                            .addClass("fa-star-o");
+                    }
+                    else {
+                        icon.removeClass("fa-star-o")
+                            .addClass("fa-star starred");
+                    }
+                }
 
-        if ($("tbody tr").length === 0) {
-            $("tbody").html(`
-                <tr>
-                    <td colspan="5" class="text-center" style="padding:30px;">
-                        Yıldızlı mesajınız bulunmuyor.
-                    </td>
-                </tr>
-            `);
-        }
+                if (button.hasClass("mail-spam") ||
+                    button.hasClass("mail-trash")) {
 
-    });
-
-            },
-
-            error: function () {
-                alert("Bir hata oluştu.");
-            }
+                    button.closest("tr").fadeOut(200);
+                }
+            })
+            .fail(function (xhr) {
+                console.log(xhr.status);
+                console.log(xhr.responseText);
+            });
 
         });
 

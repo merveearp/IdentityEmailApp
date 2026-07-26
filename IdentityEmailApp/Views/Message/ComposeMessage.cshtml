@@ -13,16 +13,22 @@
 
 @await Component.InvokeAsync("_MessageSidebarComponent")
 
-    <form method="post"
-            asp-controller="Message"
-            asp-action="ComposeMessage">
+            <form method="post"
+                  asp-controller="Message"
+                  asp-action="ComposeMessage">
 
-        @Html.AntiForgeryToken()
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" asp-for="MessageId" />
 <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
     <div class="view-mail-list sm-res-mg-t-30">
         <div class="view-mail-hd">
             <div class="view-mail-hrd">
-                <h2>Yeni Mesaj Oluştur</h2>
+                <h2>
+                    @(Model.MessageId > 0
+                        ? "Taslağı Düzenle"
+                        : "Yeni Mesaj Oluştur")
+                </h2>
             </div>
         </div>
         <div class="cmp-int mg-t-20">
@@ -77,32 +83,29 @@
 
            </div>
         </div>
+                        <div class="mg-t-20">
 
-                        <button type="submit" class="btn btn-info">
-                            Mesaj Gönder
-                        </button>
+                            <button type="submit"
+                                    name="actionType"
+                                    value="send"
+                                    class="btn btn-info">
 
-       @*  <div class="multiupload-sys">
-            <div id="dropzone" class="dropmail">
-                <form action="/upload" class="dropzone dropzone-custom needsclick" id="demo-upload">
-                    <div class="dz-message needsclick download-custom">
-                        <i class="notika-icon notika-cloud" aria-hidden="true"></i>
-                        <h2>Drop files here or click to upload.</h2>
-                        <p>
-                            <span class="note needsclick">(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</span>
-                        </p>
-                    </div>
-                </form>
-            </div>
-        </div> *@
-        <div class="vw-ml-action-ls text-right mg-t-20">
-            <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
-                <button class="btn btn-default btn-sm waves-effect"><i class="notika-icon notika-next"></i> Yanıtla</button>
-                <button class="btn btn-default btn-sm waves-effect"><i class="notika-icon notika-right-arrow"></i> Yönlendir</button>
-                <button class="btn btn-default btn-sm waves-effect"><i class="notika-icon notika-print"></i> Yazdır</button>
-                <button class="btn btn-default btn-sm waves-effect"><i class="notika-icon notika-trash"></i> Sil</button>
-            </div>
-        </div>
+                                <i class="fa fa-paper-plane"></i>
+                                Mesaj Gönder
+                            </button>
+
+                            <button type="submit"
+                                    name="actionType"
+                                    value="draft"
+                                    class="btn btn-default">
+
+                                <i class="fa fa-floppy-o"></i>
+                                Taslağa Kaydet
+                            </button>
+
+                        </div>
+
+     
     </div>
             </div>
 

@@ -1,5 +1,6 @@
 using IdentityEmailApp.Context;
 using IdentityEmailApp.Entities;
+using IdentityEmailApp.Extensions;
 using IdentityEmailApp.Models.JWTModels;
 using IdentityEmailApp.Services.Abstract;
 using IdentityEmailApp.Services.Concrete;
@@ -12,6 +13,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<EmailContext>(options =>
@@ -33,7 +35,8 @@ builder.Services
     .AddErrorDescriber<CustomErrorValidator>()
     .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(
         TokenOptions.DefaultProvider);
-builder.Services.AddScoped<ISystemEventService, SystemEventService>();
+
+builder.Services.ConfigureService();
 
 builder.Services.Configure<JWTSettingsViewModel>(
     builder.Configuration.GetSection("JwtSettingsKey"));

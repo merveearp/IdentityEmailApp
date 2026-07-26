@@ -15,6 +15,8 @@
         public bool IsDeleted { get; set; }
 
 
+        public int? ConversationId { get; set; }
+
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
     }

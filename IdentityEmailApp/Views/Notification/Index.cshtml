@@ -12,6 +12,36 @@
 @await Component.InvokeAsync("_LayoutBreadcombComponent")
 
 <style>
+
+    .notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding: 18px 20px;
+    background-color: #ffffff;
+    border: 1px solid #eeeeee;
+    border-left: 4px solid #5bc0de;
+    border-radius: 6px;
+}
+
+.notification-header h3 {
+    margin: 0 0 6px 0;
+    color: #333333;
+    font-size: 21px;
+    font-weight: 600;
+}
+
+.notification-header h3 i {
+    margin-right: 8px;
+    color: #5bc0de;
+}
+
+.notification-header p {
+    margin: 0;
+    color: #777777;
+    font-size: 13px;
+}
     .unread-notification {
         background-color: #f2f6fc;
     }
@@ -209,6 +239,19 @@
 
                         </div>
 
+
+                        <div class="mail-page-header notification-header">
+                            <div>
+                                <h3>
+                                    <i class="fa fa-bell"></i>
+                                    Bildirim Merkezi
+                                </h3>
+
+                                <p>
+                                    Hesabınıza ait en son bildirimleri görüntüleyebilir ve yönetebilirsiniz.
+                                </p>
+                            </div>
+                        </div>
                         <!-- Bildirim Tablosu -->
                         <div class="table-responsive">
 

@@ -68,7 +68,7 @@ namespace IdentityEmailApp.Controllers
                     IsRead = m.IsRead,
                     IsStarred = m.IsStarred,
                     CategoryName = category != null ? category.CategoryName :"Kategori Yok"
-                }).ToListAsync();
+                }).OrderByDescending(x=>x.SendDate).ToListAsync();
 
             return View(values);
         }
@@ -106,7 +106,7 @@ namespace IdentityEmailApp.Controllers
                     ReceiverSurname = receiver != null ? receiver.Surname : "Kullanıcı",
                     IsRead = m.IsRead,
                     CategoryName = category != null ? category.CategoryName : "Kategori Yok"
-                }).ToListAsync();
+                }).OrderByDescending(x=>x.SendDate).ToListAsync();
 
             return View(values);
         }
@@ -175,26 +175,53 @@ namespace IdentityEmailApp.Controllers
             }
 
             var message = await _context.Messages
-                .Include(c=>c.Category).FirstOrDefaultAsync(x =>
+                .FirstOrDefaultAsync(x =>
                     x.MessageId == id &&
-                    x.ReceiverEmail == user.Email ||
-                    x.SenderEmail == user.Email);
+                    (
+                        x.ReceiverEmail == user.Email ||
+                        x.SenderEmail == user.Email
+                    ));
 
             if (message == null)
             {
                 return NotFound();
             }
 
-            var isReceiver = message.ReceiverEmail == user.Email;
-            if(isReceiver && !message.IsRead)
+            var conversationId = message.ConversationId ?? message.MessageId;
+
+            var conversationMessages = await _context.Messages
+                .Include(x => x.Category)
+                .Where(x =>
+                    x.ConversationId == conversationId &&
+                    (
+                        x.ReceiverEmail == user.Email ||
+                        x.SenderEmail == user.Email
+                    ) &&
+                    !x.IsDeleted &&
+                    !x.IsDraft)
+                .OrderBy(x => x.SendDate)
+                .ToListAsync();
+
+            var unreadMessages = conversationMessages
+                .Where(x =>
+                    x.ReceiverEmail == user.Email &&
+                    !x.IsRead)
+                .ToList();
+
+            if (unreadMessages.Any())
             {
-                message.IsRead = true;
+                foreach (var item in unreadMessages)
+                {
+                    item.IsRead = true;
+                }
+
                 await _context.SaveChangesAsync();
             }
 
-            ViewBag.IsReceiver = isReceiver;
+            ViewBag.CurrentUserEmail = user.Email;
+            ViewBag.ConversationId = conversationId;
 
-            return View(message);
+            return View(conversationMessages);
         }
 
         //----------MESAJ GÖNDER---------//
@@ -203,12 +230,12 @@ namespace IdentityEmailApp.Controllers
         {
             await LoadCategoriesAsync();
 
-            return View();
+            return View(new Message());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ComposeMessage(Message message)
+        public async Task<IActionResult> ComposeMessage(Message message, string actionType)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -217,20 +244,70 @@ namespace IdentityEmailApp.Controllers
                 return RedirectToAction("SignIn", "Login");
             }
 
-            if (!ModelState.IsValid)
+            var isDraftAction = actionType == "draft";
+
+            if (!isDraftAction && !ModelState.IsValid)
             {
                 await LoadCategoriesAsync();
                 return View(message);
             }
 
+            if (message.MessageId > 0)
+            {
+                var existingDraft = await _context.Messages
+                    .FirstOrDefaultAsync(x =>
+                        x.MessageId == message.MessageId &&
+                        x.SenderEmail == user.Email &&
+                        x.IsDraft &&
+                        !x.IsDeleted);
+
+                if (existingDraft == null)
+                {
+                    return NotFound();
+                }
+
+                existingDraft.ReceiverEmail = message.ReceiverEmail;
+                existingDraft.CategoryId = message.CategoryId;
+                existingDraft.Subject = message.Subject;
+                existingDraft.MessageDetail = message.MessageDetail;
+                existingDraft.IsDraft = isDraftAction;
+
+                if (!isDraftAction)
+                {
+                    existingDraft.SendDate = DateTime.Now;
+                    existingDraft.IsRead = false;
+
+                    if (existingDraft.ConversationId == null)
+                    {
+                        existingDraft.ConversationId = existingDraft.MessageId;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                return isDraftAction
+                    ? RedirectToAction(nameof(DraftedMessages))
+                    : RedirectToAction(nameof(SendBox));
+            }
+
+            // Yeni mesaj oluşturuluyorsa
             message.SenderEmail = user.Email!;
             message.SendDate = DateTime.Now;
             message.IsRead = false;
+            message.IsDraft = isDraftAction;
 
             await _context.Messages.AddAsync(message);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("SendBox");
+            if (!isDraftAction)
+            {
+                message.ConversationId = message.MessageId;
+                await _context.SaveChangesAsync();
+            }
+
+            return isDraftAction
+                ? RedirectToAction(nameof(DraftedMessages))
+                : RedirectToAction(nameof(SendBox));
         }
 
         //----------STARRED MESSAGE---------//
@@ -247,7 +324,6 @@ namespace IdentityEmailApp.Controllers
                      x.IsStarred &&
                      !x.IsDeleted &&
                      !x.IsDraft &&
-                     !x.IsSpam &&
                      (
                          x.ReceiverEmail == user.Email ||
                          x.SenderEmail == user.Email
@@ -261,6 +337,7 @@ namespace IdentityEmailApp.Controllers
         //----------STARRED ---------//
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleStar(int id)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -290,6 +367,60 @@ namespace IdentityEmailApp.Controllers
 
 
 
+
+        //----------DRAFT MESSAGE---------//
+        public async Task<IActionResult> DraftedMessages()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            var messages = await _context.Messages
+                 .Where(x =>
+                     
+                     !x.IsSpam &&
+                     !x.IsDeleted &&
+
+                     x.IsDraft &&
+                     (
+                         x.SenderEmail == user.Email
+                     ))
+                 .OrderByDescending(x => x.SendDate)
+                 .ToListAsync();
+
+            return View(messages);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditDraft(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            var draft = await _context.Messages
+                .FirstOrDefaultAsync(x =>
+                    x.MessageId == id &&
+                    x.SenderEmail == user.Email &&
+                    x.IsDraft &&
+                    !x.IsDeleted);
+
+            if (draft == null)
+            {
+                return NotFound();
+            }
+
+            await LoadCategoriesAsync();
+
+            return View("ComposeMessage", draft);
+        }
+
+
         //---------- SPAM MESSAGES ----------//
         public async Task<IActionResult> SpamMessages()
         {
@@ -316,6 +447,8 @@ namespace IdentityEmailApp.Controllers
         //----------SPAMMED ---------//
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> ToggleSpam(int id)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -339,12 +472,8 @@ namespace IdentityEmailApp.Controllers
 
             return Ok();
 
+
         }
-
-
-
-
-
 
         //---------- DELETED MESSAGES ----------//
         public async Task<IActionResult> DeletedMessages()
@@ -356,35 +485,45 @@ namespace IdentityEmailApp.Controllers
                 return RedirectToAction("SignIn", "Login");
             }
 
+            ViewBag.UserMail = user.Email;
+
             var messages = await _context.Messages
                 .Where(x =>
                     x.IsDeleted &&
                     !x.IsDraft &&
-                    x.ReceiverEmail == user.Email
-                )
+                    (
+                        x.ReceiverEmail == user.Email ||
+                        x.SenderEmail == user.Email
+                    ))
                 .OrderByDescending(x => x.SendDate)
                 .ToListAsync();
-
             return View(messages);
         }
 
         //----------DELETED ---------//
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleDeleted(int id)
         {
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
             {
-                return RedirectToAction("SignIn", "Login");
+                return Unauthorized();
             }
 
             var message = await _context.Messages
                 .FirstOrDefaultAsync(x =>
-                      x.MessageId == id &&
-                      (x.ReceiverEmail == user.Email));
+                    x.MessageId == id &&
+                    (
+                        x.ReceiverEmail == user.Email ||
+                        x.SenderEmail == user.Email
+                    ));
 
             if (message == null)
+            {
                 return NotFound();
+            }
 
             message.IsDeleted = !message.IsDeleted;
 
@@ -397,7 +536,7 @@ namespace IdentityEmailApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> MarkAsUnRead(int id)
+        public async Task<IActionResult> MarkAsRead(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -411,76 +550,122 @@ namespace IdentityEmailApp.Controllers
             {
                 return NotFound();
             }
-
-            message.IsRead = false;
+            
+            message.IsRead = !message.IsRead;
             await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = "Mesaj başarıyla gönderildi.";
 
-            return RedirectToAction("SendBox");
+            return RedirectToAction("Inbox");
         }
-      
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteMessage(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var message = await _context.Messages
+                .FirstOrDefaultAsync(x =>
+                    x.MessageId == id &&
+                    x.IsDeleted &&
+                    (
+                        x.ReceiverEmail == user.Email ||
+                        x.SenderEmail == user.Email
+                    ));
+
+            if (message == null)
+            {
+                return NotFound();
+            }
+
+            _context.Messages.Remove(message);
+
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true
+            });
+        }
 
 
 
-        //[HttpGet]
-        //public async Task<IActionResult> ReplyMessage(int id)
-        //{
 
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    if (currentUser == null)
-        //    {
-        //        return RedirectToAction("SignIn", "Login");
-        //    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReplyMessage(MessageReplyViewModel model)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
 
-        //    var message = await _context.Messages.FirstOrDefaultAsync(x => x.MessageId == id && x.ReceiverEmail == currentUser.Email);
+            if (currentUser == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
 
-        //    var model = new MessageReplyViewModel
-        //    {
-        //        ReplyMessageId = message.MessageId,
-        //        ReceiverEmail = message.SenderEmail,
-        //        Subject = message.Subject
-        //    };
-        //    return View(model);
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] =
+                    "Yanıt mesajı boş bırakılamaz.";
 
+                return RedirectToAction(
+                    nameof(MessageDetail),
+                    new { id = model.ReplyMessageId });
+            }
 
-        //}
+            var message = await _context.Messages
+                .FirstOrDefaultAsync(x =>
+                    x.MessageId == model.ReplyMessageId &&
+                    (
+                        x.ReceiverEmail == currentUser.Email ||
+                        x.SenderEmail == currentUser.Email
+                    ));
 
-        //[HttpPost]
-        //public async Task<IActionResult> ReplyMessage(MessageReplyViewModel model)
-        //{
-        //    var currentUser = await _userManager.GetUserAsync(User);
+            if (message == null)
+            {
+                return NotFound();
+            }
 
-        //    if (currentUser == null)
-        //    {
-        //        return RedirectToAction("SignIn", "Login");
-        //    }
-        //    var message = await _context.Messages.FirstOrDefaultAsync(x => x.MessageId == model.ReplyMessageId && x.ReceiverEmail == currentUser.Email);
+            var receiverEmail =
+                message.SenderEmail == currentUser.Email
+                    ? message.ReceiverEmail
+                    : message.SenderEmail;
 
+            var subject =
+                message.Subject.StartsWith(
+                    "Re:",
+                    StringComparison.OrdinalIgnoreCase)
+                        ? message.Subject
+                        : $"Re: {message.Subject}";
 
-        //    if(message ==null)
-        //    {
-        //        return NotFound();
-        //    }
+            var conversationId =
+                message.ConversationId ?? message.MessageId;
 
-        //    var replyMessage = new Message
-        //    {
-        //        SenderEmail = currentUser.Email,
-        //        ReceiverEmail = message.SenderEmail,
-        //        Subject = model.Subject,
-        //        MessageDetail = model.MessageDetail,
-        //        SendDate = DateTime.Now,
-        //        IsRead = false,
-        //        CategoryId = message.CategoryId
+            var replyMessage = new Message
+            {
+                SenderEmail = currentUser.Email!,
+                ReceiverEmail = receiverEmail,
+                Subject = subject,
+                MessageDetail = model.MessageDetail,
+                SendDate = DateTime.Now,
+                IsRead = false,
+                IsDraft = false,
+                CategoryId = message.CategoryId,
+                ConversationId = conversationId
+            };
 
-        //    };
+            await _context.Messages.AddAsync(replyMessage);
+            await _context.SaveChangesAsync();
 
-        //    await _context.Messages.AddAsync(replyMessage);
-        //    await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] =
+                "Yanıtınız başarıyla gönderildi.";
 
-        //    TempData["SuccessMessage"] = "Yanıtınız başarıyla gönderildi.";
-
-        //    return RedirectToAction("SendBox");
-        //}
-
+            return RedirectToAction(
+                nameof(MessageDetail),
+                new { id = replyMessage.MessageId });
+        }
     }
 }

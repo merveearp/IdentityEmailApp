@@ -1,0 +1,339 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html class="dark" lang="tr">
+
+     @await Component.InvokeAsync("_NewHeadComponent")
+
+
+<body class="text-on-surface font-body-md overflow-x-hidden selection:bg-secondary/30 bg-surface-dim">
+<!-- TopNavBar -->
+<header class="flex flex-col w-full sticky top-0 z-50 px-margin-mobile md:px-margin-desktop gap-xs md:gap-md bg-background/80 backdrop-blur-md border-b border-white/10">
+<div class="flex items-center justify-between h-16 w-full">
+<!-- Brand -->
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">NotikaMail Haberler</span>
+</div>
+
+
+<!-- Search Bar (on_left style adjusted for center alignment like reference) -->
+<div class="hidden md:flex flex-1 max-w-2xl mx-gutter">
+
+<div class="relative w-full group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-10 pr-4 text-on-surface placeholder:text-outline focus:ring-1 focus:ring-secondary transition-all outline-none" placeholder="Konu, konum ve kaynak ara" type="text"/>
+</div>
+</div>
+
+
+<!-- Trailing Icons -->
+<div class="flex items-center gap-xs">
+<button class="p-2 hover:bg-surface-variant/50 rounded-lg transition-all text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="p-2 hover:bg-surface-variant/50 rounded-lg transition-all text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="p-2 hover:bg-surface-variant/50 rounded-lg transition-all text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined">apps</span>
+</button>
+<div class="ml-2 w-8 h-8 rounded-full overflow-hidden border border-white/10 cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="A professional close-up profile portrait of a confident media professional, illuminated by soft studio lighting with a dark corporate aesthetic. The background is a subtly textured deep navy blue, matching the high-efficiency and trustworthy mood of the NotikaMail design system. The lighting highlights sharp features and a friendly, intelligent expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJWP_qByv_J34Ko7tO2aHeDMuzOiwpTRB9OHLKjfHV3csjJMEKgNDT1xVZ5d29kLy3e0ng1F_uhfZ8Kexaj9N85yX0QvEhsluMc1IptvOa6Sq_UCa5lcDYperc7okj1mQTkICBqoBTpCLg3uEIhmc6kWyXmRwmZRi-e0GxXCF_rAtZQRtYSDFnElyRGYdl4SODzPvYpyu73PU4rdI-ywcKJwzRmbxlbqU0nPMNJRuuOmjoRn8NS6q8XwEvlNQqzNX2gV9N3lZAGHA"/>
+</div>
+</div>
+</div>
+
+
+<!-- Navigation Links (Horizontal) -->
+        @await Component.InvokeAsync("_NewNavigationLinkComponent")
+
+
+</header>
+
+
+
+<main class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop py-xl">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Main Content Column -->
+<div class="lg:col-span-8 space-y-lg">
+<section>
+<div class="flex items-baseline justify-between mb-lg">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Özetler</h1>
+<p class="font-label-md text-label-md text-on-surface-variant mt-1">23 Temmuz Perşembe</p>
+</div>
+<a class="flex items-center gap-1 text-secondary font-medium hover:underline" href="#">
+<span class="font-label-md text-label-md">Daha fazla başlık ve perspektif göster</span>
+<span class="material-symbols-outlined text-sm">arrow_forward_ios</span>
+</a>
+</div>
+<!-- Hero Section - Grid Style (En çok okunanlar) -->
+<div class="space-y-md">
+<div class="flex items-center gap-xs mb-sm">
+<h2 class="font-headline-sm text-headline-sm text-secondary">En çok okunan haberler</h2>
+<span class="material-symbols-outlined text-secondary">chevron_right</span>
+</div>
+<!-- Bento Grid News Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Large Featured Card -->
+<div class="md:col-span-2 group cursor-pointer bg-surface-container-low rounded-xl overflow-hidden ghost-border hover:bg-surface-variant/30 transition-all" style="transform: scale(1);">
+<div class="relative h-64 w-full">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A cinematic, high-resolution photo of a cityscape at dusk with deep teal and blue tones. Soft street lights illuminate the architecture, reflecting the sophisticated and editorial precision of the NotikaMail brand. The image captures a mood of calm observation and institutional trust, using a wide-angle perspective and premium clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw24fJm8c4l87TVOjAdfNi1O0B9ZCfCvLqNiiZpUh-ZxaM8Tu5pxdnUc2RHbGFMFrBQxkVdSR_MPbXU7ntrcpQP0Pg2WLCbtNuIJJ6sRdjAuO3E77KvAGdtUg5UI_CG7T5_et3vbXHdNwohT23a-2kEPEISg76KDOSArxWFnqHtzwZzpqCRnHqLJhvzMTCDNl7R_6xcRwrIQ49cbeGG4PIZadwN2x92_o0s-QRyjgG51k5uHDlH8BglYdRY7wuBAa1MoQVEF388MM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+</div>
+<div class="p-lg space-y-md">
+<div class="flex items-center gap-xs">
+<div class="w-5 h-5 bg-white rounded-sm flex items-center justify-center p-0.5">
+<span class="text-[10px] font-bold text-black">H</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Hürriyet • 21 dakika önce</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-secondary transition-colors">Yapay Zeka ve Gelecek: Yeni Nesil Teknolojiler İstanbul'da Tartışılıyor</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Dünya devleri İstanbul'da bir araya gelerek yapay zekanın etik kurallarını ve gelecekteki iş süreçlerine olan etkisini değerlendirdi. Zirve yoğun katılımla gerçekleşti.</p>
+</div>
+</div>
+<!-- Side News Items for Hero -->
+<div class="md:col-span-1 space-y-md">
+<div class="p-md bg-surface-container-low rounded-xl ghost-border hover:bg-surface-variant/30 transition-all cursor-pointer group" style="transform: scale(1);">
+<div class="flex items-center gap-xs mb-xs">
+<span class="font-label-md text-label-md text-secondary">NTV Haber</span>
+<span class="text-[10px] text-on-surface-variant">• 9 saat önce</span>
+</div>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-secondary">Ekonomide Yeni Dönem: Faiz Kararı Beklentileri Şekillendiriyor</h4>
+</div>
+<div class="p-md bg-surface-container-low rounded-xl ghost-border hover:bg-surface-variant/30 transition-all cursor-pointer group">
+<div class="flex items-center gap-xs mb-xs">
+<span class="font-label-md text-label-md text-secondary">Anadolu Ajansı</span>
+<span class="text-[10px] text-on-surface-variant">• 4 saat önce</span>
+</div>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-secondary">Savunma Sanayiinde Yerli Atılım: Yeni İHA Modelleri Görücüye Çıktı</h4>
+</div>
+<div class="p-md bg-surface-container-low rounded-xl ghost-border hover:bg-surface-variant/30 transition-all cursor-pointer group" style="transform: scale(1);">
+<div class="flex items-center gap-xs mb-xs">
+<span class="font-label-md text-label-md text-secondary">soL Haber</span>
+<span class="text-[10px] text-on-surface-variant">• 9 saat önce</span>
+</div>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-secondary">İklim Krizi Raporu: Türkiye'de Su Kaynakları Alarm Veriyor</h4>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- More News Section -->
+<section class="pt-lg">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="flex gap-md p-md bg-surface-container rounded-xl ghost-border hover:bg-surface-variant/30 cursor-pointer group" style="transform: scale(1);">
+<div class="w-1/3 aspect-square rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A high-contrast architectural shot of a modern glass skyscraper reflecting a bright blue sky. The lighting is crisp and editorial, highlighting sharp angles and clean lines typical of a high-end corporate modernism aesthetic. The image conveys a sense of professional progress and urban energy, perfectly fitting the NotikaMail news layout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoMUfPD_b5m-4JZMYBZDNc4lYx9pX8SWw5epkYSAwp7eW90BsolwLLiPPyhcM_O2QKlL-1PZ3UPmu31HkqFsq5AiEpTFUJwm4newfH0GdCn_QEVGG53rOaOSub1M-OitHl8CIWCBWrrnmusYh3w3X8OxnyQp6z8jZSJKHiMo1NPvMgGfd8_LT0f47MlxBjTU7DgjhG6Zo4BBoFvo7s9-PIWHOw-COag2u6p4BXy6K8SmHD8huHb3W42hucJB7XTWJ_zdRdM9q7oKI"/>
+</div>
+<div class="flex flex-col justify-between">
+<div class="space-y-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Dünya • 3s önce</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-secondary leading-tight">Mars Görevi İçin Geri Sayım Başladı</h4>
+</div>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">newspaper</span>
+<span class="text-[10px]">BBC Türkçe</span>
+</div>
+</div>
+</div>
+<div class="flex gap-md p-md bg-surface-container rounded-xl ghost-border hover:bg-surface-variant/30 cursor-pointer group" style="transform: scale(1);">
+<div class="w-1/3 aspect-square rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A lush, green mountain landscape under a moody, overcast sky with subtle blue lighting. The atmosphere is serene and slightly mysterious, capturing the sophisticated utility and deep chromatic anthracite tones of the brand identity. The focus is on natural textures and expansive space, providing a quiet, reliable backdrop for information intelligence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDH9o7qTTJfHJXposqa_sT43HpD6IlDZVL8TNz2SEBBWz24tEevR-giWyt-2Ve4rTMvyzzViGU31FAeKBXvWmj0t6TSNuJb2y8QJVHnv3esJZneTlhT7HLafgVoUWKJ-IrcZntX2dU7CTlHrxIiDkZ8Qz-dzXelWNF7TF3gqxa_Bg1NiU9ELt6n3y6gMp386_LX6-w1Mr51uw3RgPr_oJLJv3bmLWDx5VRy4Q5Y40uIybaRRO1_70y97hSWe52qPzZaDlN8DiqrG7A"/>
+</div>
+<div class="flex flex-col justify-between">
+<div class="space-y-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Doğa • 5s önce</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-secondary leading-tight">Milli Parklarda Yeni Koruma Alanları Belirlendi</h4>
+</div>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">newspaper</span>
+<span class="text-[10px]">Milliyet</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Sidebar Column -->
+<aside class="lg:col-span-4 space-y-lg">
+<!-- Weather Widget -->
+<div class="bg-gradient-to-br from-[#1a2332] via-[#00374d] to-[#00a6e0] rounded-2xl p-lg ghost-border relative overflow-hidden backdrop-blur-md border border-white/20 shadow-xl">
+<!-- Subtle Glow Effect -->
+<div class="absolute -top-16 -right-16 w-48 h-48 bg-secondary/30 blur-[80px] rounded-full animate-pulse"></div><div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0px); background-size: 24px 24px;"></div>
+<div class="flex justify-between items-start mb-md">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">İstanbul</p>
+<h3 class="font-display-lg text-display-lg text-on-surface leading-none mt-1 drop-shadow-md">23°C</h3>
+</div>
+<div class="text-right">
+<span class="material-symbols-outlined text-secondary text-6xl drop-shadow-[0_0_15px_rgba(123,208,255,0.8)]" style='font-variation-settings: "FILL" 1;'>sunny</span>
+<p class="font-label-md text-label-md text-on-surface mt-1">Güneşli</p>
+</div>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md opacity-60">Nem</span>
+<span class="font-body-md text-body-md text-on-surface">%45</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md opacity-60">Rüzgar</span>
+<span class="font-body-md text-body-md text-on-surface">12 km/s</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md opacity-60">Hissedilen</span>
+<span class="font-body-md text-body-md text-on-surface">25°</span>
+</div>
+</div>
+</div>
+<!-- Local News Section -->
+<section class="bg-surface-container-low rounded-2xl p-lg ghost-border">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-secondary">Yerel haberler</h3>
+<button class="p-1 hover:bg-surface-variant/50 rounded-md">
+<span class="material-symbols-outlined text-on-surface-variant">tune</span>
+</button>
+</div>
+<div class="space-y-md">
+<!-- Local Item 1 -->
+<div class="flex gap-sm group cursor-pointer border-b border-white/5 pb-md last:border-0 last:pb-0" style="transform: scale(1);">
+<div class="flex-1 space-y-xs">
+<div class="flex items-center gap-xs">
+<span class="font-label-md text-label-md text-on-surface-variant font-bold">Hürriyet</span>
+<span class="text-[10px] text-on-surface-variant">• 2 saat önce</span>
+</div>
+<h4 class="font-body-sm text-body-sm font-medium text-on-surface group-hover:text-secondary transition-colors">Beşiktaş Meydanı'nda Yeni Çevre Düzenlemesi Tamamlanıyor</h4>
+</div>
+<div class="w-16 h-16 rounded-lg overflow-hidden shrink-0 ghost-border">
+<img class="w-full h-full object-cover" data-alt="A vibrant and bustling urban plaza in Istanbul during the golden hour. The shot focuses on the clean, modern architectural elements and green spaces being developed. The lighting is warm and inviting, contrasted with the deep navy shadows of the surrounding city, adhering to the sophisticated utility and editorial air of NotikaMail." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQ3tzG7ECij5fCYbGfdEEhnNjsvpEasfTwJBBmZ599QVR2_lZp5binUnmuKfPL5ZRqq3-WiW-GdH-7Lta0abYNIudddGolTgacpYVKvSJorG0Moqf5oDPmQfEE98eCnwcrEX_nZYUP3VupQk44AagWfMQIN5B8d6q-clVekCLraI0OeGr_zpk11ZnYjk1UDprD_ITqsTKscUgs3h6exFfH5eps9eGh5us5-5r-lnet5sFK2omtcGXRNN85foGHMy06mtuCHWol3Bk"/>
+</div>
+</div>
+<!-- Local Item 2 -->
+<div class="flex gap-sm group cursor-pointer border-b border-white/5 pb-md last:border-0 last:pb-0">
+<div class="flex-1 space-y-xs">
+<div class="flex items-center gap-xs">
+<span class="font-label-md text-label-md text-on-surface-variant font-bold">DHA</span>
+<span class="text-[10px] text-on-surface-variant">• 3 saat önce</span>
+</div>
+<h4 class="font-body-sm text-body-sm font-medium text-on-surface group-hover:text-secondary transition-colors">Kadıköy'de Tarihi Köşk Restore Edilerek Kütüphaneye Dönüştürüldü</h4>
+</div>
+<div class="w-16 h-16 rounded-lg overflow-hidden shrink-0 ghost-border">
+<img class="w-full h-full object-cover" data-alt="A beautifully restored historic wooden mansion in Istanbul, photographed with a clean, professional architectural style. Soft morning light brings out the textures of the wood and the modern glass library extensions. The mood is one of cultural preservation and high-end modernism, fitting the quiet backdrop of a professional news platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv2sfjyK4e5DeKG_XG2KQ3ILhs6PyycrvkHPhmmy7jKzg4-z26oHbt3gB7ZVrhPT18oLom5HY0VDoy4Yvd7S-gDdXZGq2v8UJx2nTAn4i4bCoNfuIy_NRFj82T2KRBRy2ZdBhOJLnqqE9TC7-eDbT4_-FhUfRENE6AG2BKh1bgTv0ed0NiHnjaZ-4q6j5qAMzzQNYEgGQPASe1h-sOryFD5jFjNRdq_K5Xela28Rb8XbId19QegcFqIefl65dmBbL5tTnErLrM5j4"/>
+</div>
+</div>
+<!-- Local Item 3 -->
+<div class="flex gap-sm group cursor-pointer">
+<div class="flex-1 space-y-xs">
+<div class="flex items-center gap-xs">
+<span class="font-label-md text-label-md text-on-surface-variant font-bold">AA</span>
+<span class="text-[10px] text-on-surface-variant">• 5 saat önce</span>
+</div>
+<h4 class="font-body-sm text-body-sm font-medium text-on-surface group-hover:text-secondary transition-colors">İstanbul Metrosu'nda Yeni Teknoloji: QR Kod ile Temassız Geçiş</h4>
+</div>
+<div class="w-16 h-16 rounded-lg overflow-hidden shrink-0 ghost-border">
+<img class="w-full h-full object-cover" data-alt="A high-tech, futuristic subway station interior featuring sleek metallic surfaces and glowing blue UI elements on ticket gates. The lighting is cinematic and cool-toned, emphasizing high-efficiency and technological advancement. The shot is captured with editorial precision, focusing on the seamless interaction between human and technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcZdwsmYXZOQOQD0co8lHL1MI7NTn1dt7BBd13dc0eQl-YdgsD965gwGeuk-Pe_fa_41moJA7vD86fTKmpo5YK19elWPhN-JD6JdqN0ooZZVKee1UCVb3hV1949o6XOdIKOWaUbnfgrAlCkXI9e1YPjgap8j3i6HpkcoPt-5ED7UgLN5oWNe-K-FKV78WAqhDgueO_7IQFnaV0EjPPaeERdDqgyMT70Bhb91dsVHz3eyPBauMe-sun2WSgNr92O_X97SvWqRUtec8"/>
+</div>
+</div>
+</div>
+<button class="w-full mt-lg py-2 rounded-xl bg-surface-variant/20 hover:bg-surface-variant/50 text-on-surface-variant font-label-md text-label-md transition-all border border-white/5">
+                        Tüm Yerel Haberleri Gör
+                    </button>
+</section>
+<!-- Newsletter CTA -->
+<div class="bg-primary-container rounded-2xl p-lg border border-secondary/20">
+<h3 class="font-headline-sm text-headline-sm text-secondary mb-xs">Haber Bültenine Abone Ol</h3>
+<p class="font-body-sm text-body-sm text-on-primary-container mb-md">Günün en önemli gelişmeleri her sabah e-postana gelsin.</p>
+<div class="flex gap-xs">
+<input class="flex-1 bg-background/50 border border-white/10 rounded-lg px-3 py-2 text-on-surface focus:ring-1 focus:ring-secondary outline-none text-sm" placeholder="e-posta@adresiniz.com" type="email"/>
+<button class="bg-secondary text-on-secondary-container px-4 py-2 rounded-lg font-bold hover:scale-[0.98] transition-transform text-sm">Abone Ol</button>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<section class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop py-xl">
+<div class="flex items-center gap-xs mb-lg">
+<h2 class="font-headline-sm text-headline-sm text-secondary">Konulara Göre Keşfet</h2>
+<span class="material-symbols-outlined text-secondary">explore</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-md">
+<!-- Teknoloji -->
+<div class="group cursor-pointer bg-surface-container-low rounded-xl overflow-hidden ghost-border hover:bg-surface-variant/30 transition-all">
+<div class="h-32 w-full overflow-hidden">
+<img alt="Teknoloji" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABqZDq0M19qXCmLGHexpiXcWTENDLyd21Xx5Bgu5Go2gdcni8VgMP-R45wy7ahhL5Lrgo32pb3MTh2DGIiHQesqqbV_UwqlITmg3YBukGzkzf4Ye6oKTolt7UB2kYGmCtqUptqUYghbMfC893SoEMHwfFtjXyTECuL-ctiOpUK7Q9cFE1kQMR3vuKMHA7iOEw_dIh_7Iu147StRG4zleY0-KeueMLhlqpSxfXbAGUCESagOB5HUqQ0ayo7rQ5hbm_CDD7q7MliNT0"/>
+</div>
+<div class="p-md">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Teknoloji</span>
+<h4 class="font-body-md font-semibold text-on-surface mt-1 group-hover:text-secondary transition-colors">Geleceğin Dünyası</h4>
+</div>
+</div>
+<!-- Spor -->
+<div class="group cursor-pointer bg-surface-container-low rounded-xl overflow-hidden ghost-border hover:bg-surface-variant/30 transition-all">
+<div class="h-32 w-full overflow-hidden">
+<img alt="Spor" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlV6RVfCBmaeRjX6s6c0SidGCxUyTLJcFzeEwBgNpav4QQFquxvYMwCtJ-Pc863pAChZBy7ds9T8m3xmBaPYhBgt1XCJnn9wr3C-YTf24P-H9Lv8zHNjKImD6-FlknAw_raWzJ4wQPnrh0AS2_UA4irJOyxiuKbvDDKgk5uGzj40a2McE5-zko8Y_tLRvOZtN8Pls685Z6_ECAJNZLOtn2HNEAUfy8JzzzPLd2xVNrl1rbSVSFaLHlxvS02tBNKchpQMLO16jQeQA"/>
+</div>
+<div class="p-md">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Spor</span>
+<h4 class="font-body-md font-semibold text-on-surface mt-1 group-hover:text-secondary transition-colors">Sahadan Haberler</h4>
+</div>
+</div>
+<!-- Ekonomi -->
+<div class="group cursor-pointer bg-surface-container-low rounded-xl overflow-hidden ghost-border hover:bg-surface-variant/30 transition-all">
+<div class="h-32 w-full overflow-hidden">
+<img alt="Ekonomi" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWx-FIrgHsdjuXf7Hj-1OlNhMT97NDY2xaU_i55TmldLbwWDEX-UDBCaAsJKtXzNGF9qhVArfyUwLdg1l46CHEh3hiAvEFmkfUAX6gJseiYuKfOLf8LFmBAmTmhO4sr3jgEKhL3Lf2z3rd9Jv0oSiGBg8a9AP1hE-nu9uv2Dui-STwng13_FJP3pxFPUXdJkF1PXNlh2NJKF7GzUj8-BaPVHBnI4ur6NRvSRC2On0T1kMD_dw7JSyMZt4ghLvjZCSW2jCQy6QQAP4"/>
+</div>
+<div class="p-md">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Ekonomi</span>
+<h4 class="font-body-md font-semibold text-on-surface mt-1 group-hover:text-secondary transition-colors">Piyasa Analizi</h4>
+</div>
+</div>
+<!-- Yaşam -->
+<div class="group cursor-pointer bg-surface-container-low rounded-xl overflow-hidden ghost-border hover:bg-surface-variant/30 transition-all">
+<div class="h-32 w-full overflow-hidden">
+<img alt="Yaşam" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfq24324fCN8Z3PP1Y_P4ykH7EOhrje-7zocZMOBySSPrVLBO01RnTdjtUdVEaIpiWWT6InSiR2ecELlZlzqJlWJqJTHiTq6hpTJi4IfDbz6qBst-6HAOzkrIfTNSe4Y2gSbbPZtAM0R_sw6h-S99-OsBKqrk4LWiN2GnoAS-_GrZ2x-wTBttIIjhZsMyv18zInXCPyCTPkyt_3sKbgXozsw2owLk4bW_oRNuBukivjfV3MiKD1b6EQqiaH7ZDoxCw9GKpLg50Bsw"/>
+</div>
+<div class="p-md">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Yaşam</span>
+<h4 class="font-body-md font-semibold text-on-surface mt-1 group-hover:text-secondary transition-colors">Modern Yaşam</h4>
+</div>
+</div>
+<!-- Sanat -->
+<div class="group cursor-pointer bg-surface-container-low rounded-xl overflow-hidden ghost-border hover:bg-surface-variant/30 transition-all">
+<div class="h-32 w-full overflow-hidden">
+<img alt="Sanat" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAa3Xe_9rDx4nPi6yYt4Z4yam5F4cgcz-MZuTXZCflIUyyPq0uS1WSD5fj7810yHMX_wD8zsMrH0tmTVYRhpJIXWMOOmQZf3eFXHBc4crkMn8OGHgd5QR0HZOKG0PSHmTveEx69EWnU426F4lKcPhXw0vuH88LhxyzT--KmlsrrMjEnj99u0cw02WlbYxoYxfbo_-eUBpULd87q1KvXPocMlEVXeOCyZH7Try8PNr93z7D46pTxrESEQ8F7eEcQr6u6v-GzdYMU1Y"/>
+</div>
+<div class="p-md">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Sanat</span>
+<h4 class="font-body-md font-semibold text-on-surface mt-1 group-hover:text-secondary transition-colors">Kültür &amp; Sanat</h4>
+</div>
+</div>
+</div>
+</section><footer class="border-t border-white/5 py-xl mt-xl bg-surface-container-lowest">
+<div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-lg">
+<div class="space-y-xs text-center md:text-left">
+<p class="font-headline-sm text-headline-sm font-bold text-on-surface">NotikaMail</p>
+<p class="font-label-md text-label-md text-on-surface-variant">© 2024 Bilgi Zekası ve Medya Teknolojileri A.Ş.</p>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Gizlilik</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Şartlar</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Reklam</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Bize Ulaşın</a>
+</div>
+</div>
+</footer>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('.cursor-pointer').forEach(item => {
+            item.addEventListener('mousedown', () => item.style.transform = 'scale(0.99)');
+            item.addEventListener('mouseup', () => item.style.transform = 'scale(1)');
+            item.addEventListener('mouseleave', () => item.style.transform = 'scale(1)');
+        });
+    </script>
+</body></html>
