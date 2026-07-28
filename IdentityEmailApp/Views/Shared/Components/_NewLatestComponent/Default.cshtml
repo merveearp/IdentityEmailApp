@@ -1,0 +1,161 @@
+﻿@using IdentityEmailApp.DTOs.NewsDtos
+@model List<ResultLatestOfNewDto.Item>
+
+@{
+    var mainNews = Model?.FirstOrDefault();
+
+    var sideNews = Model?
+        .Skip(1)
+        .Take(3)
+        .ToList() ?? new List<ResultLatestOfNewDto.Item>();
+        
+    var imageUrl = !string.IsNullOrWhiteSpace(mainNews?.images?.thumbnailProxied)
+        ? mainNews.images.thumbnailProxied
+        : mainNews?.images?.thumbnail;
+
+}
+
+<div class="space-y-md">
+
+    <div class="flex items-center gap-xs mb-sm">
+        <h2 class="font-headline-sm text-headline-sm text-secondary">
+            📰 Son Dakika Haberleri
+        </h2>
+
+        <span class="material-symbols-outlined text-secondary">
+            chevron_right
+        </span>
+    </div>
+
+    @if (mainNews == null)
+    {
+        <div class="p-md bg-surface-container-low rounded-xl ghost-border">
+            <p class="text-on-surface-variant">
+                Şu anda gösterilecek haber bulunamadı.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+
+          
+            <!-- Ana Haber -->
+            <a href="@mainNews.newsUrl"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="md:col-span-2 group cursor-pointer bg-surface-container-low
+                rounded-xl overflow-hidden ghost-border
+                hover:bg-surface-variant/30 transition-all block"
+                   style="transform:scale(1); text-decoration:none; display:block; overflow:hidden;">
+
+                <div class="relative h-64 w-full"
+                     style="height:256px; overflow:hidden;">
+
+                    <img src="@imageUrl"
+                         alt="@mainNews?.title"
+                         style="width:100%; height:256px; display:block; object-fit:cover;"
+                         referrerpolicy="no-referrer"
+                         onerror="this.onerror=null; this.src='@Url.Content("~/images/news-default.jpg")';" />
+
+                    <div class="absolute inset-0 bg-gradient-to-t
+                        from-background/80 to-transparent">
+                    </div>
+
+                </div>
+
+                <div class="p-lg space-y-md">
+
+                    <div class="flex items-center gap-xs">
+
+                        <div class="w-5 h-5 bg-white rounded-sm
+                            flex items-center justify-center p-0.5">
+
+                            <span class="text-[10px] font-bold text-black">
+                                @(string.IsNullOrWhiteSpace(mainNews.publisher)
+                                    ? "H"
+                                    : mainNews.publisher[..1].ToUpper())
+                            </span>
+
+                        </div>
+
+                        <span class="font-label-md text-label-md text-on-surface-variant">
+                            @(string.IsNullOrWhiteSpace(mainNews.publisher)
+                                ? "Haber kaynağı"
+                                : mainNews.publisher)
+                        </span>
+
+                    </div>
+
+                    <h3 class="font-headline-md text-headline-md
+                        text-on-surface group-hover:text-secondary
+                        transition-colors">
+
+                        @mainNews.title
+
+                    </h3>
+
+                    @if (!string.IsNullOrWhiteSpace(mainNews.snippet))
+                    {
+                        <p class="font-body-sm text-body-sm
+                            text-on-surface-variant line-clamp-2">
+
+                            @mainNews.snippet
+
+                        </p>
+                    }
+
+                </div>
+
+            </a>
+
+            <!-- Sağ Taraftaki Haberler -->
+            <div class="md:col-span-1 space-y-md">
+
+                @foreach (var news in sideNews)
+                {
+                    <a href="@news.newsUrl"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="p-md bg-surface-container-low rounded-xl
+                        ghost-border hover:bg-surface-variant/30
+                        transition-all cursor-pointer group block"
+                           style="text-decoration: none;">
+
+                        <div class="flex items-center gap-xs mb-xs">
+
+                            <span class="font-label-md text-label-md text-secondary">
+                                @(string.IsNullOrWhiteSpace(news.publisher)
+                                    ? "Haber kaynağı"
+                                    : news.publisher)
+                            </span>
+
+                        </div>
+
+                        <h4 class="font-body-md text-body-md font-semibold
+                            text-on-surface group-hover:text-secondary
+                            transition-colors line-clamp-2">
+
+                            @news.title
+
+                        </h4>
+
+                        @if (!string.IsNullOrWhiteSpace(news.snippet))
+                        {
+                            <p class="font-body-sm text-body-sm
+                                text-on-surface-variant line-clamp-2 mt-xs">
+
+                                @news.snippet
+
+                            </p>
+                        }
+
+                    </a>
+                }
+
+            </div>
+
+        </div>
+    }
+
+</div>

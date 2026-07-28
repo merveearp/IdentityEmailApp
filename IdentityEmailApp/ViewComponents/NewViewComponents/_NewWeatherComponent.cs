@@ -2,9 +2,9 @@
 
 namespace IdentityEmailApp.ViewComponents.NewViewComponents
 {
-    public class _NewHeadComponent :ViewComponent
+    public class _NewWeatherComponent :ViewComponent
     {
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             return View();
         }

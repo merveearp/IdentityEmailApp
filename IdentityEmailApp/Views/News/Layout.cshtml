@@ -1,0 +1,119 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html class="dark" lang="tr">
+
+@await Component.InvokeAsync("_NewLayoutHeadComponent")
+
+
+<body class="text-on-surface font-body-md overflow-x-hidden selection:bg-secondary/30 bg-surface-dim">
+    <!-- TopNavBar -->
+    <header class="flex flex-col w-full sticky top-0 z-50 px-margin-mobile md:px-margin-desktop gap-xs md:gap-md bg-background/80 backdrop-blur-md border-b border-white/10">
+        <div class="flex items-center justify-between h-16 w-full">
+            <!-- Brand -->
+            <div class="flex items-center gap-md">
+                <span class="font-headline-md text-headline-md font-bold text-on-surface">NotikaMail Haberler</span>
+            </div>
+
+
+            <!-- Search Bar (on_left style adjusted for center alignment like reference) -->
+            @await Component.InvokeAsync("_NewSearchComponent")
+
+
+            <!-- Account Icons -->
+            @await Component.InvokeAsync("_NewAccountComponent")
+        </div>
+
+
+        <!-- Navigation Links (Horizontal) -->
+        @await Component.InvokeAsync("_NewLayoutNavigationLinkComponent")
+
+
+    </header>
+
+    @RenderBody()
+
+    
+
+    <section class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop py-xl">
+        <div class="flex items-center gap-xs mb-lg">
+            <h2 class="font-headline-sm text-headline-sm text-secondary">Konulara Göre Keşfet</h2>
+            <span class="material-symbols-outlined text-secondary">explore</span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-md">
+
+
+            <!-- Teknoloji -->
+            <div class="group cursor-pointer bg-surface-container-low rounded-xl overflow-hidden ghost-border hover:bg-surface-variant/30 transition-all">
+                <div class="h-32 w-full overflow-hidden">
+                    <img alt="Teknoloji" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABqZDq0M19qXCmLGHexpiXcWTENDLyd21Xx5Bgu5Go2gdcni8VgMP-R45wy7ahhL5Lrgo32pb3MTh2DGIiHQesqqbV_UwqlITmg3YBukGzkzf4Ye6oKTolt7UB2kYGmCtqUptqUYghbMfC893SoEMHwfFtjXyTECuL-ctiOpUK7Q9cFE1kQMR3vuKMHA7iOEw_dIh_7Iu147StRG4zleY0-KeueMLhlqpSxfXbAGUCESagOB5HUqQ0ayo7rQ5hbm_CDD7q7MliNT0" />
+                </div>
+                <div class="p-md">
+                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Teknoloji</span>
+                    <h4 class="font-body-md font-semibold text-on-surface mt-1 group-hover:text-secondary transition-colors">Geleceğin Dünyası</h4>
+                </div>
+            </div>
+            <!-- Spor -->
+            <div class="group cursor-pointer bg-surface-container-low rounded-xl overflow-hidden ghost-border hover:bg-surface-variant/30 transition-all">
+                <div class="h-32 w-full overflow-hidden">
+                    <img alt="Spor" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlV6RVfCBmaeRjX6s6c0SidGCxUyTLJcFzeEwBgNpav4QQFquxvYMwCtJ-Pc863pAChZBy7ds9T8m3xmBaPYhBgt1XCJnn9wr3C-YTf24P-H9Lv8zHNjKImD6-FlknAw_raWzJ4wQPnrh0AS2_UA4irJOyxiuKbvDDKgk5uGzj40a2McE5-zko8Y_tLRvOZtN8Pls685Z6_ECAJNZLOtn2HNEAUfy8JzzzPLd2xVNrl1rbSVSFaLHlxvS02tBNKchpQMLO16jQeQA" />
+                </div>
+                <div class="p-md">
+                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Spor</span>
+                    <h4 class="font-body-md font-semibold text-on-surface mt-1 group-hover:text-secondary transition-colors">Sahadan Haberler</h4>
+                </div>
+            </div>
+            <!-- Ekonomi -->
+            <div class="group cursor-pointer bg-surface-container-low rounded-xl overflow-hidden ghost-border hover:bg-surface-variant/30 transition-all">
+                <div class="h-32 w-full overflow-hidden">
+                    <img alt="Ekonomi" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWx-FIrgHsdjuXf7Hj-1OlNhMT97NDY2xaU_i55TmldLbwWDEX-UDBCaAsJKtXzNGF9qhVArfyUwLdg1l46CHEh3hiAvEFmkfUAX6gJseiYuKfOLf8LFmBAmTmhO4sr3jgEKhL3Lf2z3rd9Jv0oSiGBg8a9AP1hE-nu9uv2Dui-STwng13_FJP3pxFPUXdJkF1PXNlh2NJKF7GzUj8-BaPVHBnI4ur6NRvSRC2On0T1kMD_dw7JSyMZt4ghLvjZCSW2jCQy6QQAP4" />
+                </div>
+                <div class="p-md">
+                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Ekonomi</span>
+                    <h4 class="font-body-md font-semibold text-on-surface mt-1 group-hover:text-secondary transition-colors">Piyasa Analizi</h4>
+                </div>
+            </div>
+            <!-- Yaşam -->
+            <div class="group cursor-pointer bg-surface-container-low rounded-xl overflow-hidden ghost-border hover:bg-surface-variant/30 transition-all">
+                <div class="h-32 w-full overflow-hidden">
+                    <img alt="Yaşam" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfq24324fCN8Z3PP1Y_P4ykH7EOhrje-7zocZMOBySSPrVLBO01RnTdjtUdVEaIpiWWT6InSiR2ecELlZlzqJlWJqJTHiTq6hpTJi4IfDbz6qBst-6HAOzkrIfTNSe4Y2gSbbPZtAM0R_sw6h-S99-OsBKqrk4LWiN2GnoAS-_GrZ2x-wTBttIIjhZsMyv18zInXCPyCTPkyt_3sKbgXozsw2owLk4bW_oRNuBukivjfV3MiKD1b6EQqiaH7ZDoxCw9GKpLg50Bsw" />
+                </div>
+                <div class="p-md">
+                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Yaşam</span>
+                    <h4 class="font-body-md font-semibold text-on-surface mt-1 group-hover:text-secondary transition-colors">Modern Yaşam</h4>
+                </div>
+            </div>
+            <!-- Sanat -->
+            <div class="group cursor-pointer bg-surface-container-low rounded-xl overflow-hidden ghost-border hover:bg-surface-variant/30 transition-all">
+                <div class="h-32 w-full overflow-hidden">
+                    <img alt="Sanat" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAa3Xe_9rDx4nPi6yYt4Z4yam5F4cgcz-MZuTXZCflIUyyPq0uS1WSD5fj7810yHMX_wD8zsMrH0tmTVYRhpJIXWMOOmQZf3eFXHBc4crkMn8OGHgd5QR0HZOKG0PSHmTveEx69EWnU426F4lKcPhXw0vuH88LhxyzT--KmlsrrMjEnj99u0cw02WlbYxoYxfbo_-eUBpULd87q1KvXPocMlEVXeOCyZH7Try8PNr93z7D46pTxrESEQ8F7eEcQr6u6v-GzdYMU1Y" />
+                </div>
+                <div class="p-md">
+                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Sanat</span>
+                    <h4 class="font-body-md font-semibold text-on-surface mt-1 group-hover:text-secondary transition-colors">Kültür &amp; Sanat</h4>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+    </section>
+
+    @await Component.InvokeAsync("_NewLayoutFooterComponent")
+
+
+
+    <!-- Micro-interaction Script -->
+    <script>
+            document.querySelectorAll('.cursor-pointer').forEach(item => {
+                item.addEventListener('mousedown', () => item.style.transform = 'scale(0.99)');
+                item.addEventListener('mouseup', () => item.style.transform = 'scale(1)');
+                item.addEventListener('mouseleave', () => item.style.transform = 'scale(1)');
+            });
+    </script>
+</body></html>

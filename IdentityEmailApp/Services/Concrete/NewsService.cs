@@ -1,27 +1,42 @@
 ﻿using IdentityEmailApp.DTOs.NewsDtos;
 using IdentityEmailApp.Services.Abstract;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 
 namespace IdentityEmailApp.Services.Concrete
 {
     public class NewsService : INewsService
     {
-        private readonly string rapidapi_key = "b64f56ed1emsh8afba1e8adc4772p11a325jsn1d2ee2523f59";
+        private readonly string rapidapi_key = "c578002d39mshcbd1ef108c18afep1f3e64jsn64cd0b132a82";
         private readonly string rapidapi_host_latest = "google-news13.p.rapidapi.com";
+
+        private readonly IMemoryCache _memoryCache;
+
+        public NewsService(IMemoryCache cache)
+        {
+            _memoryCache = cache;
+        }
 
         public async Task<List<ResultLatestOfNewDto.Item>> GetCurrentNewsAsync()
         {
-           
+
+            const string cacheKey = "CurrentNews";
+
+            if (_memoryCache.TryGetValue(cacheKey, out List<ResultLatestOfNewDto.Item>? cachedNews))
+            {
+                return cachedNews!;
+            }
+
             var client = new HttpClient();
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri("https://google-news13.p.rapidapi.com/latest?lr=tr-TR"),
                 Headers =
-    {
-        { "x-rapidapi-key", rapidapi_key },
-        { "x-rapidapi-host", rapidapi_host_latest },
-    },
+                    {
+                        { "x-rapidapi-key", rapidapi_key },
+                        { "x-rapidapi-host", rapidapi_host_latest },
+                    },
             };
 
             using (var response = await client.SendAsync(request))
@@ -32,10 +47,162 @@ namespace IdentityEmailApp.Services.Concrete
 
                 var result = JsonConvert.DeserializeObject<ResultLatestOfNewDto>(body);
 
-                return result?.items ?? new List<ResultLatestOfNewDto.Item>();
+                var news = result?.items ?? new List<ResultLatestOfNewDto.Item>();
+
+               
+                _memoryCache.Set(cacheKey, news, TimeSpan.FromMinutes(30));
+
+                return news;
             }
         }
 
-       
+        public async Task<List<ResultLatestOfNewDto.Item>> GetLocalNewsAsync()
+        {
+            const string cacheKey = "LocalNews";
+
+            if (_memoryCache.TryGetValue(cacheKey, out List<ResultLatestOfNewDto.Item>? cachedNews))
+            {
+                return cachedNews!;
+            }
+
+            using var client = new HttpClient();
+
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri("https://google-news13.p.rapidapi.com/entertainment?lr=tr-TR"),
+                Headers =
+        {
+            { "x-rapidapi-key", rapidapi_key },
+            { "x-rapidapi-host", rapidapi_host_latest },
+        },
+            };
+
+            using var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<ResultLatestOfNewDto.Item>();
+            }
+
+            var body = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ResultLatestOfNewDto>(body);
+
+            var news = result?.items ?? new List<ResultLatestOfNewDto.Item>();
+
+            _memoryCache.Set(cacheKey, news, TimeSpan.FromMinutes(30));
+
+            return news;
+        }
+
+        public async Task<List<ResultLatestOfNewDto.Subnew>> GetNewsAsync()
+        {
+            const string cacheKey = "entertainment-subnews";
+
+            if (_memoryCache.TryGetValue(
+                cacheKey,
+                out List<ResultLatestOfNewDto.Subnew>? cachedNews))
+            {
+                return cachedNews!;
+            }
+
+            using var client = new HttpClient();
+
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(
+                    "https://google-news13.p.rapidapi.com/entertainment?lr=tr-TR"),
+                Headers =
+        {
+            { "x-rapidapi-key", rapidapi_key },
+            { "x-rapidapi-host", rapidapi_host_latest }
+        }
+            };
+
+            using var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<ResultLatestOfNewDto.Subnew>();
+            }
+
+            var body = await response.Content.ReadAsStringAsync();
+
+            var result =
+                JsonConvert.DeserializeObject<ResultLatestOfNewDto>(body);
+
+            var randomItem = result?.items?
+                .Where(x =>
+                    x.hasSubnews &&
+                    x.subnews != null &&
+                    x.subnews.Any())
+                .OrderBy(x => Guid.NewGuid())
+                .FirstOrDefault();
+
+            var news = randomItem?.subnews
+                       ?? new List<ResultLatestOfNewDto.Subnew>();
+
+            _memoryCache.Set(
+                cacheKey,
+                news,
+                TimeSpan.FromMinutes(30));
+
+            return news;
+        }
+
+        public async Task<List<ResultLatestOfNewDto.Item>> GetCategoryByNewsAsync(string category)
+        {
+            var searchCategory = string.IsNullOrWhiteSpace(category)
+                ? "latest"
+                : category.ToLower();
+
+            var cacheKey = $"CategoryNews_{searchCategory}";
+
+            if (_memoryCache.TryGetValue(
+                cacheKey,
+                out List<ResultLatestOfNewDto.Item>? cachedNews))
+            {
+                return cachedNews!;
+            }
+
+            using var client = new HttpClient();
+
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(
+                    $"https://google-news13.p.rapidapi.com/{searchCategory}?lr=tr-TR"),
+                Headers =
+        {
+            { "x-rapidapi-key", rapidapi_key },
+            { "x-rapidapi-host", rapidapi_host_latest },
+        },
+            };
+
+            using var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<ResultLatestOfNewDto.Item>();
+            }
+
+            var body = await response.Content.ReadAsStringAsync();
+
+            var result =
+                JsonConvert.DeserializeObject<ResultLatestOfNewDto>(body);
+
+            var news = result?.items
+                       ?? new List<ResultLatestOfNewDto.Item>();
+
+            _memoryCache.Set(
+                cacheKey,
+                news,
+                TimeSpan.FromMinutes(30));
+
+            return news;
+        }
+
     }
 }
+

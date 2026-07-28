@@ -1,0 +1,68 @@
+﻿
+@*
+    _NewNavigationLinkComponent
+*@
+
+@{
+    var activeCategory =
+        ViewBag.Category?.ToString()?.ToLower() ?? "latest";
+
+    var activeClass =
+        "text-secondary font-bold border-b-2 border-secondary pb-1 whitespace-nowrap font-label-md text-label-md";
+
+    var passiveClass =
+        "text-on-surface-variant hover:text-on-surface transition-colors duration-200 pb-1 whitespace-nowrap font-label-md text-label-md";
+}
+
+<nav class="flex items-center gap-lg overflow-x-auto pb-2 scrollbar-hide">
+
+    <a asp-controller="News"
+           asp-action="GetCategoryByNews"
+           asp-route-category="latest"
+           class="@(activeCategory == "latest" ? activeClass : passiveClass)">
+        Ana Sayfa
+    </a>
+
+    <a asp-controller="News"
+           asp-action="GetCategoryByNews"
+           asp-route-category="world"
+           class="@(activeCategory == "world" ? activeClass : passiveClass)">
+        Dünya
+    </a>
+
+    <a asp-controller="News"
+           asp-action="GetCategoryByNews"
+           asp-route-category="business"
+           class="@(activeCategory == "business" ? activeClass : passiveClass)">
+        İş Dünyası
+    </a>
+    <a asp-controller="News"
+           asp-action="GetCategoryByNews"
+           asp-route-category="health"
+           class="@(activeCategory == "health" ? activeClass : passiveClass)">
+        Sağlık
+    </a>
+
+    <a asp-controller="News"
+           asp-action="GetCategoryByNews"
+           asp-route-category="technology"
+           class="@(activeCategory == "technology" ? activeClass : passiveClass)">
+        Teknoloji
+    </a>
+
+    <a asp-controller="News"
+           asp-action="GetCategoryByNews"
+           asp-route-category="sports"
+           class="@(activeCategory == "sports" ? activeClass : passiveClass)">
+        Spor
+    </a>
+    <a asp-controller="News"
+           asp-action="GetCategoryByNews"
+           asp-route-category="science"
+           class="@(activeCategory == "science" ? activeClass : passiveClass)">
+        Bilim
+    </a>
+
+   
+
+</nav>

@@ -1,0 +1,270 @@
+﻿@using IdentityEmailApp.DTOs.NewsDtos
+@model List<ResultLatestOfNewDto.Item>
+
+@{
+    ViewData["Title"] = "Kategorilere Göre Haber Bülteni";
+    Layout = "~/Views/News/Layout.cshtml";
+
+    var category = ViewBag.Category?.ToString()?.ToLower() ?? "latest";
+
+    var categoryTitle = category switch
+    {
+        "latest" => "Güncel Haberler",
+        "world" => "Dünya Haberleri",
+        "business" => "İş Dünyası",
+        "health" => "Sağlık Haberleri",
+        "technology" => "Teknoloji Haberleri",
+        "sports" => "Spor Haberleri",
+        "science" => "Bilim Haberleri",
+        "entertainment" => "Magazin Haberleri",
+        _ => "Haberler"
+    };
+
+    var newsList = Model?
+        .Where(x => x != null)
+        .Take(16)
+        .ToList() ?? new List<ResultLatestOfNewDto.Item>();
+
+    var mainNews = newsList.FirstOrDefault();
+
+    var sideNews = newsList
+        .Skip(1)
+        .Take(3)
+        .ToList();
+
+    var bottomNews = newsList
+        .Skip(4)
+        .ToList();
+
+    var mainImageUrl =
+        !string.IsNullOrWhiteSpace(mainNews?.images?.thumbnailProxied)
+            ? mainNews.images.thumbnailProxied
+            : mainNews?.images?.thumbnail;
+}
+
+<main class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop py-xl">
+
+    <!-- Kategori Başlığı -->
+    <div class="flex flex-col gap-sm sm:flex-row sm:items-end sm:justify-between mb-xl">
+
+        <div>
+            <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+                @categoryTitle
+            </h1>
+
+            <p class="font-label-md text-label-md text-on-surface-variant mt-1">
+                @DateTime.Now.ToString("dd MMMM yyyy")
+            </p>
+        </div>
+
+       
+
+    </div>
+
+    @if (mainNews == null)
+    {
+        <div class="p-lg bg-surface-container-low rounded-xl ghost-border">
+            <p class="text-on-surface-variant">
+                Bu kategoriye ait haber bulunamadı.
+            </p>
+        </div>
+    }
+    else
+    {
+        <!-- Ana Haber + Hava Durumu + 3 Yan Haber -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-lg items-stretch">
+
+            <!-- Ana Haber -->
+            <a href="@mainNews.newsUrl"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="lg:col-span-8 group bg-surface-container-low rounded-2xl
+                overflow-hidden ghost-border hover:bg-surface-variant/30
+                transition-all block min-h-[520px]"
+                   style="text-decoration:none;">
+
+                <div class="relative h-full min-h-[520px] w-full overflow-hidden">
+
+                    <img src="@mainImageUrl"
+                         alt="@mainNews.title"
+                         class="absolute inset-0 w-full h-full object-cover
+                    group-hover:scale-105 transition-transform duration-500"
+                         referrerpolicy="no-referrer"
+                         onerror="this.onerror=null; this.src='@Url.Content("~/images/news-default.jpg")';" />
+
+                    <div class="absolute inset-0 bg-gradient-to-t
+                        from-black/90 via-black/35 to-transparent">
+                    </div>
+
+                    <div class="absolute bottom-0 left-0 right-0 p-lg md:p-xl space-y-md">
+
+                        <div class="flex items-center gap-xs">
+
+                            <div class="w-6 h-6 bg-white rounded-sm
+                                flex items-center justify-center p-0.5">
+
+                                <span class="text-[11px] font-bold text-black">
+                                    @(string.IsNullOrWhiteSpace(mainNews.publisher)
+                                        ? "H"
+                                        : mainNews.publisher[..1].ToUpper())
+                                </span>
+
+                            </div>
+
+                            <span class="font-label-md text-label-md text-white/80">
+                                @(string.IsNullOrWhiteSpace(mainNews.publisher)
+                                    ? "Haber kaynağı"
+                                    : mainNews.publisher)
+                            </span>
+
+                        </div>
+
+                        <h2 class="font-headline-lg text-headline-lg text-white
+                            group-hover:text-secondary transition-colors
+                            leading-tight max-w-4xl">
+                            @mainNews.title
+                        </h2>
+
+                        @if (!string.IsNullOrWhiteSpace(mainNews.snippet))
+                        {
+                            <p class="font-body-md text-body-md text-white/80
+                                line-clamp-3 max-w-3xl">
+                                @mainNews.snippet
+                            </p>
+                        }
+
+                    </div>
+
+                </div>
+
+            </a>
+
+            <!-- Sağ Sütun -->
+            <div class="lg:col-span-4 flex flex-col gap-md">
+
+                <!-- Hava Durumu -->
+                <div class="shrink-0">
+                    @await Component.InvokeAsync("_NewWeatherComponent")
+                </div>
+
+                <!-- Sağdaki 3 Haber -->
+                <div class="grid grid-cols-1 gap-md flex-1">
+
+                    @foreach (var news in sideNews)
+                    {
+                        <a href="@news.newsUrl"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="p-md bg-surface-container-low rounded-xl ghost-border
+                            hover:bg-surface-variant/30 transition-all group block"
+                               style="text-decoration:none;">
+
+                            <span class="font-label-md text-label-md text-secondary">
+                                @(string.IsNullOrWhiteSpace(news.publisher)
+                                    ? "Haber kaynağı"
+                                    : news.publisher)
+                            </span>
+
+                            <h3 class="font-body-md text-body-md font-semibold
+                                text-on-surface group-hover:text-secondary
+                                transition-colors line-clamp-2 mt-xs">
+                                @news.title
+                            </h3>
+
+                            @if (!string.IsNullOrWhiteSpace(news.snippet))
+                            {
+                                <p class="font-body-sm text-body-sm text-on-surface-variant
+                                    line-clamp-2 mt-xs">
+                                    @news.snippet
+                                </p>
+                            }
+
+                        </a>
+                    }
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Diğer Haberler -->
+        @if (bottomNews.Any())
+        {
+            <section class="mt-xl">
+
+                <div class="flex items-center justify-between mb-lg">
+
+                    <div>
+                        <h2 class="font-headline-md text-headline-md text-on-surface">
+                            Diğer Haberler
+                        </h2>
+
+                        <p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">
+                            Gündemdeki diğer gelişmeler
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md">
+
+                    @foreach (var news in bottomNews)
+                    {
+                        var imageUrl =
+                            !string.IsNullOrWhiteSpace(news.images?.thumbnailProxied)
+                                ? news.images.thumbnailProxied
+                                : news.images?.thumbnail;
+
+                        <a href="@news.newsUrl"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="group bg-surface-container-low rounded-xl overflow-hidden
+                            ghost-border hover:bg-surface-variant/30 transition-all block"
+                               style="text-decoration:none;">
+
+                            <div class="h-44 overflow-hidden bg-surface-variant/20">
+
+                                <img src="@imageUrl"
+                                     alt="@news.title"
+                                     class="w-full h-full object-cover
+                                group-hover:scale-105 transition-transform duration-300"
+                                     referrerpolicy="no-referrer"
+                                     onerror="this.onerror=null; this.src='@Url.Content("~/images/news-default.jpg")';" />
+
+                            </div>
+
+                            <div class="p-md space-y-sm">
+
+                                <span class="font-label-md text-label-md text-secondary">
+                                    @(string.IsNullOrWhiteSpace(news.publisher)
+                                        ? "Haber kaynağı"
+                                        : news.publisher)
+                                </span>
+
+                                <h3 class="font-body-md text-body-md font-semibold
+                                    text-on-surface group-hover:text-secondary
+                                    transition-colors line-clamp-2">
+                                    @news.title
+                                </h3>
+
+                                @if (!string.IsNullOrWhiteSpace(news.snippet))
+                                {
+                                    <p class="font-body-sm text-body-sm text-on-surface-variant
+                                        line-clamp-2">
+                                        @news.snippet
+                                    </p>
+                                }
+
+                            </div>
+
+                        </a>
+                    }
+
+                </div>
+
+            </section>
+        }
+    }
+
+</main>

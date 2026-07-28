@@ -7,13 +7,11 @@ namespace IdentityEmailApp.ViewComponents.LayoutViewComponents
 {
     public class _LayoutHeaderComponent :ViewComponent
     {
-        private readonly SignInManager<AppUser> _signInManager;
+
         private readonly UserManager<AppUser> _userManager;
 
-
-        public _LayoutHeaderComponent(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
+        public _LayoutHeaderComponent(UserManager<AppUser> userManager)
         {
-            _signInManager = signInManager;
             _userManager = userManager;
         }
 

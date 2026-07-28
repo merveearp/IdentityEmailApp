@@ -1,0 +1,51 @@
+﻿@using IdentityEmailApp.DTOs.NewsDtos
+@model List<ResultLatestOfNewDto.Subnew>
+
+<section class="pt-lg">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+
+        @foreach (var item in Model)
+        {
+            <a href="@item.newsUrl"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="flex gap-md p-md bg-surface-container rounded-xl ghost-border hover:bg-surface-variant/30 cursor-pointer group">
+
+                <div class="w-1/3 aspect-square rounded-lg overflow-hidden shrink-0">
+                    <img class="w-full h-full object-cover"
+                         src="@item.images.thumbnailProxied"
+                         alt="@item.title"
+                         onerror="this.src='/images/default-news.jpg';" />
+                </div>
+
+                <div class="flex flex-col justify-between min-w-0">
+                    <div class="space-y-xs">
+                        
+
+                        <h6 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-secondary leading-tight">
+                            @item.title
+                        </h6>
+
+                        @if (!string.IsNullOrWhiteSpace(item.snippet))
+                        {
+                            <p class="text-sm text-on-surface-variant line-clamp-2">
+                                @item.snippet
+                            </p>
+                        }
+                    </div>
+
+                    <div class="flex items-center gap-xs text-on-surface-variant">
+                        <span class="material-symbols-outlined text-sm">
+                            newspaper
+                        </span>
+
+                        <span class="text-[10px]">
+                            @item.publisher
+                        </span>
+                    </div>
+                </div>
+            </a>
+        }
+
+    </div>
+</section>

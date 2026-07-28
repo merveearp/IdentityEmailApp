@@ -1,0 +1,78 @@
+﻿@using IdentityEmailApp.DTOs.NewsDtos
+@model List<ResultLatestOfNewDto.Item>
+
+<section class="bg-surface-container-low rounded-2xl p-lg ghost-border">
+
+    <div class="flex items-center justify-between mb-lg">
+        <h3 class="font-headline-sm text-headline-sm text-secondary">
+            📍 Yerel Haberler
+        </h3>
+
+        <button class="p-1 hover:bg-surface-variant/50 rounded-md">
+            <span class="material-symbols-outlined text-on-surface-variant">
+                location_on
+            </span>
+        </button>
+    </div>
+
+    <div class="space-y-md">
+
+        @foreach (var news in Model.Take(10))
+        {
+            var image = !string.IsNullOrWhiteSpace(news.images?.thumbnailProxied)
+                ? news.images.thumbnailProxied
+                : news.images?.thumbnail;
+
+            <a href="@news.newsUrl"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="flex gap-sm group cursor-pointer border-b border-white/5 pb-md last:border-0 last:pb-0"
+                   style="text-decoration:none;">
+
+                <div class="flex-1 space-y-xs">
+
+                    <div class="flex items-center gap-xs">
+
+                        <span class="font-label-md text-label-md text-on-surface-variant font-bold">
+                            @news.publisher
+                        </span>
+
+                    </div>
+
+                    <h4 class="font-body-sm text-body-sm font-medium text-on-surface group-hover:text-secondary transition-colors line-clamp-2">
+                        @news.title
+                    </h4>
+
+                </div>
+
+                <div class="w-16 h-16 rounded-lg overflow-hidden shrink-0 ghost-border">
+
+                    <img src="@image"
+                         class="w-full h-full object-cover"
+                         alt="@news.title"
+                         loading="lazy"
+                         referrerpolicy="no-referrer"
+                         onerror="this.onerror=null;this.src='/images/news-default.jpg';" />
+
+                </div>
+
+            </a>
+        }
+
+    </div>
+
+    <a asp-controller="News"
+           asp-action="GetCategoryByNews"
+           asp-route-category="entertainment"
+           class="w-full mt-lg py-2 rounded-xl bg-surface-variant/20
+        hover:bg-surface-variant/50 text-on-surface-variant
+        font-label-md text-label-md transition-all
+        border border-white/5 flex items-center justify-center"
+           style="text-decoration:none;">
+
+        Tüm Haberleri Gör
+
+    </a>
+
+
+</section>

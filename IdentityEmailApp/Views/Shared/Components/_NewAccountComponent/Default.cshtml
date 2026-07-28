@@ -1,0 +1,301 @@
+﻿@*
+    _NewAccountComponent
+*@
+
+<div class="relative flex items-center gap-xs">
+
+    <!-- AI Destek -->
+    <a asp-controller="AISupport"
+           asp-action="Index"
+           title="AI Destek"
+           class="p-2 hover:bg-surface-variant/50 rounded-lg
+        transition-all text-on-surface-variant
+        hover:text-on-surface flex items-center justify-center"
+           style="text-decoration:none;">
+
+        <span class="material-symbols-outlined">
+            support_agent
+        </span>
+
+    </a>
+
+    <!-- Ayarlar -->
+    <a asp-controller="Message"
+           asp-action="Inbox"
+           title="Mail"
+           class="p-2 hover:bg-surface-variant/50 rounded-lg
+        transition-all text-on-surface-variant
+        hover:text-on-surface flex items-center justify-center"
+           style="text-decoration:none;">
+
+        <span class="material-symbols-outlined">
+            Notika Mail
+        </span>
+
+    </a>
+
+    <!-- Uygulamalar Alanı -->
+    <div class="relative">
+
+        <!-- Uygulamalar Butonu -->
+        <button type="button"
+                id="appsMenuButton"
+                title="Notika Uygulamaları"
+                aria-expanded="false"
+                aria-controls="appsMenu"
+                class="p-2 hover:bg-surface-variant/50 rounded-lg
+            transition-all text-on-surface-variant
+            hover:text-on-surface flex items-center justify-center">
+
+            <span class="material-symbols-outlined">
+                apps
+            </span>
+
+        </button>
+
+        <!-- Uygulamalar Menüsü -->
+        <div id="appsMenu"
+             class="hidden absolute right-0 top-full mt-3
+            w-[360px] sm:w-[390px]
+            bg-surface-container
+            rounded-2xl overflow-hidden
+            border border-white/10
+            shadow-2xl z-[100]">
+
+            <!-- Başlık -->
+            <div class="px-lg py-md border-b border-white/10">
+
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">
+                    Notika Uygulamaları
+                </h3>
+
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                    Diğer servislere geçiş yapın
+                </p>
+
+            </div>
+
+            <!-- Uygulama Kartları -->
+            <div class="grid grid-cols-3 gap-sm p-lg">
+
+                <!-- Notika News -->
+                <a asp-controller="News"
+                       asp-action="Index"
+                       asp-route-category="latest"
+                       class="group flex flex-col items-center justify-center
+                    min-h-[112px] rounded-xl p-sm
+                    hover:bg-surface-variant/40
+                    transition-all duration-200"
+                       style="text-decoration:none;">
+
+                    <div class="w-12 h-12 rounded-xl
+                        bg-blue-500 flex items-center justify-center
+                        shadow-md transition-transform duration-200
+                        group-hover:-translate-y-1">
+
+                        <span class="material-symbols-outlined text-white text-[27px]">
+                            newspaper
+                        </span>
+
+                    </div>
+
+                    <span class="font-label-md text-label-md
+                        text-on-surface mt-sm text-center">
+                        Haberler
+                    </span>
+
+                </a>
+
+                <!-- Notika Finans -->
+                <a asp-controller="Finance"
+                       asp-action="Index"
+                       class="group flex flex-col items-center justify-center
+                    min-h-[112px] rounded-xl p-sm
+                    hover:bg-surface-variant/40
+                    transition-all duration-200"
+                       style="text-decoration:none;">
+
+                    <div class="w-12 h-12 rounded-xl
+                        bg-purple-500 flex items-center justify-center
+                        shadow-md transition-transform duration-200
+                        group-hover:-translate-y-1">
+
+                        <span class="material-symbols-outlined text-white text-[27px]">
+                            monitoring
+                        </span>
+
+                    </div>
+
+                    <span class="font-label-md text-label-md
+                        text-on-surface mt-sm text-center">
+                        Finans
+                    </span>
+
+                </a>
+
+                <!-- Takvim -->
+                <a asp-controller="Calendar"
+                       asp-action="Index"
+                       class="group flex flex-col items-center justify-center
+                    min-h-[112px] rounded-xl p-sm
+                    hover:bg-surface-variant/40
+                    transition-all duration-200"
+                       style="text-decoration:none;">
+
+                    <div class="w-12 h-12 rounded-xl
+                        bg-orange-500 flex items-center justify-center
+                        shadow-md transition-transform duration-200
+                        group-hover:-translate-y-1">
+
+                        <span class="material-symbols-outlined text-white text-[27px]">
+                            calendar_month
+                        </span>
+
+                    </div>
+
+                    <span class="font-label-md text-label-md
+                        text-on-surface mt-sm text-center">
+                        Takvim
+                    </span>
+
+                </a>
+
+                <!-- Translate -->
+                <a asp-controller="Translate"
+                       asp-action="Index"
+                       class="group flex flex-col items-center justify-center
+                    min-h-[112px] rounded-xl p-sm
+                    hover:bg-surface-variant/40
+                    transition-all duration-200"
+                       style="text-decoration:none;">
+
+                    <div class="w-12 h-12 rounded-xl
+                        bg-teal-500 flex items-center justify-center
+                        shadow-md transition-transform duration-200
+                        group-hover:-translate-y-1">
+
+                        <span class="material-symbols-outlined text-white text-[27px]">
+                            translate
+                        </span>
+
+                    </div>
+
+                    <span class="font-label-md text-label-md
+                        text-on-surface mt-sm text-center">
+                        Translate
+                    </span>
+
+                </a>
+
+
+                <!-- Ayarlar -->
+                <a asp-controller="Settings"
+                       asp-action="Index"
+                       class="group flex flex-col items-center justify-center
+                    min-h-[112px] rounded-xl p-sm
+                    hover:bg-surface-variant/40
+                    transition-all duration-200"
+                       style="text-decoration:none;">
+
+                    <div class="w-12 h-12 rounded-xl
+                        bg-slate-500 flex items-center justify-center
+                        shadow-md transition-transform duration-200
+                        group-hover:-translate-y-1">
+
+                        <span class="material-symbols-outlined text-white text-[27px]">
+                            settings
+                        </span>
+
+                    </div>
+
+                    <span class="font-label-md text-label-md
+                        text-on-surface mt-sm text-center">
+                        Ayarlar
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Profil Resmi -->
+    <a asp-controller="Profile"
+           asp-action="Index"
+           title="@ViewBag.FullName"
+           class="ml-2 w-9 h-9 rounded-full overflow-hidden
+        border border-white/10 cursor-pointer
+        hover:ring-2 hover:ring-secondary/50
+        transition-all block"
+           style="text-decoration:none;">
+
+        @if (!string.IsNullOrWhiteSpace(ViewBag.ImageUrl))
+        {
+            <img src="@ViewBag.ImageUrl"
+                 alt="@ViewBag.FullName"
+                 class="w-full h-full object-cover" />
+        }
+        else
+        {
+            <div class="w-full h-full bg-secondary/20
+                flex items-center justify-center">
+
+                <span class="material-symbols-outlined text-secondary">
+                    person
+                </span>
+
+            </div>
+        }
+
+    </a>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const appsMenuButton = document.getElementById("appsMenuButton");
+        const appsMenu = document.getElementById("appsMenu");
+
+        if (!appsMenuButton || !appsMenu) {
+            return;
+        }
+
+        appsMenuButton.addEventListener("click", function (event) {
+
+            event.stopPropagation();
+
+            const isHidden = appsMenu.classList.contains("hidden");
+
+            appsMenu.classList.toggle("hidden");
+
+            appsMenuButton.setAttribute(
+                "aria-expanded",
+                isHidden ? "true" : "false"
+            );
+        });
+
+        appsMenu.addEventListener("click", function (event) {
+            event.stopPropagation();
+        });
+
+        document.addEventListener("click", function () {
+
+            appsMenu.classList.add("hidden");
+            appsMenuButton.setAttribute("aria-expanded", "false");
+
+        });
+
+        document.addEventListener("keydown", function (event) {
+
+            if (event.key === "Escape") {
+                appsMenu.classList.add("hidden");
+                appsMenuButton.setAttribute("aria-expanded", "false");
+            }
+
+        });
+
+    });
+</script>

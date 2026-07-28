@@ -2,9 +2,9 @@
 
 namespace IdentityEmailApp.ViewComponents.NewViewComponents
 {
-    public class _NewNavigationLinkComponent :ViewComponent
+    public class _NewLayoutNavigationLinkComponent :ViewComponent
     {
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             return View();
         }

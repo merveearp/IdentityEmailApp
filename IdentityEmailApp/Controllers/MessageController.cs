@@ -1,6 +1,7 @@
 ﻿using IdentityEmailApp.Context;
 using IdentityEmailApp.Entities;
 using IdentityEmailApp.Models.MessageModels;
+using IdentityEmailApp.Services.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,14 +13,17 @@ namespace IdentityEmailApp.Controllers
     {
         private readonly EmailContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IAIGenerateResponse _aIGenerateResponse;
 
 
-        public MessageController(EmailContext context, UserManager<AppUser> userManager)
+
+        public MessageController(EmailContext context, UserManager<AppUser> userManager, IAIGenerateResponse aIGenerateResponse)
         {
             _context = context;
             _userManager = userManager;
+            _aIGenerateResponse = aIGenerateResponse;
         }
-       
+
         private async Task LoadCategoriesAsync()
         {
             var categories = await _context.Categories
@@ -248,6 +252,14 @@ namespace IdentityEmailApp.Controllers
 
             if (!isDraftAction && !ModelState.IsValid)
             {
+                foreach (var item in ModelState)
+                {
+                    foreach (var error in item.Value.Errors)
+                    {
+                        Console.WriteLine($"{item.Key} -> {error.ErrorMessage}");
+                    }
+                }
+
                 await LoadCategoriesAsync();
                 return View(message);
             }
@@ -310,6 +322,14 @@ namespace IdentityEmailApp.Controllers
                 : RedirectToAction(nameof(SendBox));
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> GenerateAIResponse(int messageId)
+        {
+            var response = await _aIGenerateResponse.GenerateResponseAsync(messageId);
+
+            return Ok(response);
+        }
         //----------STARRED MESSAGE---------//
         public async Task<IActionResult> StarredMessages()
         {

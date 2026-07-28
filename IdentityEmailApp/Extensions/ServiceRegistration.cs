@@ -8,6 +8,7 @@ namespace IdentityEmailApp.Extensions
         public static void ConfigureService(this IServiceCollection services)
         {
             services.AddScoped<ISystemEventService, SystemEventService>();
+            services.AddScoped<IAIGenerateResponse, AIGenerateResponse>();
             services.AddScoped<INewsService, NewsService>();
         }
     }

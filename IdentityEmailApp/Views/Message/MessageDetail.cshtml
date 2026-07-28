@@ -352,7 +352,7 @@
                     }
                     else
                     {
-                        <!-- İleti dizisi başlığı -->
+                     
                         <div class="message-detail-header">
 
                             <div>
@@ -374,7 +374,7 @@
 
                         </div>
 
-                        <!-- Konuşmadaki mesajlar -->
+                      
                         <div class="conversation-thread">
 
                             @foreach (var item in Model)
@@ -668,8 +668,17 @@
                                               id="replySummernote"
                                               class="form-control summernote"
                                               placeholder="Yanıtınızı yazınız..."></textarea>
-
                                     <div class="reply-buttons">
+
+                                        <button type="button"
+                                                id="generateAIResponseButton"
+                                                class="btn btn-info btn-sm"
+                                                data-id="@lastMessage.MessageId">
+
+                                            <i class="fa fa-magic"></i>
+                                            AI ile Yanıtla
+
+                                        </button>
 
                                         <button type="button"
                                                 id="cancelReplyButton"
@@ -719,6 +728,23 @@
     height : 250
     });
     });
+
+    $("#generateAIResponseButton").click(function () {
+
+    const id = $(this).data("id");
+
+    $.ajax({
+        url: "/Message/GenerateAIResponse",
+        type: "POST",
+        data: { messageId: id },
+        success: function (response) {
+
+            $('#replySummernote').summernote('code', response);
+
+        }
+    });
+
+});
 
 </script>
 
