@@ -194,17 +194,20 @@ namespace IdentityEmailApp.Controllers
             var conversationId = message.ConversationId ?? message.MessageId;
 
             var conversationMessages = await _context.Messages
-                .Include(x => x.Category)
-                .Where(x =>
-                    x.ConversationId == conversationId &&
-                    (
-                        x.ReceiverEmail == user.Email ||
-                        x.SenderEmail == user.Email
-                    ) &&
-                    !x.IsDeleted &&
-                    !x.IsDraft)
-                .OrderBy(x => x.SendDate)
-                .ToListAsync();
+                   .Include(x => x.Category)
+                   .Where(x =>
+                       (
+                           x.ConversationId == conversationId ||
+                           x.MessageId == conversationId
+                       ) &&
+                       (
+                           x.ReceiverEmail == user.Email ||
+                           x.SenderEmail == user.Email
+                       ) &&
+                       !x.IsDeleted &&
+                       !x.IsDraft)
+                   .OrderBy(x => x.SendDate)
+                   .ToListAsync();
 
             var unreadMessages = conversationMessages
                 .Where(x =>
@@ -222,19 +225,47 @@ namespace IdentityEmailApp.Controllers
                 await _context.SaveChangesAsync();
             }
 
+            var spamResult = await _aIGenerateResponse.AnalyzeSpamAsync(id);
+
             ViewBag.CurrentUserEmail = user.Email;
             ViewBag.ConversationId = conversationId;
+            ViewBag.IsAiSpam = spamResult.isSpam;
+            ViewBag.SpamScore = spamResult.spamScore;
 
             return View(conversationMessages);
         }
 
         //----------MESAJ GÖNDER---------//
         [HttpGet]
-        public async Task<IActionResult> ComposeMessage()
+        public async Task<IActionResult> ComposeMessage(int? id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
             await LoadCategoriesAsync();
 
-            return View(new Message());
+            if (id == null)
+            {
+                return View(new Message());
+            }
+
+            var draftMessage = await _context.Messages
+                .FirstOrDefaultAsync(x =>
+                    x.MessageId == id &&
+                    x.SenderEmail == user.Email &&
+                    x.IsDraft &&
+                    !x.IsDeleted);
+
+            if (draftMessage == null)
+            {
+                return NotFound();
+            }
+
+            return View(draftMessage);
         }
 
         [HttpPost]
@@ -248,18 +279,11 @@ namespace IdentityEmailApp.Controllers
                 return RedirectToAction("SignIn", "Login");
             }
 
+            message.SenderEmail = user.Email;
             var isDraftAction = actionType == "draft";
 
             if (!isDraftAction && !ModelState.IsValid)
             {
-                foreach (var item in ModelState)
-                {
-                    foreach (var error in item.Value.Errors)
-                    {
-                        Console.WriteLine($"{item.Key} -> {error.ErrorMessage}");
-                    }
-                }
-
                 await LoadCategoriesAsync();
                 return View(message);
             }
@@ -392,23 +416,21 @@ namespace IdentityEmailApp.Controllers
         public async Task<IActionResult> DraftedMessages()
         {
             var user = await _userManager.GetUserAsync(User);
+
             if (user == null)
             {
                 return RedirectToAction("SignIn", "Login");
             }
 
             var messages = await _context.Messages
-                 .Where(x =>
-                     
-                     !x.IsSpam &&
-                     !x.IsDeleted &&
-
-                     x.IsDraft &&
-                     (
-                         x.SenderEmail == user.Email
-                     ))
-                 .OrderByDescending(x => x.SendDate)
-                 .ToListAsync();
+                .Include(x => x.Category)
+                .Where(x =>
+                    x.SenderEmail == user.Email &&
+                    x.IsDraft &&
+                    !x.IsSpam &&
+                    !x.IsDeleted)
+                .OrderByDescending(x => x.SendDate)
+                .ToListAsync();
 
             return View(messages);
         }
