@@ -8,7 +8,9 @@
 
 
 <style>
-
+    .draft-row {
+    cursor: pointer;
+}
     
     .mail-restore {
         color: #777;
@@ -275,7 +277,13 @@
                                                     ? plainText.Substring(0, 40) + "..."
                                                     : plainText;
 
-                                        <tr class="@rowClass">
+
+                                            <tr class="@rowClass draft-row"
+                                                    data-url="@Url.Action(
+                                                        "ComposeMessage",
+                                                        "Message",
+                                                        new { id = item.MessageId }
+                                                    )">
 
                                             <td class="mail-actions">
 
@@ -286,64 +294,27 @@
                                                            value="@item.MessageId" />
                                                 </label>
 
-                                                <!-- Yıldızlama -->
-                                                <button type="button"
-                                                        class="mail-action mail-star"
-                                                        data-url="@Url.Action("ToggleStar", "Message")"
-                                                        data-id="@item.MessageId"
-                                                        title="@(item.IsStarred ? "Yıldızı Kaldır" : "Yıldızla")">
-
-                                                    @if (item.IsStarred)
-                                                    {
-                                                        <i class="fa fa-star starred"></i>
-                                                    }
-                                                    else
-                                                    {
-                                                        <i class="fa fa-star-o"></i>
-                                                    }
-                                                </button>
-
-                                                <!-- Spam -->
-                                                <button type="button"
-                                                        class="mail-action mail-spam"
-                                                        data-url="@Url.Action("ToggleSpam", "Message")"
-                                                        data-id="@item.MessageId"
-                                                        title="@(item.IsSpam ? "Spamı Kaldır" : "Spam")">
-
-                                                    @if (item.IsSpam)
-                                                    {
-                                                        <i class="fa fa-flag spam-active"></i>
-                                                    }
-                                                    else
-                                                    {
-                                                        <i class="fa fa-flag-o"></i>
-                                                    }
-                                                </button>
+                                               
 
                                             </td>
 
-                                            <td>
+                                           <td>
                                                 <a asp-controller="Message"
-                                                       asp-action="MessageDetail"
-                                                       asp-route-id="@item.MessageId"
-                                                       class="sender-link">
+                                                    asp-action="ComposeMessage"
+                                                    asp-route-id="@item.MessageId"
+                                                    class="sender-link">
 
-                                                   
-                                                        @if (item.SenderEmail == ViewBag.UserMail)
-                                                        {
-                                                            <span>
-                                                                <strong>Alıcı:</strong>
-                                                                @item.ReceiverEmail
-                                                            </span>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span>
-                                                                <strong>Gönderen:</strong>
-                                                                @item.SenderEmail
-                                                            </span>
-                                                        }
-                                                    
+                                                    @if (string.IsNullOrWhiteSpace(item.ReceiverEmail))
+                                                    {
+                                                        <span>Alıcı belirlenmedi</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>
+                                                            <strong>Alıcı:</strong>
+                                                            @item.ReceiverEmail
+                                                        </span>
+                                                    }
                                                 </a>
                                             </td>
 
@@ -389,23 +360,23 @@
                                             </td>
                                            
                                             <!-- Mesaj -->
-                                            <td>
-                                                <a asp-controller="Message"
-                                                       asp-action="MessageDetail"
-                                                       asp-route-id="@item.MessageId"
-                                                       class="message-link">
+                                           <td>
+                                            <a asp-controller="Message"
+                                               asp-action="ComposeMessage"
+                                               asp-route-id="@item.MessageId"
+                                               class="message-link">
 
+                                                <strong>
+                                                    @(string.IsNullOrWhiteSpace(item.Subject)
+                                                        ? "Konu belirtilmedi"
+                                                        : item.Subject)
+                                                </strong>
 
-                                                    <strong>
-                                                        @item.Subject
-                                                    </strong>
-
-                                                    <span class="message-preview">
-                                                        - @messagePreview
-                                                    </span>
-
-                                                </a>
-                                            </td>
+                                                <span class="message-preview">
+                                                    - @messagePreview
+                                                </span>
+                                            </a>
+                                        </td>
 
 
                                             <td class="text-right mail-date">
@@ -479,14 +450,29 @@
     </div>
 </div>
 
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        $(document).on("click", ".mail-action", function () {
+        // Taslak satırına tıklayınca ComposeMessage sayfasını aç
+        $(document).on("click", ".draft-row", function (event) {
+
+            // Checkbox veya işlem butonuna tıklandıysa yönlendirme yapma
+            if ($(event.target).closest(
+                "button, input, label, a"
+            ).length > 0) {
+                return;
+            }
+
+            window.location.href = $(this).data("url");
+        });
+
+
+        // Taslağı çöp kutusuna taşı
+        $(document).on("click", ".mail-trash", function (event) {
+
+            event.stopPropagation();
 
             var button = $(this);
-            var icon = button.find("i");
 
             $.post(button.data("url"), {
                 id: button.data("id"),
@@ -494,24 +480,7 @@
                     $("#tokenForm input[name='__RequestVerificationToken']").val()
             })
             .done(function () {
-
-                if (button.hasClass("mail-star")) {
-
-                    if (icon.hasClass("fa-star")) {
-                        icon.removeClass("fa-star starred")
-                            .addClass("fa-star-o");
-                    }
-                    else {
-                        icon.removeClass("fa-star-o")
-                            .addClass("fa-star starred");
-                    }
-                }
-
-                if (button.hasClass("mail-spam") ||
-                    button.hasClass("mail-trash")) {
-
-                    button.closest("tr").fadeOut(200);
-                }
+                button.closest("tr").fadeOut(200);
             })
             .fail(function (xhr) {
                 console.log(xhr.status);

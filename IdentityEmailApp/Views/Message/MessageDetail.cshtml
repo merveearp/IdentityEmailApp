@@ -13,7 +13,9 @@
     var isReceiver = lastMessage?.ReceiverEmail == currentUserEmail;
 }
 
-<link href="~/notika-master/notika/green-horizotal/css/messagedetail.css" rel="stylesheet" />
+
+<link href="~/notika-master/notika/green-horizotal/css/messagecss/messagedetail.css" rel="stylesheet" />
+
 
 @await Component.InvokeAsync("_LayoutBreadcombComponent")
 
@@ -25,16 +27,36 @@
 
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                 @if (ViewBag.IsAiSpam == true)
-                    {
-                        <div class="ai-spam-warning">
-                            <i class="fa fa-exclamation-triangle"></i>
+                {
+                    <div class="ai-spam-card">
 
-                            <div>
-                                <strong>Bu mesaj spam olabilir</strong>
-                                <span>AI risk değerlendirmesi: @ViewBag.SpamScore%</span>
-                            </div>
+                        <div class="ai-spam-icon">
+                            <i class="fa fa-exclamation-triangle"></i>
                         </div>
-                    }
+
+                        <div class="ai-spam-content">
+                            <div class="ai-spam-title">
+                                Şüpheli mesaj algılandı
+
+                                <span class="ai-spam-badge">
+                                    AI Analizi
+                                </span>
+                            </div>
+
+                            <p>
+                                Bu mesaj spam veya yanıltıcı içerik barındırıyor olabilir.
+                                İşlem yapmadan önce göndereni kontrol etmenizi öneririz.
+                            </p>
+                        </div>
+
+                        <div class="ai-spam-score">
+                            <span>Risk oranı</span>
+                            <strong>@($"{ViewBag.SpamScore}%")</strong>
+                        </div>
+
+                    </div>
+                }
+
                 <div class="message-detail-card sm-res-mg-t-30">
 
                     @if (firstMessage == null)
@@ -241,8 +263,8 @@
                                         <button type="submit"
                                                 class="message-action-button"
                                                 title="@(lastMessage.IsRead
-                                                                                                ? "Okunmadı Olarak İşaretle"
-                                                                                                : "Okundu Olarak İşaretle")">
+                                                    ? "Okunmadı Olarak İşaretle"
+                                                    : "Okundu Olarak İşaretle")">
 
                                             @if (lastMessage.IsRead)
                                             {

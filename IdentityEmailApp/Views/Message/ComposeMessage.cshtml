@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@await Component.InvokeAsync("_LayoutBreadcombComponent")
 
 
 <div class="inbox-area">
@@ -21,7 +20,7 @@
               
 
                 <input type="hidden" asp-for="MessageId" />
-<div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
+                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
     <div class="view-mail-list sm-res-mg-t-30">
         <div class="view-mail-hd">
             <div class="view-mail-hrd">
@@ -103,6 +102,23 @@
                                 <i class="fa fa-floppy-o"></i>
                                 Taslağa Kaydet
                             </button>
+
+                            @if (Model.MessageId > 0 && Model.IsDraft)
+                            {
+                                <button type="submit"
+                                        formaction="@Url.Action(
+                                            "DeleteMessage",
+                                            "Message",
+                                            new { id = Model.MessageId }
+                                        )"
+                                    formmethod="post"
+                                        class="btn btn-danger"
+                                        onclick="return confirm('Bu taslağı kalıcı olarak silmek istediğinize emin misiniz?');">
+
+                                    <i class="fa fa-trash"></i>
+                                    Taslağı Sil
+                                </button>
+                            }
 
                         </div>
 

@@ -409,9 +409,6 @@ namespace IdentityEmailApp.Controllers
         }
 
 
-
-
-
         //----------DRAFT MESSAGE---------//
         public async Task<IActionResult> DraftedMessages()
         {
@@ -635,10 +632,9 @@ namespace IdentityEmailApp.Controllers
         }
 
 
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
+       
         public async Task<IActionResult> ReplyMessage(MessageReplyViewModel model)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -709,5 +705,153 @@ namespace IdentityEmailApp.Controllers
                 nameof(MessageDetail),
                 new { id = replyMessage.MessageId });
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkSelectedAsRead(List<int> ids)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            if (ids == null || !ids.Any())
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Lütfen en az bir mesaj seçiniz."
+                });
+            }
+
+
+            var messages = await _context.Messages.Where(x => ids.Contains(x.MessageId) && x.ReceiverEmail == user.Email).ToListAsync();
+
+            if (!messages.Any())
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = "Seçilen mesajlar bulunamadı."
+                });
+            }
+
+            foreach (var message in messages)
+            {
+                message.IsRead = true;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true,
+                count = messages.Count,
+                message = $"{messages.Count} mesaj okundu olarak işaretlendi."
+            });
+        }
+
+        
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkSelectedAsUnRead(List<int> ids)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            if (ids == null || !ids.Any())
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Lütfen en az bir mesaj seçiniz."
+                });
+            }
+
+            var messages = await _context.Messages
+                .Where(x =>
+                    ids.Contains(x.MessageId) &&
+                    x.ReceiverEmail == user.Email)
+                .ToListAsync();
+
+            if (!messages.Any())
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = "Seçilen mesajlar bulunamadı."
+                });
+            }
+
+            foreach (var message in messages)
+            {
+                message.IsRead = false;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true,
+                count = messages.Count,
+                message = $"{messages.Count} mesaj okunmadı olarak işaretlendi."
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSelected(List<int> ids)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+            if (ids == null || !ids.Any())
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Lütfen en az bir mesaj seçiniz."
+                });
+            }
+
+            var messages = await _context.Messages
+                .Where(x =>
+                    ids.Contains(x.MessageId) &&
+                    x.ReceiverEmail == user.Email)
+                .ToListAsync();
+
+            if (!messages.Any())
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = "Seçilen mesajlar bulunamadı."
+                });
+            }
+
+            foreach (var message in messages)
+            {
+                message.IsDeleted = true;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true,
+                count = messages.Count,
+                message = $"{messages.Count} mesaj çöp kutusuna taşındı."
+            });
+        }
+
     }
 }

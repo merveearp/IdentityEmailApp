@@ -163,7 +163,6 @@
 
 @await Component.InvokeAsync("_LayoutBreadcombComponent")
 
-
 <div class="inbox-area">
     <div class="container">
         <div class="row">
@@ -185,35 +184,58 @@
                         </div>
                     </div>
 
+                       <form asp-controller="Message"
+                              method="post"
+                              id="notificationForm">
+
+                            @Html.AntiForgeryToken()
+
                     <div class="inbox-btn-st-ls btn-toolbar">
                         <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
 
                             <a asp-controller="Message"
-                                   asp-action="SpamMessages"
+                                   asp-action="DeletedMessages"
                                    class="btn btn-default btn-sm">
                                 <i class="notika-icon notika-refresh"></i>
                                 Yenile
                             </a>
 
-                            <button type="button" class="btn btn-default btn-sm">
-                                <i class="notika-icon notika-next"></i>
-                            </button>
+                             <button type="button"
+                                        id="selectAllButton"
+                                        class="btn btn-default btn-sm"
+                                        title="Tümünü Seç">
 
-                            <button type="button" class="btn btn-default btn-sm">
-                                <i class="notika-icon notika-down-arrow"></i>
-                            </button>
+                                    <i class="notika-icon notika-checked"></i>
 
-                            <button type="button" class="btn btn-default btn-sm">
-                                <i class="notika-icon notika-trash"></i>
-                            </button>
+                                </button>
 
-                            <button type="button" class="btn btn-default btn-sm">
-                                <i class="notika-icon notika-checked"></i>
-                            </button>
+                         <button type="button"
+                            class="btn btn-default btn-sm bulk-action"
+                            data-action="read"
+                            data-url="@Url.Action("MarkSelectedAsRead", "Message")"
+                            title="Okundu Olarak İşaretle">
 
-                            <button type="button" class="btn btn-default btn-sm">
-                                <i class="notika-icon notika-promos"></i>
-                            </button>
+                             <i class="notika-icon notika-next"></i>
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-default btn-sm bulk-action"
+                                data-action="unread"
+                                data-url="@Url.Action("MarkSelectedAsUnRead", "Message")"
+                                title="Okunmadı Olarak İşaretle">
+
+                            <i class="notika-icon notika-down-arrow"></i>
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-default btn-sm bulk-action"
+                                data-action="delete"
+                                data-url="@Url.Action("DeleteSelected", "Message")"
+                                title="Seçilenleri Sil">
+
+                            <i class="notika-icon notika-trash"></i>
+                        </button>
+
 
                         </div>
 
@@ -229,30 +251,31 @@
 
                         </div>
                     </div>
-
-                    <div class="mail-page-header spam-header">
+                  
+                    <div class="mail-page-header">
                         <div>
                             <h3>
-                                <i class="fa fa-ban"></i>
-                                Spam Mesajlar
+                                <i class="fa fa-trash"></i>
+                                Çöp Kutusu
                             </h3>
 
                             <p>
-                                Spam olarak işaretlenen mesajları inceleyebilir veya gelen kutusuna geri taşıyabilirsiniz.
+                                Sildiğiniz mesajları görüntüleyebilir, geri taşıyabilir veya kalıcı olarak silebilirsiniz.
                             </p>
                         </div>
                     </div>
-
+                    
+                    
                     <div class="table-responsive">
-                        <form id="tokenForm" style="display:none;">
-                            @Html.AntiForgeryToken()
-                        </form>
+                       
+                   
                         <table class="table table-hover">
 
                             <thead>
                                 <tr>
+
                                     <th style="width:120px;">Seç</th>
-                                    <th>Gönderen</th>
+                                    <th>Kişi</th>
                                     <th>Kategori</th>
                                     <th>Mesaj</th>
                                     <th class="text-right">Tarih</th>
@@ -336,16 +359,29 @@
                                                        asp-route-id="@item.MessageId"
                                                        class="sender-link">
 
-
-                                                    <span class="sender-email">
-                                                        @item.SenderEmail
-                                                    </span>
+                                                   
+                                                        @if (item.SenderEmail == ViewBag.UserMail)
+                                                        {
+                                                            <span>
+                                                                <strong>Alıcı:</strong>
+                                                                @item.ReceiverEmail
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>
+                                                                <strong>Gönderen:</strong>
+                                                                @item.SenderEmail
+                                                            </span>
+                                                        }
+                                                    
                                                 </a>
                                             </td>
 
 
                                             <td>
-                                                @if (string.IsNullOrEmpty(item.Category.CategoryName))
+                                                @if (item.Category == null ||
+                                                    string.IsNullOrEmpty(item.Category.CategoryName))
                                                 {
                                                     <span class="label label-default">
                                                         Kategori Yok
@@ -430,14 +466,26 @@
 
                                             <td class="text-center">
 
-                                                <!-- Çöp kutusuna taşı -->
+                                                <!-- Çöp kutusundan geri taşı -->
                                                 <button type="button"
                                                         class="mail-action mail-trash"
                                                         data-url="@Url.Action("ToggleDeleted", "Message")"
                                                         data-id="@item.MessageId"
-                                                        title="Çöp Kutusuna Taşı">
+                                                        title="Mesajı geri taşı">
 
-                                                    <i class="fa fa-trash-o"></i>
+                                                    <i class="fa fa-undo"></i>
+
+                                                </button>
+
+                                                <!-- Kalıcı sil -->
+                                                <button type="button"
+                                                        class="mail-permanent-delete"
+                                                        data-url="@Url.Action("DeleteMessage", "Message")"
+                                                        data-id="@item.MessageId"
+                                                        title="Kalıcı olarak sil">
+
+                                                    <i class="fa fa-trash"></i>
+
                                                 </button>
 
                                             </td>
@@ -452,7 +500,7 @@
                                             class="text-center"
                                             style="padding:30px;">
 
-                                            Gelen kutunuzda mesaj bulunmuyor.
+                                            Çöp kutunuzda mesaj bulunmuyor.
                                         </td>
                                     </tr>
                                 }
@@ -461,6 +509,9 @@
 
                         </table>
                     </div>
+                   </form>
+             
+                
                 </div>
             </div>
 
@@ -468,45 +519,399 @@
     </div>
 </div>
 
+
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        $(document).on("click", ".mail-action", function () {
+        // ANTIFORGERY TOKEN
+        function getAntiForgeryToken() {
+            return $("#notificationForm input[name='__RequestVerificationToken']")
+                .val();
+        }
 
-            var button = $(this);
-            var icon = button.find("i");
 
-            $.post(button.data("url"), {
-                id: button.data("id"),
-                __RequestVerificationToken:
-                    $("#tokenForm input[name='__RequestVerificationToken']").val()
-            })
-            .done(function () {
+        // CONTROLLER'DAN GELEN MESAJI AL
+        function getSuccessMessage(response, fallbackMessage) {
 
-                if (button.hasClass("mail-star")) {
+            if (typeof response === "string" && response) {
+                return response;
+            }
 
-                    if (icon.hasClass("fa-star")) {
-                        icon.removeClass("fa-star starred")
-                            .addClass("fa-star-o");
-                    }
-                    else {
-                        icon.removeClass("fa-star-o")
-                            .addClass("fa-star starred");
-                    }
-                }
+            if (response && response.message) {
+                return response.message;
+            }
 
-                if (button.hasClass("mail-spam") ||
-                    button.hasClass("mail-trash")) {
+            return fallbackMessage;
+        }
 
-                    button.closest("tr").fadeOut(200);
-                }
-            })
-            .fail(function (xhr) {
-                console.log(xhr.status);
-                console.log(xhr.responseText);
-            });
 
+        // HATA MESAJINI AL
+        function getErrorMessage(xhr, fallbackMessage) {
+
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                return xhr.responseJSON.message;
+            }
+
+            if (xhr.responseText) {
+                return xhr.responseText;
+            }
+
+            return fallbackMessage;
+        }
+
+
+        // TÜMÜNÜ SEÇ / SEÇİMLERİ KALDIR
+        $("#selectAllButton").on("click", function () {
+
+            const checkboxes =
+                $("#notificationForm input[name='ids']");
+
+            const allSelected =
+                checkboxes.length > 0 &&
+                checkboxes.filter(":checked").length === checkboxes.length;
+
+            if ($.fn.iCheck) {
+                checkboxes.iCheck(
+                    allSelected ? "uncheck" : "check"
+                );
+            }
+            else {
+                checkboxes.prop("checked", !allSelected);
+            }
+
+            $(this).attr(
+                "title",
+                allSelected ? "Tümünü Seç" : "Seçimi Kaldır"
+            );
         });
 
+
+        // TOPLU OKUNDU, OKUNMADI VE SİLME
+        $(document).on("click", ".bulk-action", function (event) {
+
+            event.preventDefault();
+
+            const button = $(this);
+            const actionType = button.data("action");
+
+            const selectedCheckboxes =
+                $("#notificationForm input[name='ids']:checked");
+
+            if (selectedCheckboxes.length === 0) {
+
+                Swal.fire({
+                    title: "Mesaj seçilmedi",
+                    text: "Lütfen en az bir mesaj seçiniz.",
+                    icon: "warning",
+                    confirmButtonText: "Tamam"
+                });
+
+                return;
+            }
+
+
+            function sendBulkRequest() {
+
+                $.ajax({
+                    url: button.data("url"),
+                    type: "POST",
+
+                    // Token ve seçili ids değerlerini gönderir
+                    data: $("#notificationForm").serialize(),
+
+                    success: function (response) {
+
+                        const selectedRows =
+                            selectedCheckboxes.closest("tr");
+
+                        let fallbackMessage =
+                            "İşlem başarıyla tamamlandı.";
+
+
+                        // OKUNDU
+                        if (actionType === "read") {
+
+                            selectedRows
+                                .removeClass("unread-message")
+                                .addClass("read-message");
+
+                            fallbackMessage =
+                                "Seçilen mesajlar okundu olarak işaretlendi.";
+                        }
+
+
+                        // OKUNMADI
+                        if (actionType === "unread") {
+
+                            selectedRows
+                                .removeClass("read-message")
+                                .addClass("unread-message");
+
+                            fallbackMessage =
+                                "Seçilen mesajlar okunmadı olarak işaretlendi.";
+                        }
+
+
+                        // ÇÖP KUTUSUNA TAŞIMA
+                        if (actionType === "delete") {
+
+                            selectedRows.fadeOut(200, function () {
+                                $(this).remove();
+                            });
+
+                            fallbackMessage =
+                                "Seçilen mesajlar çöp kutusuna taşındı.";
+                        }
+                        else {
+
+                            // Okundu/okunmadı işleminden sonra seçimleri kaldır
+                            if ($.fn.iCheck) {
+                                selectedCheckboxes.iCheck("uncheck");
+                            }
+                            else {
+                                selectedCheckboxes.prop("checked", false);
+                            }
+                        }
+
+                        $("#selectAllButton")
+                            .attr("title", "Tümünü Seç");
+
+                        Swal.fire({
+                            title: "Başarılı",
+                            text: getSuccessMessage(
+                                response,
+                                fallbackMessage
+                            ),
+                            icon: "success",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    },
+
+                    error: function (xhr) {
+
+                        console.log(
+                            "Durum kodu:",
+                            xhr.status
+                        );
+
+                        console.log(
+                            "Sunucu cevabı:",
+                            xhr.responseText
+                        );
+
+                        Swal.fire({
+                            title: "Hata",
+                            text: getErrorMessage(
+                                xhr,
+                                "Toplu işlem sırasında bir hata oluştu."
+                            ),
+                            icon: "error",
+                            confirmButtonText: "Tamam"
+                        });
+                    }
+                });
+            }
+
+
+            // TOPLU SİLME ONAYI
+            if (actionType === "delete") {
+
+                Swal.fire({
+                    title: "Seçilen mesajlar silinsin mi?",
+                    text: "Mesajlar çöp kutusuna taşınacak.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Evet, sil",
+                    cancelButtonText: "Vazgeç",
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#6c757d"
+                }).then(function (result) {
+
+                    if (result.isConfirmed) {
+                        sendBulkRequest();
+                    }
+                });
+
+                return;
+            }
+
+            sendBulkRequest();
+        });
+
+
+        // TEKLİ YILDIZ, SPAM VE ÇÖP KUTUSU İŞLEMLERİ
+        $(document).on("click", ".mail-action", function (event) {
+
+            event.preventDefault();
+
+            const button = $(this);
+            const icon = button.find("i");
+
+            $.ajax({
+                url: button.data("url"),
+                type: "POST",
+
+                data: {
+                    id: button.data("id"),
+                    __RequestVerificationToken:
+                        getAntiForgeryToken()
+                },
+
+                success: function () {
+
+                    // YILDIZLAMA
+                    if (button.hasClass("mail-star")) {
+
+                        if (icon.hasClass("fa-star")) {
+
+                            icon
+                                .removeClass("fa-star starred")
+                                .addClass("fa-star-o");
+
+                            button.attr(
+                                "title",
+                                "Yıldızla"
+                            );
+                        }
+                        else {
+
+                            icon
+                                .removeClass("fa-star-o")
+                                .addClass("fa-star starred");
+
+                            button.attr(
+                                "title",
+                                "Yıldızı Kaldır"
+                            );
+                        }
+                    }
+
+
+                    // SPAM VEYA ÇÖP KUTUSU
+                    if (
+                        button.hasClass("mail-spam") ||
+                        button.hasClass("mail-trash")
+                    ) {
+                        button.closest("tr").fadeOut(
+                            200,
+                            function () {
+                                $(this).remove();
+                            }
+                        );
+                    }
+                },
+
+                error: function (xhr) {
+
+                    console.log(
+                        "Durum kodu:",
+                        xhr.status
+                    );
+
+                    console.log(
+                        "Sunucu cevabı:",
+                        xhr.responseText
+                    );
+
+                    Swal.fire({
+                        title: "Hata",
+                        text: getErrorMessage(
+                            xhr,
+                            "İşlem sırasında bir hata oluştu."
+                        ),
+                        icon: "error",
+                        confirmButtonText: "Tamam"
+                    });
+                }
+            });
+        });
+
+
+     $(document).on("click", ".mail-permanent-delete", function (event) {
+
+    event.preventDefault();
+
+    const button = $(this);
+    const token = getAntiForgeryToken();
+
+    if (!token) {
+        console.log("Antiforgery token bulunamadı.");
+
+        Swal.fire({
+            title: "Hata",
+            text: "Güvenlik anahtarı bulunamadı.",
+            icon: "error"
+        });
+
+        return;
+    }
+
+    Swal.fire({
+        title: "Mesaj kalıcı olarak silinsin mi?",
+        text: "Bu işlem geri alınamaz.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Evet, sil",
+        cancelButtonText: "Vazgeç",
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6c757d"
+    }).then(function (result) {
+
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        $.ajax({
+            url: button.data("url"),
+            type: "POST",
+
+            data: {
+                id: button.data("id"),
+                __RequestVerificationToken: token
+            },
+
+            success: function (response) {
+
+                button.closest("tr").fadeOut(200, function () {
+                    $(this).remove();
+                });
+
+                const message =
+                    response && response.message
+                        ? response.message
+                        : "Mesaj kalıcı olarak silindi.";
+
+                Swal.fire({
+                    title: "Silindi",
+                    text: message,
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            },
+
+            error: function (xhr) {
+
+                console.log("Durum kodu:", xhr.status);
+                console.log("Sunucu cevabı:", xhr.responseText);
+
+                const message =
+                    xhr.responseJSON?.message ||
+                    xhr.responseText ||
+                    "Mesaj kalıcı olarak silinemedi.";
+
+                Swal.fire({
+                    title: "Hata",
+                    text: message,
+                    icon: "error",
+                    confirmButtonText: "Tamam"
+                });
+            }
+            });
+        });
     });
+
+});
 </script>
