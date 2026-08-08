@@ -2,173 +2,149 @@
 @model List<UserTask>
 
 @{
-    Layout = null;
-}
-@{
-    Layout = null;
+    Layout = "~/Views/Task/Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<main class="flex-1 bg-surface-container-lowest rounded-xl border border-outline-variant flex flex-col overflow-hidden relative">
+    <!-- Canvas Header -->
+    <div class="h-14 border-b border-outline-variant flex items-center justify-between px-6 bg-white/50 backdrop-blur-sm">
+        <h2 class="font-headline-md text-headline-md text-on-surface">Görevlerim</h2>
+        <button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
+            <span class="material-symbols-outlined">more_vert</span>
+        </button>
+    </div>
+    <!-- Empty State Content -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
 
-<html lang="tr">
+            <div class="w-48 h-48 mb-8 opacity-80">
+                <div class="relative w-full h-full flex items-center justify-center">
+                    <div class="absolute w-32 h-24 bg-surface-container rounded-lg border border-outline-variant transform -rotate-6"></div>
 
-@await Component.InvokeAsync("_TaskHeadComponent")
-
-<body class="bg-background text-on-surface h-screen overflow-hidden flex flex-col">
-
-    <!-- TopNavBar -->
-     @await Component.InvokeAsync("_TaskHeaderComponent")
-    
-    <div class="flex flex-1 overflow-hidden pt-4 px-margin-page pb-margin-page gap-gutter">
-        <!-- SideNavBar -->
-        @await Component.InvokeAsync("_TaskSideNavbarComponent")
-
-        <!-- Main Content Area (Empty State) -->
-        <main class="flex-1 bg-surface-container-lowest rounded-xl border border-outline-variant flex flex-col overflow-hidden relative">
-            <!-- Canvas Header -->
-            <div class="h-14 border-b border-outline-variant flex items-center justify-between px-6 bg-white/50 backdrop-blur-sm">
-                <h2 class="font-headline-md text-headline-md text-on-surface">Görevlerim</h2>
-                <button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
-                    <span class="material-symbols-outlined">more_vert</span>
-                </button>
-            </div>
-            <!-- Empty State Content -->
-            @if (Model == null || !Model.Any())
-            {
-                <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
-
-                    <div class="w-48 h-48 mb-8 opacity-80">
-                        <div class="relative w-full h-full flex items-center justify-center">
-                            <div class="absolute w-32 h-24 bg-surface-container rounded-lg border border-outline-variant transform -rotate-6"></div>
-
-                            <div class="absolute w-32 h-24 bg-white rounded-lg border border-outline-variant transform rotate-3 flex items-center justify-center shadow-sm">
-                                <span class="material-symbols-outlined text-4xl text-outline-variant">
-                                    check_circle
-                                </span>
-                            </div>
-
-                            <div class="absolute -top-4 right-8 w-10 h-10 bg-primary-container rounded-full flex items-center justify-center">
-                                <span class="material-symbols-outlined text-on-primary-container text-sm">
-                                    done
-                                </span>
-                            </div>
-                        </div>
+                    <div class="absolute w-32 h-24 bg-white rounded-lg border border-outline-variant transform rotate-3 flex items-center justify-center shadow-sm">
+                        <span class="material-symbols-outlined text-4xl text-outline-variant">
+                            check_circle
+                        </span>
                     </div>
 
-                    <h3 class="font-headline-md text-headline-md text-on-surface mb-2">
-                        Henüz hiç göreviniz yok
-                    </h3>
-
-                    <p class="font-body-md text-body-md text-on-surface-variant max-w-sm">
-                        Yapılacak işlerinizi buraya ekleyip takip edebilirsiniz.
-                    </p>
-
-                    <a asp-controller="Task"
-                           asp-action="CreateTask"
-                           class="mt-8 px-6 py-2 bg-white border border-outline-variant rounded-full
-                        font-label-lg text-label-lg text-primary hover:bg-surface-container-low
-                        transition-colors flex items-center gap-2">
-
-                        <span class="material-symbols-outlined text-sm">add</span>
-                        Görev Ekle
-                    </a>
+                    <div class="absolute -top-4 right-8 w-10 h-10 bg-primary-container rounded-full flex items-center justify-center">
+                        <span class="material-symbols-outlined text-on-primary-container text-sm">
+                            done
+                        </span>
+                    </div>
                 </div>
-            }
-            else
-            {
-                <div class="flex-1 overflow-y-auto p-6">
+            </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <h3 class="font-headline-md text-headline-md text-on-surface mb-2">
+                Henüz hiç göreviniz yok
+            </h3>
 
-                        @foreach (var task in Model)
+            <p class="font-body-md text-body-md text-on-surface-variant max-w-sm">
+                Yapılacak işlerinizi buraya ekleyip takip edebilirsiniz.
+            </p>
+
+            <a asp-controller="Task"
+                   asp-action="CreateTask"
+                   class="mt-8 px-6 py-2 bg-white border border-outline-variant rounded-full
+                font-label-lg text-label-lg text-primary hover:bg-surface-container-low
+                transition-colors flex items-center gap-2">
+
+                <span class="material-symbols-outlined text-sm">add</span>
+                Görev Ekle
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="flex-1 overflow-y-auto p-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+                @foreach (var task in Model)
+                {
+                    <a asp-controller="Task"
+                           asp-action="TaskDetail"
+                           asp-route-id="@task.UserTaskId"
+                           class="block bg-white border border-outline-variant rounded-2xl p-5
+                        shadow-sm hover:shadow-md hover:-translate-y-1
+                        transition-all cursor-pointer">
+
+                        <!-- Kategori -->
+                        <div class="mb-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full
+                                bg-blue-100 text-blue-700 text-xs font-semibold">
+                                @(task.TaskList?.Name ?? "Kategorisiz")
+                            </span>
+                        </div>
+
+                        <!-- Ana görev -->
+                        <h3 class="text-xl font-bold text-on-surface leading-snug
+                            @(task.IsCompleted ? "line-through opacity-60" : "")">
+                            @task.Title
+                        </h3>
+
+                        <!-- Alt görevler -->
+                        @if (task.SubTasks != null && task.SubTasks.Any())
                         {
-                            <a asp-controller="Task"
-                                   asp-action="TaskDetail"
-                                   asp-route-id="@task.UserTaskId"
-                                   class="block bg-white border border-outline-variant rounded-2xl p-5
-                                shadow-sm hover:shadow-md hover:-translate-y-1
-                                transition-all cursor-pointer">
+                            <ul class="mt-5 space-y-3">
 
-                                <!-- Kategori -->
-                                <div class="mb-4">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full
-                                        bg-blue-100 text-blue-700 text-xs font-semibold">
-                                        @(task.TaskList?.Name ?? "Kategorisiz")
-                                    </span>
-                                </div>
-
-                                <!-- Ana görev -->
-                                <h3 class="text-xl font-bold text-on-surface leading-snug
-                                    @(task.IsCompleted ? "line-through opacity-60" : "")">
-                                    @task.Title
-                                </h3>
-
-                                <!-- Alt görevler -->
-                                @if (task.SubTasks != null && task.SubTasks.Any())
+                                @foreach (var subTask in task.SubTasks)
                                 {
-                                    <ul class="mt-5 space-y-3">
+                                    <li class="flex items-start gap-3 text-sm">
 
-                                        @foreach (var subTask in task.SubTasks)
-                                        {
-                                            <li class="flex items-start gap-3 text-sm">
-
-                                                <span class="material-symbols-outlined text-xl
-                                                    @(subTask.IsCompleted
-                                                                                      ? "text-green-600"
-                                                                                      : "text-outline")">
-                                                    @(subTask.IsCompleted
-                                                        ? "check_circle"
-                                                        : "radio_button_unchecked")
-                                                </span>
-
-                                                <span class="text-on-surface-variant
-                                                    @(subTask.IsCompleted
-                                                                                      ? "line-through opacity-60"
-                                                                                      : "")">
-                                                    @subTask.Title
-                                                </span>
-
-                                            </li>
-                                        }
-
-                                    </ul>
-                                }
-
-                                <!-- Tarihler -->
-                                <div class="mt-6 pt-4 border-t border-outline-variant
-                                    flex flex-wrap justify-between gap-3 text-xs">
-
-                                    <div class="flex items-center gap-1 text-on-surface-variant">
-                                        <span class="material-symbols-outlined text-base">
-                                            calendar_today
+                                        <span class="material-symbols-outlined text-xl
+                                            @(subTask.IsCompleted
+                                                ? "text-green-600"
+                                                : "text-outline")">
+                                            @(subTask.IsCompleted
+                                                ? "check_circle"
+                                                : "radio_button_unchecked")
                                         </span>
 
-                                        @task.CreatedDate.ToString("dd MMM yyyy")
-                                    </div>
+                                        <span class="text-on-surface-variant
+                                        @(subTask.IsCompleted
+                                                ? "line-through opacity-60"
+                                                : "")">
+                                            @subTask.Title
+                                        </span>
 
-                                    @if (task.DueDate.HasValue)
-                                    {
-                                        <div class="flex items-center gap-1 text-blue-600 font-medium">
-                                            <span class="material-symbols-outlined text-base">
-                                                event
-                                            </span>
+                                    </li>
+                                }
 
-                                            Son tarih: @task.DueDate.Value.ToString("dd MMM yyyy")
-                                        </div>
-                                    }
-
-                                </div>
-
-                            </a>
+                            </ul>
                         }
 
-                    </div>
+                        <!-- Tarihler -->
+                        <div class="mt-6 pt-4 border-t border-outline-variant
+                            flex flex-wrap justify-between gap-3 text-xs">
 
-                </div>
-            }
-        </main>
-    </div>
-</body>
+                            <div class="flex items-center gap-1 text-on-surface-variant">
+                                <span class="material-symbols-outlined text-base">
+                                    calendar_today
+                                </span>
 
+                                @task.CreatedDate.ToString("dd MMM yyyy")
+                            </div>
 
-</html>
+                            @if (task.DueDate.HasValue)
+                            {
+                                <div class="flex items-center gap-1 text-blue-600 font-medium">
+                                    <span class="material-symbols-outlined text-base">
+                                        event
+                                    </span>
+
+                                    Son tarih: @task.DueDate.Value.ToString("dd MMM yyyy")
+                                </div>
+                            }
+
+                        </div>
+
+                    </a>
+                }
+
+            </div>
+
+        </div>
+    }
+</main>

@@ -1,0 +1,29 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="tr">
+
+@await Component.InvokeAsync("_TaskHeadComponent")
+
+<body class="bg-background text-on-surface h-screen overflow-hidden flex flex-col">
+
+    <!-- TopNavBar -->
+    @await Component.InvokeAsync("_TaskHeaderComponent")
+    
+    <div class="flex flex-1 overflow-hidden pt-4 px-margin-page pb-margin-page gap-gutter">
+        <!-- SideNavBar -->
+        @await Component.InvokeAsync("_TaskSideNavbarComponent")
+
+        <!-- Main Content Area (Empty State) -->
+       
+  @RenderBody()
+    
+    </div>
+</body>
+
+
+</html>
