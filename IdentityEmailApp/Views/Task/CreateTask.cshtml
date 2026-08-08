@@ -1,8 +1,998 @@
-﻿
+﻿@using IdentityEmailApp.DTOs.TaskDtos
+@model CreateTaskDto
+
 @{
-    ViewData["Title"] = "CreateTask";
+    ViewData["Title"] = "Yeni Görev";
     Layout = "~/Views/Task/Layout.cshtml";
 }
 
-<h1>CreateTask</h1>
+<style>
+    .create-task-page {
+        width: 100%;
+        padding: 28px 36px 50px;
+    }
 
+    .task-notebook {
+        position: relative;
+        max-width: 980px;
+        min-height: 640px;
+        margin: 0 auto;
+        overflow: visible;
+        background-color: #fff;
+        background-image: repeating-linear-gradient( to bottom, transparent 0, transparent 39px, rgba(211, 221, 237, 0.65) 40px );
+        border: 1px solid #ccd5e5;
+        border-radius: 12px;
+        box-shadow: 0 18px 50px rgba(35, 55, 90, 0.11), 5px 5px 0 #edf1f7;
+    }
+
+        /* Defterdeki kırmızı dikey çizgi */
+        .task-notebook::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 54px;
+            width: 2px;
+            z-index: 1;
+            background-color: rgba(231, 76, 76, 0.62);
+        }
+
+    /* Defter delikleri */
+    .notebook-holes {
+        position: absolute;
+        top: 43px;
+        bottom: 40px;
+        left: 18px;
+        width: 16px;
+        z-index: 3;
+        background-image: radial-gradient( circle, #b9c3d2 0, #b9c3d2 4px, #f5f7fa 4.5px, #f5f7fa 6px, transparent 6.5px );
+        background-size: 16px 55px;
+        background-repeat: repeat-y;
+    }
+
+    /* Kırmızı ataş */
+    .paperclip {
+        position: absolute;
+        top: -27px;
+        right: 38px;
+        z-index: 10;
+        color: #e53935;
+        transform: rotate(11deg);
+        filter: drop-shadow(2px 4px 2px rgba(0, 0, 0, 0.18));
+    }
+
+        .paperclip .material-symbols-outlined {
+            font-size: 64px;
+            font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 48;
+        }
+
+    .notebook-content {
+        position: relative;
+        z-index: 2;
+        padding: 30px 34px 32px 78px;
+    }
+
+    /* Üst alan */
+    .task-form-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding-bottom: 22px;
+        margin-bottom: 26px;
+        border-bottom: 1px solid #d9e0ec;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 7px;
+        color: #637083;
+        font-size: 13px;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+        .back-link:hover {
+            color: #0b63ce;
+        }
+
+    .task-form-title {
+        margin: 0;
+        color: #172033;
+        font-size: 28px;
+        font-weight: 750;
+        line-height: 1.2;
+    }
+
+    .task-form-subtitle {
+        margin: 6px 0 0;
+        color: #707b8c;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .cancel-button,
+    .save-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 42px;
+        padding: 0 18px;
+        border-radius: 22px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .cancel-button {
+        color: #4f5b6c;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid #ccd5e3;
+    }
+
+        .cancel-button:hover {
+            color: #263244;
+            background: #f3f6fa;
+        }
+
+    .save-button {
+        color: #fff;
+        background: #0b63ce;
+        border: 1px solid #0b63ce;
+        box-shadow: 0 5px 14px rgba(11, 99, 206, 0.22);
+    }
+
+        .save-button:hover {
+            background: #0758b9;
+            transform: translateY(-1px);
+            box-shadow: 0 7px 18px rgba(11, 99, 206, 0.28);
+        }
+
+        .save-button .material-symbols-outlined {
+            font-size: 19px;
+        }
+
+    /* Form yerleşimi */
+    .task-form-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.7fr) minmax(250px, 0.8fr);
+        gap: 30px;
+        align-items: start;
+    }
+
+    .main-task-column {
+        min-width: 0;
+    }
+
+    .settings-column {
+        padding: 22px;
+        background: rgba(244, 247, 252, 0.94);
+        border: 1px solid #d8e0ec;
+        border-radius: 16px;
+        box-shadow: 0 8px 22px rgba(41, 61, 94, 0.06);
+    }
+
+    .settings-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 20px;
+        color: #263244;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+        .settings-title .material-symbols-outlined {
+            color: #0b63ce;
+            font-size: 20px;
+        }
+
+    /* Ana görev başlığı */
+    .title-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        color: #5c6879;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+        .title-label .material-symbols-outlined {
+            color: #0b63ce;
+            font-size: 20px;
+        }
+
+    .task-title-input {
+        width: 100%;
+        padding: 12px 4px 13px;
+        color: #172033;
+        background: rgba(255, 255, 255, 0.82);
+        border: 0;
+        border-bottom: 2px solid #9db8dc;
+        border-radius: 7px 7px 0 0;
+        outline: none;
+        font-family: inherit;
+        font-size: 25px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+
+        .task-title-input::placeholder {
+            color: #9aa5b5;
+            font-weight: 500;
+        }
+
+        .task-title-input:focus {
+            padding-left: 10px;
+            background: #fff;
+            border-bottom-color: #0b63ce;
+            box-shadow: 0 5px 16px rgba(11, 99, 206, 0.08);
+        }
+
+    /* Genel form alanları */
+    .form-group {
+        margin-top: 24px;
+    }
+
+    .settings-column .form-group {
+        margin-top: 18px;
+    }
+
+        .settings-column .form-group:first-of-type {
+            margin-top: 0;
+        }
+
+    .field-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #39465a;
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    .field-label-icon {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .field-label-icon .material-symbols-outlined {
+            color: #637083;
+            font-size: 18px;
+        }
+
+    .form-control {
+        width: 100%;
+        min-height: 46px;
+        padding: 11px 13px;
+        color: #263244;
+        background-color: rgba(255, 255, 255, 0.96);
+        border: 1px solid #cbd5e3;
+        border-radius: 11px;
+        outline: none;
+        font-family: inherit;
+        font-size: 14px;
+        box-sizing: border-box;
+        transition: all 0.2s ease;
+    }
+
+        .form-control:hover {
+            border-color: #aebbd0;
+        }
+
+        .form-control:focus {
+            background-color: #fff;
+            border-color: #0b63ce;
+            box-shadow: 0 0 0 3px rgba(11, 99, 206, 0.10);
+        }
+
+    textarea.form-control {
+        min-height: 105px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    .validation-message {
+        display: block;
+        margin-top: 6px;
+        color: #d32f2f;
+        font-size: 12px;
+    }
+
+    .validation-summary-valid {
+        display: none;
+    }
+
+    .validation-summary-errors {
+        margin-bottom: 20px;
+        padding: 12px 15px;
+        color: #b3261e;
+        background: #fff1f0;
+        border: 1px solid #f1c3bf;
+        border-radius: 10px;
+        font-size: 13px;
+    }
+
+        .validation-summary-errors ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+    /* Alt görev alanı */
+    .subtask-section {
+        margin-top: 30px;
+        padding-top: 22px;
+        border-top: 1px dashed #aebbd0;
+    }
+
+    .subtask-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 15px;
+    }
+
+    .subtask-heading {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .subtask-heading-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        color: #0b63ce;
+        background: #e8f1fd;
+        border-radius: 50%;
+    }
+
+        .subtask-heading-icon .material-symbols-outlined {
+            font-size: 20px;
+        }
+
+    .subtask-heading h2 {
+        margin: 0;
+        color: #263244;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .subtask-heading p {
+        margin: 2px 0 0;
+        color: #7a8595;
+        font-size: 12px;
+    }
+
+    .add-subtask-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 12px;
+        color: #0b63ce;
+        background: #edf5ff;
+        border: 1px solid #cfe2fa;
+        border-radius: 18px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 650;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .add-subtask-button:hover {
+            color: #fff;
+            background: #0b63ce;
+            border-color: #0b63ce;
+        }
+
+        .add-subtask-button .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+    .subtask-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .subtask-empty {
+        padding: 17px;
+        color: #7b8696;
+        background: rgba(247, 249, 252, 0.88);
+        border: 1px dashed #c5cfdd;
+        border-radius: 11px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .subtask-row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .subtask-bullet {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 27px;
+        height: 27px;
+        color: #0b63ce;
+        background: #eaf3ff;
+        border-radius: 50%;
+    }
+
+        .subtask-bullet .material-symbols-outlined {
+            font-size: 17px;
+        }
+
+    .subtask-input {
+        flex: 1;
+        min-width: 0;
+        height: 43px;
+        padding: 9px 12px;
+        color: #263244;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid #ccd6e4;
+        border-radius: 10px;
+        outline: none;
+        font-family: inherit;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+
+        .subtask-input:focus {
+            background: #fff;
+            border-color: #0b63ce;
+            box-shadow: 0 0 0 3px rgba(11, 99, 206, 0.09);
+        }
+
+    .remove-subtask {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 34px;
+        height: 34px;
+        color: #778294;
+        background: transparent;
+        border: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .remove-subtask:hover {
+            color: #d32f2f;
+            background: #fff0ef;
+        }
+
+        .remove-subtask .material-symbols-outlined {
+            font-size: 20px;
+        }
+
+    /* Önemli görev kartı */
+    .important-option {
+        position: relative;
+        display: block;
+        margin-top: 20px;
+        cursor: pointer;
+    }
+
+        .important-option input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+    .important-visual {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 13px;
+        color: #596678;
+        background: #fff;
+        border: 1px solid #d1dae7;
+        border-radius: 11px;
+        transition: all 0.2s ease;
+    }
+
+    .important-star {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        color: #8a94a3;
+        background: #f1f4f8;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+    }
+
+        .important-star .material-symbols-outlined {
+            font-size: 20px;
+        }
+
+    .important-text strong {
+        display: block;
+        font-size: 13px;
+    }
+
+    .important-text small {
+        display: block;
+        margin-top: 2px;
+        color: #8a94a3;
+        font-size: 11px;
+    }
+
+    .important-option input:checked + .important-visual {
+        color: #a66000;
+        background: #fff8e8;
+        border-color: #f2c76f;
+        box-shadow: 0 0 0 3px rgba(242, 183, 47, 0.10);
+    }
+
+        .important-option input:checked + .important-visual .important-star {
+            color: #fff;
+            background: #f4b400;
+        }
+
+            .important-option input:checked + .important-visual
+            .important-star
+            .material-symbols-outlined {
+                font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24;
+            }
+
+    /* Alt mobil kaydetme alanı */
+    .mobile-form-actions {
+        display: none;
+    }
+
+    @@media (max-width: 900px) {
+        .create-task-page {
+            padding: 25px 18px 45px;
+        }
+
+        .task-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .settings-column {
+            order: 2;
+        }
+    }
+
+    @@media (max-width: 650px) {
+        .create-task-page {
+            padding: 18px 10px 35px;
+        }
+
+        .task-notebook::before,
+        .notebook-holes {
+            display: none;
+        }
+
+        .notebook-content {
+            padding: 25px 18px;
+        }
+
+        .task-form-header {
+            align-items: flex-start;
+        }
+
+        .header-actions {
+            display: none;
+        }
+
+        .task-form-title {
+            font-size: 24px;
+        }
+
+        .task-title-input {
+            font-size: 21px;
+        }
+
+        .paperclip {
+            right: 20px;
+        }
+
+        .subtask-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .mobile-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #d8e0ec;
+        }
+    }
+</style>
+
+<div class="create-task-page">
+
+    <form asp-controller="Task"
+          asp-action="CreateTask"
+          method="post"
+          class="task-notebook">
+
+        <div class="notebook-holes"></div>
+
+        <div class="paperclip" aria-hidden="true">
+            <span class="material-symbols-outlined">
+                attach_file
+            </span>
+        </div>
+
+        <div class="notebook-content">
+
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <!-- Üst başlık -->
+            <div class="task-form-header">
+
+                <div>
+                    <a asp-controller="Task"
+                           asp-action="Index"
+                           class="back-link">
+                        <span class="material-symbols-outlined"
+                              style="font-size:17px;">
+                            arrow_back
+                        </span>
+                        Görevlere dön
+                    </a>
+
+                    <h1 class="task-form-title">Yeni Görev</h1>
+
+                    <p class="task-form-subtitle">
+                        Notunuzu oluşturun, ayrıntılarınızı ekleyin.
+                    </p>
+                </div>
+
+                <div class="header-actions">
+                    <a asp-controller="Task"
+                           asp-action="Index"
+                           class="cancel-button">
+                        İptal
+                    </a>
+
+                    <button type="submit" class="save-button">
+                        <span class="material-symbols-outlined">
+                            check
+                        </span>
+                        Görevi Kaydet
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="task-form-grid">
+
+                <!-- Sol alan -->
+                <div class="main-task-column">
+
+                    <div>
+                        <label asp-for="Title" class="title-label">
+                            <span class="material-symbols-outlined">
+                                edit_note
+                            </span>
+                            Görev başlığı
+                        </label>
+
+                        <input asp-for="Title"
+                               class="task-title-input"
+                               placeholder="Bugün ne yapacaksınız?"
+                               autocomplete="off" />
+
+                        <span asp-validation-for="Title"
+                              class="validation-message">
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Description"
+                               class="field-label field-label-icon">
+                            <span class="material-symbols-outlined">
+                                notes
+                            </span>
+                            Görev notu
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  placeholder="Görevle ilgili kısa bir not yazabilirsiniz..."></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="validation-message">
+                        </span>
+                    </div>
+
+                    <!-- Alt görevler -->
+                    <div class="subtask-section">
+
+                        <div class="subtask-header">
+
+                            <div class="subtask-heading">
+
+                                <div class="subtask-heading-icon">
+                                    <span class="material-symbols-outlined">
+                                        checklist
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <h2>Ayrıntılar</h2>
+                                    <p>İsterseniz yapılacak maddeleri ekleyin.</p>
+                                </div>
+
+                            </div>
+
+                            <button type="button"
+                                    id="addSubTaskButton"
+                                    class="add-subtask-button">
+                                <span class="material-symbols-outlined">
+                                    add
+                                </span>
+                                Ayrıntı ekle
+                            </button>
+
+                        </div>
+
+                        <div id="subTaskContainer"
+                             class="subtask-container">
+
+                            <div id="subTaskEmpty"
+                                 class="subtask-empty"
+                                 style="@(Model.SubTasks.Any() ? "display:none;" : "")">
+                                Henüz ayrıntı eklenmedi.
+                            </div>
+
+                            @for (var i = 0; i < Model.SubTasks.Count; i++)
+                            {
+                                <div class="subtask-row">
+
+                                    <input type="hidden"
+                                           name="SubTasks.Index"
+                                           value="@i" />
+
+                                    <div class="subtask-bullet">
+                                        <span class="material-symbols-outlined">
+                                            radio_button_unchecked
+                                        </span>
+                                    </div>
+
+                                    <input asp-for="SubTasks[i].Title"
+                                           class="subtask-input"
+                                           placeholder="Yapılacak ayrıntıyı yazın"
+                                           autocomplete="off" />
+
+                                    <button type="button"
+                                            class="remove-subtask"
+                                            title="Ayrıntıyı kaldır">
+                                        <span class="material-symbols-outlined">
+                                            close
+                                        </span>
+                                    </button>
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Sağ ayarlar alanı -->
+                <aside class="settings-column">
+
+                    <h2 class="settings-title">
+                        <span class="material-symbols-outlined">
+                            tune
+                        </span>
+                        Görev ayarları
+                    </h2>
+
+                    <div class="form-group">
+                        <label asp-for="TaskListId"
+                               class="field-label field-label-icon">
+                            <span class="material-symbols-outlined">
+                                label
+                            </span>
+                            Kategori
+                        </label>
+
+                        <select asp-for="TaskListId"
+                                asp-items="ViewBag.TaskLists"
+                                class="form-control">
+                            <option value="">Kategorisiz</option>
+                        </select>
+
+                        <span asp-validation-for="TaskListId"
+                              class="validation-message">
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="DueDate"
+                               class="field-label field-label-icon">
+                            <span class="material-symbols-outlined">
+                                event
+                            </span>
+                            Son tarih
+                        </label>
+
+                        <input asp-for="DueDate"
+                               type="datetime-local"
+                               asp-format="{0:yyyy-MM-ddTHH:mm}"
+                               class="form-control" />
+
+                        <span asp-validation-for="DueDate"
+                              class="validation-message">
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ReminderDate"
+                               class="field-label field-label-icon">
+                            <span class="material-symbols-outlined">
+                                notifications
+                            </span>
+                            Hatırlatma
+                        </label>
+
+                        <input asp-for="ReminderDate"
+                               type="datetime-local"
+                               asp-format="{0:yyyy-MM-ddTHH:mm}"
+                               class="form-control" />
+
+                        <span asp-validation-for="ReminderDate"
+                              class="validation-message">
+                        </span>
+                    </div>
+
+                    <label class="important-option">
+
+                        <input asp-for="IsImportant" />
+
+                        <span class="important-visual">
+
+                            <span class="important-star">
+                                <span class="material-symbols-outlined">
+                                    star
+                                </span>
+                            </span>
+
+                            <span class="important-text">
+                                <strong>Önemli görev</strong>
+                                <small>Görevi yıldızlı olarak işaretle</small>
+                            </span>
+
+                        </span>
+
+                    </label>
+
+                </aside>
+
+            </div>
+
+            <!-- Mobil butonlar -->
+            <div class="mobile-form-actions">
+                <a asp-controller="Task"
+                       asp-action="Index"
+                       class="cancel-button">
+                    İptal
+                </a>
+
+                <button type="submit" class="save-button">
+                    <span class="material-symbols-outlined">
+                        check
+                    </span>
+                    Kaydet
+                </button>
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const container = document.getElementById("subTaskContainer");
+        const addButton = document.getElementById("addSubTaskButton");
+        const emptyText = document.getElementById("subTaskEmpty");
+
+        let subTaskIndex = @Model.SubTasks.Count;
+
+        function updateEmptyState() {
+            const rows = container.querySelectorAll(".subtask-row");
+
+            emptyText.style.display =
+                rows.length === 0 ? "block" : "none";
+        }
+
+        addButton.addEventListener("click", function () {
+
+            const currentIndex = subTaskIndex;
+
+            const row = document.createElement("div");
+            row.className = "subtask-row";
+
+            row.innerHTML = `
+                <input type="hidden"
+                       name="SubTasks.Index"
+                       value="${currentIndex}" />
+
+                <div class="subtask-bullet">
+                    <span class="material-symbols-outlined">
+                        radio_button_unchecked
+                    </span>
+                </div>
+
+                <input type="text"
+                       name="SubTasks[${currentIndex}].Title"
+                       class="subtask-input"
+                       placeholder="Yapılacak ayrıntıyı yazın"
+                       autocomplete="off" />
+
+                <button type="button"
+                        class="remove-subtask"
+                        title="Ayrıntıyı kaldır">
+                    <span class="material-symbols-outlined">
+                        close
+                    </span>
+                </button>
+            `;
+
+            container.appendChild(row);
+            subTaskIndex++;
+
+            updateEmptyState();
+
+            const newInput = row.querySelector(".subtask-input");
+            newInput.focus();
+        });
+
+        container.addEventListener("click", function (event) {
+
+            const removeButton =
+                event.target.closest(".remove-subtask");
+
+            if (!removeButton) {
+                return;
+            }
+
+            const row = removeButton.closest(".subtask-row");
+
+            if (row) {
+                row.remove();
+                updateEmptyState();
+            }
+        });
+
+        updateEmptyState();
+    });
+</script>

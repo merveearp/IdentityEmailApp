@@ -1,11 +1,8 @@
-﻿using IdentityEmailApp.Entities;
-
+﻿
 namespace IdentityEmailApp.DTOs.TaskDtos
 {
     using System.ComponentModel.DataAnnotations;
 
-    namespace IdentityEmailApp.DTOs.TaskDtos
-    {
         public class CreateTaskDto
         {
             [Required(ErrorMessage = "Görev başlığı zorunludur.")]
@@ -26,4 +23,3 @@ namespace IdentityEmailApp.DTOs.TaskDtos
         }
     }
 
-}
