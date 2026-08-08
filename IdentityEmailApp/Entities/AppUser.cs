@@ -20,6 +20,8 @@ namespace IdentityEmailApp.Entities
 
         public ICollection<Notification> Notifications { get; set; }
     = new List<Notification>();
+        public ICollection<UserTask>? UserTasks { get; set; }
+        public ICollection<TaskList>? TaskLists { get; set; }
 
     }
 }

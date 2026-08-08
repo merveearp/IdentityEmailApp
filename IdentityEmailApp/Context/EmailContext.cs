@@ -10,11 +10,13 @@ namespace IdentityEmailApp.Context
         {
             
         }
-      
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<TaskList> TaskLists { get; set; }
+        public DbSet<UserTask> UserTasks { get; set; }
+        public DbSet<SubTask> SubTasks { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -23,6 +25,30 @@ namespace IdentityEmailApp.Context
                .WithMany(x => x.Notifications)
                .HasForeignKey(x => x.AppUserId)
                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<SubTask>()
+               .HasOne(x => x.UserTask)
+               .WithMany(x => x.SubTasks)
+               .HasForeignKey(x => x.UserTaskId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserTask>()
+                .HasOne(x => x.TaskList)
+                .WithMany(x => x.UserTasks)
+                .HasForeignKey(x => x.TaskListId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserTask>()
+                .HasOne(x => x.AppUser)
+                .WithMany()
+                .HasForeignKey(x => x.AppUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<TaskList>()
+                .HasOne(x => x.AppUser)
+                .WithMany()
+                .HasForeignKey(x => x.AppUserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
