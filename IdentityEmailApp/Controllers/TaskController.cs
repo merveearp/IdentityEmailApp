@@ -37,7 +37,32 @@ namespace IdentityEmailApp.Controllers
             return View();
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            var tasks = await _context.UserTasks
+                .AsNoTracking()
+                .Include(x => x.TaskList)
+                .Include(x => x.SubTasks)
+                .Where(x =>
+                    x.AppUserId == user.Id &&
+                    !x.IsDeleted)
+                .OrderByDescending(x => x.IsImportant)
+                .ThenBy(x => x.DueDate == null)
+                .ThenBy(x => x.DueDate)
+                .ThenByDescending(x => x.CreatedDate)
+                .ToListAsync();
+
+            return View(tasks);
+        }
+        public async Task<IActionResult> CompletedIndex()
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -51,10 +76,36 @@ namespace IdentityEmailApp.Controllers
              .Include(x => x.SubTasks)
              .Where(x =>
                  x.AppUserId == user.Id &&
-                 !x.IsDeleted)
-             .OrderByDescending(x => x.CreatedDate)
+                 !x.IsDeleted &&
+                 x.IsCompleted)
+             .OrderByDescending(x => x.CompletedDate)
              .ToListAsync();
 
+
+            return View(tasks);
+        }
+
+        public async Task<IActionResult> UnCompletedIndex()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            var tasks = await _context.UserTasks
+                .AsNoTracking()
+                .Include(x => x.TaskList)
+                .Include(x => x.SubTasks)
+                .Where(x =>
+                    x.AppUserId == user.Id &&
+                    !x.IsDeleted &&
+                    !x.IsCompleted)
+                .OrderBy(x => x.DueDate == null)
+                .ThenBy(x => x.DueDate)
+                .ThenByDescending(x => x.CreatedDate)
+                .ToListAsync();
 
             return View(tasks);
         }
@@ -189,10 +240,10 @@ namespace IdentityEmailApp.Controllers
                 new { id = userTask.UserTaskId }
             );
         }
-        
+
 
         [HttpGet]
-        public async Task<IActionResult> CreateTask()
+        public async Task<IActionResult> CreateTask(int? taskListId)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -200,9 +251,28 @@ namespace IdentityEmailApp.Controllers
             {
                 return RedirectToAction("SignIn", "Login");
             }
+
+            if (taskListId.HasValue)
+            {
+                var categoryExists = await _context.TaskLists
+                    .AnyAsync(x =>
+                        x.TaskListId == taskListId.Value &&
+                        x.AppUserId == user.Id);
+
+                if (!categoryExists)
+                {
+                    return NotFound();
+                }
+            }
+
             await LoadTaskListAsync(user.Id);
 
-            return View(new CreateTaskDto());
+            var model = new CreateTaskDto
+            {
+                TaskListId = taskListId
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -240,9 +310,9 @@ namespace IdentityEmailApp.Controllers
                 TaskListId = userTask.TaskListId
             };
 
-            if(userTask.SubTasks !=null)
+            if (userTask.SubTasks != null)
             {
-                foreach(var subTask in userTask.SubTasks)
+                foreach (var subTask in userTask.SubTasks)
                 {
                     if (string.IsNullOrWhiteSpace(subTask.Title))
                     {
@@ -463,7 +533,7 @@ namespace IdentityEmailApp.Controllers
                 x.AppUserId == user.Id &&
                 x.IsDeleted);
 
-            if(userTask==null)
+            if (userTask == null)
             {
                 return NotFound("Silinecek Görev bulunamadı!");
             }
@@ -503,7 +573,7 @@ namespace IdentityEmailApp.Controllers
                 return NotFound();
             }
 
-            if(userTask.SubTasks != null && userTask.SubTasks.Any())
+            if (userTask.SubTasks != null && userTask.SubTasks.Any())
             {
                 _context.SubTasks.RemoveRange(userTask.SubTasks);
             }
@@ -551,7 +621,247 @@ namespace IdentityEmailApp.Controllers
             );
         }
 
+        [HttpGet]
+        public async Task<IActionResult> TaskListIndex(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+
+            var taskList = await _context.TaskLists
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x =>
+                    x.TaskListId == id &&
+                    x.AppUserId == user.Id);
+
+            if (taskList == null)
+            {
+                return NotFound();
+            }
+
+
+            var tasks = await _context.UserTasks
+                .AsNoTracking()
+                .Include(x => x.TaskList)
+                .Include(x => x.SubTasks)
+                .Where(x =>
+                    x.AppUserId == user.Id &&
+                    x.TaskListId == id &&
+                    !x.IsCompleted &&
+                    !x.IsDeleted)
+                .OrderByDescending(x => x.IsImportant)
+                .ThenBy(x => x.DueDate == null)
+                .ThenBy(x => x.DueDate)
+                .ThenByDescending(x => x.CreatedDate)
+                .ToListAsync();
+
+            ViewBag.TaskListId = taskList.TaskListId;
+            ViewBag.TaskListName = taskList.Name;
+
+            return View(tasks);
+
+
+        }
+
+        //<--Kategori alanı-->
+        [HttpGet]
+        public async Task<IActionResult> TaskList()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+
+            var taskList = await _context.TaskLists
+                .AsNoTracking()
+                .Where(x =>
+                    x.AppUserId == user.Id)
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+
+            if (taskList == null)
+            {
+                return NotFound();
+            }
+
+            return View(taskList);
+
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateTaskList()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            return View(new CreateTaskListDto());
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateTaskList(CreateTaskListDto model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var categoryName = model.Name;
+            var categoryExist = await _context.TaskLists
+                .AnyAsync(x => x.AppUserId == user.Id &&
+                x.Name == categoryName);
+
+            if (categoryExist == true)
+            {
+                ModelState.AddModelError(nameof(model.Name), "Bu isimde bir kategoriniz zaten bulunuyor.");
+
+                return View(model);
+            }
+            var taskList = new TaskList
+            {
+                Name = categoryName,
+                CreatedDate = DateTime.Now,
+                AppUserId = user.Id
+            };
+
+            _context.TaskLists.Add(taskList);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Kategori başarıyla oluşturuldu.";
+
+            return RedirectToAction(nameof(TaskList));
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> EditTaskList(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            var taskList = await _context.TaskLists
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x =>
+                x.TaskListId == id &&
+                x.AppUserId == user.Id);
+
+            if (taskList == null)
+            {
+                return NotFound();
+            }
+
+            var model = new EditTaskListDto
+            {
+                TaskListId = taskList.TaskListId,
+                Name = taskList.Name
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditTaskList(EditTaskListDto model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+            var taskList = await _context.TaskLists.FirstOrDefaultAsync(x =>
+           x.TaskListId == model.TaskListId &&
+           x.AppUserId == user.Id);
+
+            if (taskList == null)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var categoryName = model.Name.Trim();
+
+            var categoryExist = await _context.TaskLists
+                .AnyAsync(x => x.AppUserId == user.Id &&
+                 x.Name == categoryName);
+
+            if (categoryExist == true)
+            {
+                ModelState.AddModelError(nameof(model.Name),
+            "Bu isimde başka bir kategoriniz zaten bulunuyor.");
+                return View(model);
+            }
+
+            taskList.Name = model.Name;
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Kategori başarıyla güncellendi.";
+
+            return RedirectToAction(nameof(TaskList));
+
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteTaskList(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("SignIn", "Login");
+            }
+
+            var taskList = await _context.TaskLists
+                .FirstOrDefaultAsync(x =>
+                    x.TaskListId == id &&
+                    x.AppUserId == user.Id);
+
+            if (taskList == null)
+            {
+                return NotFound();
+            }
+
+            _context.TaskLists.Remove(taskList);
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Kategori ve bağlı görevler kalıcı olarak silindi.";
+
+            return RedirectToAction(nameof(TaskList));
+        }
+
     }
 
-     
 }
+
+
+

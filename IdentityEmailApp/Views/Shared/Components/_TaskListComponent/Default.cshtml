@@ -1,15 +1,97 @@
-﻿
-@*
-    _TaskListComponent
-*@
+﻿@using IdentityEmailApp.Entities
+@model List<TaskList>
 
- 
+@{
+    var routeId = ViewContext.RouteData.Values["id"]?.ToString();
+}
+
 <div class="pt-4 mt-4 border-t border-outline-variant">
-    <p class="px-4 py-2 text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Kategoriler</p>
-    <a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-full px-4 py-2 transition-all duration-200 font-label-lg text-label-lg" href="#">
-        <span class="material-symbols-outlined">person</span> Kişisel
-    </a>
-    <a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-full px-4 py-2 transition-all duration-200 font-label-lg text-label-lg" href="#">
-        <span class="material-symbols-outlined">work</span> İş
-    </a><a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-full px-4 py-2 transition-all duration-200 font-label-lg text-label-lg" href="#"><span class="material-symbols-outlined">shopping_cart</span> Alışveriş</a>
+
+    <div class="flex items-center justify-between px-4 py-2">
+
+        <p class="text-label-md font-label-md
+            text-on-surface-variant uppercase tracking-wider">
+            Kategoriler
+        </p>
+
+        <a asp-controller="Task"
+               asp-action="CreateTaskList"
+               title="Yeni kategori oluştur"
+               class="flex items-center justify-center w-7 h-7
+            rounded-full text-on-surface-variant
+            hover:bg-surface-container-high
+            hover:text-primary transition-colors">
+
+            <span class="material-symbols-outlined text-lg">
+                add
+            </span>
+
+        </a>
+
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="space-y-1">
+
+            @foreach (var taskList in Model)
+            {
+                var isActive =
+                    routeId == taskList.TaskListId.ToString();
+
+                var categoryName =
+                    taskList.Name?.Trim().ToLower() ?? "";
+
+                var icon = categoryName switch
+                {
+                    "kişisel" => "person",
+                    "iş" => "work",
+                    "alışveriş" => "shopping_cart",
+                    "eğitim" => "school",
+                    "sağlık" => "health_and_safety",
+                    "finans" => "account_balance_wallet",
+                    "seyahat" => "flight",
+                    _ => "folder"
+                };
+
+                <a asp-controller="Task"
+                       asp-action="TaskListIndex"
+                       asp-route-id="@taskList.TaskListId"
+                       class="flex items-center gap-3 rounded-full
+                    px-4 py-2 transition-all duration-200
+                    font-label-lg text-label-lg
+                    @(isActive
+                                           ? "bg-primary-container text-primary font-semibold"
+                                           : "text-on-surface-variant hover:bg-surface-container-high")">
+
+                    <span class="material-symbols-outlined">
+                        @icon
+                    </span>
+
+                    <span class="flex-1 truncate">
+                        @taskList.Name
+                    </span>
+
+                </a>
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="mx-3 px-3 py-4 rounded-xl
+            bg-surface-container-low text-center">
+
+            <span class="material-symbols-outlined
+                text-on-surface-variant">
+                folder_off
+            </span>
+
+            <p class="mt-1 text-xs text-on-surface-variant">
+             @*    Henüz kategori oluşturmadınız. *@
+            </p>
+
+        </div>
+    }
+
 </div>

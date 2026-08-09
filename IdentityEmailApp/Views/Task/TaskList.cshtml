@@ -1,0 +1,495 @@
+﻿@using IdentityEmailApp.Entities
+@model List<TaskList>
+
+@{
+    ViewData["Title"] = "Kategori Listesi";
+    Layout = "~/Views/Task/Layout.cshtml";
+}
+
+<style>
+    .category-page {
+        width: 100%;
+        padding: 0 0 45px;
+    }
+
+    .category-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        min-height: 72px;
+        padding: 13px 25px;
+        background: rgba(255, 255, 255, 0.65);
+        border-bottom: 1px solid #d8e0ec;
+        backdrop-filter: blur(8px);
+    }
+
+    .category-header-title {
+        margin: 0;
+        color: #172033;
+        font-size: 21px;
+        font-weight: 750;
+    }
+
+    .category-header-description {
+        margin: 4px 0 0;
+        color: #748094;
+        font-size: 12px;
+    }
+
+    .category-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .category-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        color: #1764b9;
+        background: #edf5ff;
+        border: 1px solid #cce0f8;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+        .category-count .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+    .create-category-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 41px;
+        padding: 0 18px;
+        color: #fff;
+        background: #0b63ce;
+        border-radius: 22px;
+        box-shadow: 0 5px 14px rgba(11, 99, 206, 0.20);
+        font-size: 13px;
+        font-weight: 650;
+        text-decoration: none !important;
+        transition: all 0.2s ease;
+    }
+
+        .create-category-button:hover {
+            color: #fff;
+            background: #0758b9;
+            box-shadow: 0 7px 18px rgba(11, 99, 206, 0.27);
+            transform: translateY(-1px);
+        }
+
+        .create-category-button .material-symbols-outlined {
+            font-size: 19px;
+        }
+
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+        gap: 25px;
+        padding: 30px 25px;
+    }
+
+    /* Not defteri kartı */
+    .category-note {
+        position: relative;
+        display: block;
+        min-height: 190px;
+        overflow: visible;
+        padding: 43px 25px 23px 57px;
+        color: inherit;
+        background-color: #fffefb;
+        background-image: repeating-linear-gradient( to bottom, transparent 0, transparent 31px, rgba(177, 197, 222, 0.55) 32px );
+        border: 1px solid #d8dfeb;
+        border-radius: 9px;
+        box-shadow: 0 9px 24px rgba(39, 55, 82, 0.10), 4px 4px 0 #eef1f6;
+        text-decoration: none !important;
+        transition: all 0.22s ease;
+    }
+
+        .category-note:hover {
+            color: inherit;
+            border-color: #a9c4e6;
+            box-shadow: 0 15px 32px rgba(39, 55, 82, 0.16), 5px 5px 0 #e8edf5;
+            transform: translateY(-5px) rotate(-0.3deg);
+        }
+
+        /* Defterin kırmızı kenar çizgisi */
+        .category-note::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 38px;
+            width: 2px;
+            background: rgba(231, 76, 76, 0.58);
+        }
+
+        /* Alt kâğıt görüntüsü */
+        .category-note::after {
+            content: "";
+            position: absolute;
+            left: 7px;
+            right: 7px;
+            bottom: -7px;
+            height: 8px;
+            z-index: -1;
+            background: #f3f5f9;
+            border: 1px solid #dce2eb;
+            border-radius: 0 0 8px 8px;
+        }
+
+    .category-note-holes {
+        position: absolute;
+        top: 24px;
+        bottom: 20px;
+        left: 12px;
+        width: 14px;
+        background-image: radial-gradient( circle, #bcc6d4 0, #bcc6d4 3px, #f6f7f9 3.5px, #f6f7f9 5px, transparent 5.5px );
+        background-size: 14px 40px;
+        background-repeat: repeat-y;
+    }
+
+    /* Kırmızı ataş */
+    .category-paperclip {
+        position: absolute;
+        top: -22px;
+        right: 22px;
+        z-index: 5;
+        color: #e53935;
+        filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.16));
+        transform: rotate(10deg);
+        transition: transform 0.2s ease;
+    }
+
+        .category-paperclip .material-symbols-outlined {
+            font-size: 51px;
+            font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 48;
+        }
+
+    .category-note:hover .category-paperclip {
+        transform: rotate(15deg) translateY(-2px);
+    }
+
+    .category-note-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        min-height: 120px;
+    }
+
+    .category-name {
+        margin: 0;
+        padding-right: 25px;
+        color: #1c2940;
+        font-size: 22px;
+        font-weight: 750;
+        line-height: 1.35;
+        word-break: break-word;
+    }
+
+    .category-created {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: auto;
+        padding-top: 22px;
+        color: #687589;
+        font-size: 11px;
+    }
+
+    .category-created-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 29px;
+        height: 29px;
+        color: #0b63ce;
+        background: rgba(231, 241, 255, 0.93);
+        border: 1px solid #cce0f8;
+        border-radius: 8px;
+    }
+
+        .category-created-icon .material-symbols-outlined {
+            font-size: 17px;
+        }
+
+    .category-created-text span {
+        display: block;
+        margin-bottom: 2px;
+        color: #8a95a5;
+        font-size: 10px;
+    }
+    .category-note-main-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: 9px;
+}
+
+.category-note-content {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.category-note-holes,
+.category-paperclip {
+    pointer-events: none;
+}
+
+.category-edit-button {
+    position: absolute;
+    right: 17px;
+    bottom: 17px;
+    z-index: 5;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 35px;
+    height: 35px;
+
+    color: #667386;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid #d1dae7;
+    border-radius: 50%;
+
+    text-decoration: none !important;
+    box-shadow: 0 4px 10px rgba(38, 55, 82, 0.10);
+    transition: all 0.2s ease;
+}
+
+.category-edit-button:hover {
+    color: #fff;
+    background: #0b63ce;
+    border-color: #0b63ce;
+    transform: translateY(-2px);
+}
+
+.category-edit-button .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.category-created {
+    padding-right: 42px;
+}
+
+    .category-created-text strong {
+        color: #4f5c6e;
+        font-size: 11px;
+        font-weight: 650;
+    }
+
+    /* Boş ekran */
+    .category-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 500px;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .category-empty-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 85px;
+        height: 85px;
+        color: #0b63ce;
+        background: #edf5ff;
+        border: 1px solid #cfe2fa;
+        border-radius: 50%;
+    }
+
+        .category-empty-icon .material-symbols-outlined {
+            font-size: 38px;
+        }
+
+    .category-empty h3 {
+        margin: 20px 0 7px;
+        color: #263244;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .category-empty p {
+        max-width: 350px;
+        margin: 0 0 22px;
+        color: #7b8696;
+        font-size: 13px;
+    }
+
+    @@media (max-width: 650px) {
+        .category-header {
+            align-items: flex-start;
+            flex-direction: column;
+            padding: 16px 18px;
+        }
+
+        .category-header-actions {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .category-grid {
+            grid-template-columns: 1fr;
+            padding: 28px 17px;
+        }
+    }
+</style>
+
+<div class="category-page">
+
+    <!-- Başlık -->
+    <div class="category-header">
+
+        <div>
+            <h1 class="category-header-title">
+                Kategorilerim
+            </h1>
+
+            <p class="category-header-description">
+                Bir kategori seçerek ona ait görevleri görüntüleyin.
+            </p>
+        </div>
+
+        <div class="category-header-actions">
+
+            <div class="category-count">
+                <span class="material-symbols-outlined">
+                    category
+                </span>
+
+                @Model.Count kategori
+            </div>
+
+            <a asp-controller="Task"
+                   asp-action="CreateTaskList"
+                   class="create-category-button">
+
+                <span class="material-symbols-outlined">
+                    create_new_folder
+                </span>
+
+                Kategori Ekle
+            </a>
+
+        </div>
+
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <!-- Boş ekran -->
+        <div class="category-empty">
+
+            <div class="category-empty-icon">
+                <span class="material-symbols-outlined">
+                    folder_open
+                </span>
+            </div>
+
+            <h3>Henüz kategoriniz yok</h3>
+
+            <p>
+                Görevlerinizi düzenlemek için ilk kategorinizi oluşturabilirsiniz.
+            </p>
+
+            <a asp-controller="Task"
+                   asp-action="CreateTaskList"
+                   class="create-category-button">
+
+                <span class="material-symbols-outlined">
+                    add
+                </span>
+
+                İlk Kategoriyi Oluştur
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <!-- Kategori kartları -->
+        <div class="category-grid">
+
+            @foreach (var taskList in Model)
+            {
+                <div class="category-note">
+
+                    <!-- Kartın tamamını tıklanabilir yapar -->
+                    <a asp-controller="Task"
+                           asp-action="TaskListIndex"
+                           asp-route-id="@taskList.TaskListId"
+                           class="category-note-main-link"
+                           title="@taskList.Name görevlerini görüntüle">
+
+                        <span class="sr-only">
+                            @taskList.Name görevlerini görüntüle
+                        </span>
+
+                    </a>
+
+                    <div class="category-note-holes"></div>
+
+                    <div class="category-paperclip">
+                        <span class="material-symbols-outlined">
+                            attach_file
+                        </span>
+                    </div>
+
+                    <div class="category-note-content">
+
+                        <h2 class="category-name">
+                            @taskList.Name
+                        </h2>
+
+                        <div class="category-created">
+
+                            <div class="category-created-icon">
+                                <span class="material-symbols-outlined">
+                                    calendar_today
+                                </span>
+                            </div>
+
+                            <div class="category-created-text">
+                                <span>Oluşturulma tarihi</span>
+
+                                <strong>
+                                    @taskList.CreatedDate.ToString("dd MMM yyyy HH:mm")
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Kategori düzenleme butonu -->
+                    <a asp-controller="Task"
+                           asp-action="EditTaskList"
+                           asp-route-id="@taskList.TaskListId"
+                           class="category-edit-button"
+                           title="Kategoriyi düzenle">
+
+                        <span class="material-symbols-outlined">
+                            edit
+                        </span>
+
+                    </a>
+
+                </div>
+            }
+        </div>
+    }
+
+</div>

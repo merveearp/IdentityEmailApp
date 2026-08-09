@@ -1,0 +1,332 @@
+﻿@using IdentityEmailApp.Entities
+@model List<UserTask>
+
+@{
+    ViewData["Title"] = "Tamamlanan Görevler";
+    Layout = "~/Views/Task/Layout.cshtml";
+}
+
+<!-- Canvas Header -->
+<div class="min-h-16 border-b border-outline-variant
+    flex items-center justify-between gap-4
+    px-6 py-3 bg-white/50 backdrop-blur-sm">
+
+    <div>
+        <h2 class="font-headline-md text-headline-md text-on-surface">
+            Tamamlanan Görevlerim
+        </h2>
+
+        <p class="mt-1 text-xs text-on-surface-variant">
+            Tamamlanan görevlerinizi görüntüleyin ve yönetin.
+        </p>
+    </div>
+
+    <div class="flex items-center gap-2 px-3 py-1.5
+        rounded-full bg-blue-50 border border-blue-200
+        text-blue-700 text-xs font-semibold">
+
+        <span class="material-symbols-outlined text-lg">
+            pending_actions
+        </span>
+
+        @Model.Count görev
+    </div>
+
+</div>
+<!-- Empty State Content -->
+@if (Model == null || !Model.Any())
+{
+    <div class="h-16 border-b border-outline-variant
+        flex items-center justify-between px-6
+        bg-white/60 backdrop-blur-sm">
+
+        <div>
+            <h2 class="font-headline-md text-headline-md text-on-surface">
+                Tamamlanan Görevler
+            </h2>
+
+            <p class="mt-1 text-xs text-on-surface-variant">
+                Tamamladığınız görevlerin geçmişini görüntüleyin.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2 px-3 py-1.5
+            rounded-full bg-green-50 border border-green-200
+            text-green-700 text-xs font-semibold">
+
+            <span class="material-symbols-outlined text-lg">
+                task_alt
+            </span>
+
+            @Model.Count görev
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-6">
+
+        @foreach (var task in Model)
+        {
+            <a asp-controller="Task"
+                   asp-action="TaskDetail"
+                   asp-route-id="@task.UserTaskId"
+                   class="relative block overflow-hidden
+                bg-gradient-to-br from-green-50 via-white to-emerald-50
+                border border-green-200 rounded-2xl p-5
+                shadow-sm hover:shadow-lg hover:-translate-y-1
+                transition-all duration-200 cursor-pointer">
+
+                <!-- Üst yeşil çizgi -->
+                <div class="absolute top-0 left-0 right-0 h-1
+                    bg-gradient-to-r from-green-400 to-emerald-500">
+                </div>
+
+                <!-- Dekoratif daire -->
+                <div class="absolute -right-10 -top-10
+                    w-28 h-28 rounded-full
+                    bg-green-100/50">
+                </div>
+
+                <!-- Kategori ve ikonlar -->
+                <div class="relative flex items-start justify-between
+                    gap-3 mb-4">
+
+                    <span class="inline-flex items-center gap-1.5
+                        px-3 py-1 rounded-full bg-white/90
+                        border border-green-200 text-green-700
+                        text-xs font-semibold shadow-sm">
+
+                        <span class="material-symbols-outlined text-sm">
+                            label
+                        </span>
+
+                        @(task.TaskList?.Name ?? "Kategorisiz")
+                    </span>
+
+                    <div class="flex items-center gap-2">
+
+                        @if (task.IsImportant)
+                        {
+                            <span class="material-symbols-outlined
+                                text-yellow-500 text-2xl
+                                drop-shadow-sm"
+                                  title="Önemli görev"
+                                  style="font-variation-settings:
+                                'FILL' 1,
+                                'wght' 500,
+                                'GRAD' 0,
+                                'opsz' 28;">
+                                star
+                            </span>
+                        }
+
+                        <span class="flex items-center justify-center
+                            w-9 h-9 rounded-full bg-green-500
+                            text-white shadow-md"
+                              title="Görev tamamlandı">
+
+                            <span class="material-symbols-outlined text-xl"
+                                  style="font-variation-settings:'FILL' 1;">
+                                check_circle
+                            </span>
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- Tamamlandı rozeti -->
+                <div class="relative mb-3">
+
+                    <span class="inline-flex items-center gap-1
+                        px-2.5 py-1 rounded-md
+                        bg-green-100 text-green-700
+                        text-[11px] font-bold uppercase
+                        tracking-wide">
+
+                        <span class="material-symbols-outlined text-sm">
+                            done_all
+                        </span>
+
+                        Tamamlandı
+                    </span>
+
+                </div>
+
+                <!-- Ana görev -->
+                <h3 class="relative text-xl font-bold
+                    text-green-950 leading-snug
+                    line-through decoration-green-500
+                    decoration-2">
+
+                    @task.Title
+
+                </h3>
+
+                <!-- Açıklama -->
+                @if (!string.IsNullOrWhiteSpace(task.Description))
+                {
+                    <p class="relative mt-3 text-sm text-green-900/70
+                        line-clamp-2">
+                        @task.Description
+                    </p>
+                }
+
+                <!-- Alt görevler -->
+                @if (task.SubTasks != null && task.SubTasks.Any())
+                {
+                    <div class="relative mt-5 p-3
+                        bg-white/70 border border-green-100
+                        rounded-xl">
+
+                        <div class="flex items-center justify-between mb-3">
+
+                            <span class="text-xs font-semibold text-green-800">
+                                Ayrıntılar
+                            </span>
+
+                            <span class="text-[11px] text-green-600">
+                                @task.SubTasks.Count ayrıntı
+                            </span>
+
+                        </div>
+
+                        <ul class="space-y-2.5">
+
+                            @foreach (var subTask in task.SubTasks)
+                            {
+                                <li class="flex items-start gap-2.5 text-sm">
+
+                                    <span class="material-symbols-outlined
+                                        text-lg
+                                        @(subTask.IsCompleted
+                                                                                      ? "text-green-600"
+                                                                                      : "text-gray-400")">
+
+                                        @(subTask.IsCompleted
+                                            ? "check_circle"
+                                            : "radio_button_unchecked")
+                                    </span>
+
+                                    <span class="@(subTask.IsCompleted
+                                                                                                                                        ? "text-green-800/60 line-through"
+                                                                                                                                        : "text-gray-600")">
+
+                                        @subTask.Title
+
+                                    </span>
+
+                                </li>
+                            }
+
+                        </ul>
+
+                    </div>
+                }
+                else
+                {
+                    <p class="relative mt-4 text-xs italic
+                        text-green-800/60">
+                        Bu göreve ayrıntı eklenmemiş.
+                    </p>
+                }
+
+                <!-- Tarihler -->
+                <div class="relative mt-5 pt-4
+                    border-t border-green-200/80">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                        <!-- Oluşturulma tarihi -->
+                        <div class="flex items-start gap-2">
+
+                            <span class="flex items-center justify-center
+                                w-8 h-8 rounded-lg bg-white
+                                border border-green-100
+                                text-green-600">
+
+                                <span class="material-symbols-outlined text-lg">
+                                    calendar_today
+                                </span>
+
+                            </span>
+
+                            <div>
+                                <span class="block text-[10px]
+                                    text-green-800/60">
+                                    Oluşturulma tarihi
+                                </span>
+
+                                <strong class="block mt-0.5 text-xs
+                                    text-green-950 font-medium">
+                                    @task.CreatedDate.ToString("dd MMM yyyy HH:mm")
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <!-- Tamamlanma tarihi -->
+                        @if (task.CompletedDate.HasValue)
+                        {
+                            <div class="flex items-start gap-2">
+
+                                <span class="flex items-center justify-center
+                                    w-8 h-8 rounded-lg bg-green-500
+                                    text-white shadow-sm">
+
+                                    <span class="material-symbols-outlined text-lg">
+                                        task_alt
+                                    </span>
+
+                                </span>
+
+                                <div>
+                                    <span class="block text-[10px]
+                                        text-green-800/60">
+                                        Tamamlanma tarihi
+                                    </span>
+
+                                    <strong class="block mt-0.5 text-xs
+                                        font-semibold text-green-700">
+                                        @task.CompletedDate.Value.ToString("dd MMM yyyy HH:mm")
+                                    </strong>
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+                    <!-- Planlanan bitiş tarihi -->
+                    @if (task.DueDate.HasValue)
+                    {
+                        <div class="flex items-center gap-2 mt-3
+                            px-3 py-2 rounded-lg
+                            bg-white/70 border border-green-100">
+
+                            <span class="material-symbols-outlined
+                                text-lg text-green-600">
+                                event_available
+                            </span>
+
+                            <span class="text-[11px] text-green-800/70">
+                                Planlanan bitiş:
+                            </span>
+
+                            <strong class="text-xs font-semibold text-green-800">
+                                @task.DueDate.Value.ToString("dd MMM yyyy HH:mm")
+                            </strong>
+
+                        </div>
+                    }
+
+                </div>
+
+            </a>
+        }
+
+    </div>
+}

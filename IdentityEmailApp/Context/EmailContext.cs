@@ -1,6 +1,7 @@
 ﻿using IdentityEmailApp.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace IdentityEmailApp.Context
 {
@@ -31,6 +32,11 @@ namespace IdentityEmailApp.Context
                .WithMany(x => x.SubTasks)
                .HasForeignKey(x => x.UserTaskId)
                .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<UserTask>()
+                .HasOne(x => x.TaskList)
+                .WithMany(x => x.UserTasks)
+                .HasForeignKey(x => x.TaskListId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<UserTask>()
                 .HasOne(x => x.TaskList)

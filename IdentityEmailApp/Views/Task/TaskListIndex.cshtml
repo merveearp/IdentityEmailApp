@@ -1,0 +1,622 @@
+﻿@using IdentityEmailApp.Entities
+@model List<UserTask>
+
+@{
+    ViewData["Title"] = ViewBag.TaskListName;
+    Layout = "~/Views/Task/Layout.cshtml";
+}
+
+
+<style>
+
+
+
+    .category-task-area {
+        flex: 1;
+        padding: 32px;
+        overflow-y: auto;
+        background: radial-gradient(circle at top left, rgba(219, 234, 254, 0.45), transparent 30%), #f8fafc;
+    }
+
+    .category-task-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 430px));
+        gap: 28px;
+        align-items: start;
+    }
+
+    .category-task-note {
+        position: relative;
+        display: block;
+        min-height: 360px;
+        overflow: visible;
+        border: 1px solid #dbe3ef;
+        border-radius: 18px;
+        color: inherit;
+        text-decoration: none;
+        background-color: #fffefb;
+        background-image: repeating-linear-gradient( to bottom, transparent 0, transparent 39px, #dce7f4 40px );
+        box-shadow: 7px 8px 0 #e5ebf3, 0 14px 35px rgba(15, 23, 42, 0.08);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+        .category-task-note::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 49px;
+            width: 2px;
+            background: rgba(248, 113, 113, 0.65);
+        }
+
+        .category-task-note::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 49px;
+            right: 0;
+            height: 5px;
+            border-radius: 18px 18px 0 0;
+            background: linear-gradient(90deg, #2563eb, #60a5fa);
+        }
+
+        .category-task-note:hover {
+            transform: translateY(-6px) rotate(-0.3deg);
+            border-color: #93c5fd;
+            box-shadow: 9px 11px 0 #dce6f2, 0 22px 45px rgba(37, 99, 235, 0.14);
+        }
+
+    .category-task-holes {
+        position: absolute;
+        z-index: 2;
+        top: 60px;
+        bottom: 28px;
+        left: 17px;
+        width: 15px;
+        background: radial-gradient( circle, #b8c6da 0 4px, #eef2f7 4.5px 6px, transparent 6.5px );
+        background-size: 15px 52px;
+        background-repeat: repeat-y;
+    }
+
+    .category-task-paperclip {
+        position: absolute;
+        z-index: 5;
+        top: -17px;
+        right: 22px;
+        color: #ef4444;
+        transform: rotate(10deg);
+        filter: drop-shadow(0 4px 3px rgba(127, 29, 29, 0.25));
+        pointer-events: none;
+    }
+
+        .category-task-paperclip .material-symbols-outlined {
+            font-size: 54px;
+            font-weight: 700;
+        }
+
+    .category-task-content {
+        position: relative;
+        z-index: 3;
+        padding: 28px 27px 22px 72px;
+    }
+
+    .category-task-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 36px;
+        padding-right: 38px;
+        gap: 12px;
+    }
+
+    .category-task-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border: 1px solid #bfdbfe;
+        border-radius: 999px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+        .category-task-badge .material-symbols-outlined {
+            font-size: 15px;
+        }
+
+    .category-task-star {
+        color: #f4b400;
+        font-family: "Material Symbols Outlined";
+        font-size: 31px;
+        filter: drop-shadow(0 2px 2px rgba(180, 83, 9, 0.18));
+    }
+
+    .category-task-title {
+        margin-top: 22px;
+        color: #172033;
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1.35;
+    }
+
+    .category-task-description {
+        display: -webkit-box;
+        margin-top: 9px;
+        overflow: hidden;
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.65;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .category-subtask-box {
+        margin-top: 22px;
+        padding: 15px 16px;
+        border: 1px solid rgba(191, 219, 254, 0.85);
+        border-radius: 14px;
+        background: rgba(239, 246, 255, 0.88);
+        backdrop-filter: blur(3px);
+    }
+
+    .category-subtask-heading {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 11px;
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+        .category-subtask-heading .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+    .category-subtask-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+        .category-subtask-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .category-subtask-list .material-symbols-outlined {
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+
+    .category-no-subtask {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 22px;
+        padding: 13px 15px;
+        border: 1px dashed #cbd5e1;
+        border-radius: 13px;
+        background: rgba(248, 250, 252, 0.85);
+        color: #64748b;
+        font-size: 13px;
+        font-style: italic;
+    }
+
+        .category-no-subtask .material-symbols-outlined {
+            font-size: 19px;
+        }
+
+    .category-task-dates {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 22px;
+        padding-top: 17px;
+        border-top: 1px dashed #b8c6da;
+    }
+
+    .category-date-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+    }
+
+    .category-date-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 31px;
+        height: 31px;
+        border-radius: 9px;
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+        .category-date-icon .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        .category-date-icon.date-icon-due {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .category-date-icon.date-icon-overdue {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+    .category-date-item span:not(.material-symbols-outlined) {
+        display: block;
+        color: #7c8799;
+        font-size: 10px;
+    }
+
+    .category-date-item strong {
+        display: block;
+        margin-top: 3px;
+        color: #334155;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .category-overdue-warning {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 16px;
+        padding: 10px 12px;
+        border: 1px solid #fecaca;
+        border-radius: 11px;
+        background: #fff1f2;
+        color: #dc2626;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+        .category-overdue-warning .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+    .category-task-detail-link {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 5px;
+        margin-top: 18px;
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 800;
+        opacity: 0;
+        transform: translateX(-5px);
+        transition: all 0.2s ease;
+    }
+
+        .category-task-detail-link .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+    .category-task-note:hover .category-task-detail-link {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+     @@media (max-width: 768px) {
+        .category-task-area {
+            padding: 20px 16px;
+        }
+
+        .category-task-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .category-task-content {
+            padding-right: 20px;
+            padding-left: 65px;
+        }
+
+        .category-task-dates {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+<!-- Canvas Header -->
+<div class="min-h-16 border-b border-outline-variant
+    flex items-center justify-between gap-4
+    px-6 py-3 bg-white/50 backdrop-blur-sm">
+
+    <!-- Kategori bilgisi -->
+    <div>
+        <h2 class="font-headline-md text-headline-md text-on-surface">
+            @ViewBag.TaskListName
+        </h2>
+
+        <p class="mt-1 text-xs text-on-surface-variant">
+            Bu kategoriye ait devam eden görevler
+        </p>
+    </div>
+
+    <!-- Sağ alan -->
+    <div class="flex items-center gap-3">
+
+        <!-- Görev sayısı -->
+        <div class="flex items-center gap-2 px-3 py-1.5
+            rounded-full bg-blue-50 border border-blue-200
+            text-blue-700 text-xs font-semibold">
+
+            <span class="material-symbols-outlined text-lg">
+                format_list_bulleted
+            </span>
+
+            @Model.Count görev
+        </div>
+
+        <!-- Görev oluştur -->
+        <a asp-controller="Task"
+               asp-action="CreateTask"
+               asp-route-taskListId="@ViewBag.TaskListId"
+               class="inline-flex items-center justify-center gap-2
+            px-5 h-10 rounded-full bg-primary text-white
+            text-sm font-semibold shadow-sm
+            hover:opacity-90 hover:shadow-md
+            transition-all">
+
+            <span class="material-symbols-outlined text-lg">
+                add
+            </span>
+
+            Yeni Görev Oluştur
+        </a>
+
+    </div>
+
+</div>
+<!-- Empty State Content -->
+@if (Model == null || !Model.Any())
+{
+    <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+
+        <div class="w-48 h-48 mb-8 opacity-80">
+            <div class="relative w-full h-full flex items-center justify-center">
+                <div class="absolute w-32 h-24 bg-surface-container rounded-lg border border-outline-variant transform -rotate-6"></div>
+
+                <div class="absolute w-32 h-24 bg-white rounded-lg border border-outline-variant transform rotate-3 flex items-center justify-center shadow-sm">
+                    <span class="material-symbols-outlined text-4xl text-outline-variant">
+                        check_circle
+                    </span>
+                </div>
+
+                <div class="absolute -top-4 right-8 w-10 h-10 bg-primary-container rounded-full flex items-center justify-center">
+                    <span class="material-symbols-outlined text-on-primary-container text-sm">
+                        done
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2 class="font-headline-md text-headline-md text-on-surface">
+                @ViewBag.TaskListName
+            </h2>
+
+            <p class="mt-1 text-xs text-on-surface-variant">
+                Bu kategorideki görevler
+            </p>
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="category-task-area">
+
+        <div class="category-task-grid">
+
+            @foreach (var task in Model)
+            {
+                var isOverdue =
+                    task.DueDate.HasValue &&
+                    task.DueDate.Value < DateTime.Now &&
+                    !task.IsCompleted;
+
+                <a asp-controller="Task"
+                       asp-action="TaskDetail"
+                       asp-route-id="@task.UserTaskId"
+                       class="category-task-note">
+
+                    <!-- Defter delikleri -->
+                    <div class="category-task-holes" aria-hidden="true"></div>
+
+                    <!-- Kırmızı ataş -->
+                    <div class="category-task-paperclip" aria-hidden="true">
+                        <span class="material-symbols-outlined">
+                            attach_file
+                        </span>
+                    </div>
+
+                    <div class="category-task-content">
+
+                        <!-- Kategori ve önemli yıldızı -->
+                        <div class="category-task-top">
+
+                            <span class="category-task-badge">
+                                <span class="material-symbols-outlined">
+                                    label
+                                </span>
+
+                                @(task.TaskList?.Name ?? "Kategorisiz")
+                            </span>
+
+                            @if (task.IsImportant)
+                            {
+                                <span class="category-task-star"
+                                      title="Önemli görev"
+                                      style="font-variation-settings:
+                                    'FILL' 1,
+                                    'wght' 600,
+                                    'GRAD' 0,
+                                    'opsz' 32;">
+                                    star
+                                </span>
+                            }
+
+                        </div>
+
+                        <!-- Görev başlığı -->
+                        <h3 class="category-task-title">
+                            @task.Title
+                        </h3>
+
+                        @if (!string.IsNullOrWhiteSpace(task.Description))
+                        {
+                            <p class="category-task-description">
+                                @task.Description
+                            </p>
+                        }
+
+                        <!-- Alt görevler -->
+                        @if (task.SubTasks != null && task.SubTasks.Any())
+                        {
+                            <div class="category-subtask-box">
+
+                                <div class="category-subtask-heading">
+                                    <span class="material-symbols-outlined">
+                                        checklist
+                                    </span>
+
+                                    Ayrıntılar
+                                </div>
+
+                                <ul class="category-subtask-list">
+
+                                    @foreach (var subTask in task.SubTasks)
+                                    {
+                                        <li>
+                                            <span class="material-symbols-outlined
+                                                @(subTask.IsCompleted
+                                                                                                      ? "text-green-600"
+                                                                                                      : "text-slate-400")">
+
+                                                @(subTask.IsCompleted
+                                                    ? "check_circle"
+                                                    : "radio_button_unchecked")
+                                            </span>
+
+                                            <span class="@(subTask.IsCompleted
+                                                                                                                                                  ? "line-through opacity-60"
+                                                                                                                                                  : "")">
+                                                @subTask.Title
+                                            </span>
+                                        </li>
+                                    }
+
+                                </ul>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="category-no-subtask">
+                                <span class="material-symbols-outlined">
+                                    notes
+                                </span>
+
+                                Bu göreve henüz ayrıntı eklenmedi.
+                            </div>
+                        }
+
+                        <!-- Tarihler -->
+                        <div class="category-task-dates">
+
+                            <div class="category-date-item">
+
+                                <div class="category-date-icon">
+                                    <span class="material-symbols-outlined">
+                                        calendar_today
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <span>Oluşturulma tarihi</span>
+
+                                    <strong>
+                                        @task.CreatedDate.ToString("dd MMM yyyy HH:mm")
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                            <div class="category-date-item">
+
+                                <div class="category-date-icon
+                                    @(isOverdue ? "date-icon-overdue" : "date-icon-due")">
+
+                                    <span class="material-symbols-outlined">
+                                        @(isOverdue ? "event_busy" : "event")
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <span>Bitiş tarihi</span>
+
+                                    @if (task.DueDate.HasValue)
+                                    {
+                                        <strong class="@(isOverdue
+                                                                                                                                        ? "text-red-600"
+                                                                                                                                        : "text-blue-600")">
+
+                                            @task.DueDate.Value.ToString("dd MMM yyyy HH:mm")
+                                        </strong>
+                                    }
+                                    else
+                                    {
+                                        <strong>Belirlenmedi</strong>
+                                    }
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        @if (isOverdue)
+                        {
+                            <div class="category-overdue-warning">
+                                <span class="material-symbols-outlined">
+                                    warning
+                                </span>
+
+                                Bu görevin bitiş tarihi geçti.
+                            </div>
+                        }
+
+                        <!-- Detaya git göstergesi -->
+                        <div class="category-task-detail-link">
+                            Görevi görüntüle
+
+                            <span class="material-symbols-outlined">
+                                arrow_forward
+                            </span>
+                        </div>
+
+                    </div>
+
+                </a>
+            }
+
+        </div>
+
+    </div>
+}

@@ -20,8 +20,12 @@
 
         <!-- Main Content Area (Empty State) -->
  
-        <main class="flex-1 bg-surface-container-lowest rounded-xl border border-outline-variant flex flex-col overflow-hidden relative">
+        <main class="flex-1 min-h-0 bg-surface-container-lowest
+            rounded-xl border border-outline-variant
+            flex flex-col overflow-y-auto overflow-x-hidden relative">
+
             @RenderBody()
+
         </main>
     </div>
 </body>

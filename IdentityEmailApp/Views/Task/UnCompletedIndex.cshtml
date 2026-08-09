@@ -1,0 +1,866 @@
+﻿@using IdentityEmailApp.Entities
+@model List<UserTask>
+@{
+    ViewData["Title"] = "Devam Eden Görevler";
+    Layout = "~/Views/Task/Layout.cshtml";
+}
+
+<style>
+
+    .ongoing-page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        min-height: 82px;
+        padding: 16px 28px;
+        border-bottom: 1px solid #dbe3ef;
+        background: linear-gradient(90deg, #ffffff, #f5f9ff);
+    }
+
+    .ongoing-heading {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .ongoing-heading-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        color: white;
+        background: linear-gradient(135deg, #2563eb, #60a5fa);
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+    }
+
+    .ongoing-heading h2 {
+        margin: 0;
+        color: #172033;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .ongoing-heading p {
+        margin: 4px 0 0;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .ongoing-task-count {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 14px;
+        border: 1px solid #bfdbfe;
+        border-radius: 999px;
+        color: #2563eb;
+        background: #eff6ff;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+        .ongoing-task-count .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+    .ongoing-content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+        background: radial-gradient(circle at top right, rgba(253, 186, 116, 0.16), transparent 26%), radial-gradient(circle at bottom left, rgba(147, 197, 253, 0.23), transparent 32%), #f8fafc;
+    }
+
+    .ongoing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 440px));
+        align-items: start;
+        gap: 26px;
+    }
+
+    .ongoing-card {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        border: 1px solid #dbe6f5;
+        border-radius: 20px;
+        color: inherit;
+        text-decoration: none;
+        background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
+        box-shadow: 0 12px 30px rgba(30, 64, 175, 0.08), 5px 6px 0 #e8eef7;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+        .ongoing-card:hover {
+            transform: translateY(-6px);
+            border-color: #93c5fd;
+            box-shadow: 0 22px 42px rgba(37, 99, 235, 0.15), 7px 8px 0 #dce7f5;
+        }
+
+    .ongoing-card-line {
+        height: 6px;
+        background: linear-gradient( 90deg, #2563eb 0%, #60a5fa 55%, #fb923c 100% );
+    }
+
+    .ongoing-card-overdue .ongoing-card-line {
+        background: linear-gradient(90deg, #ef4444, #fb7185, #f97316);
+    }
+
+    .ongoing-card-decoration {
+        position: absolute;
+        top: -45px;
+        right: -45px;
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        background: rgba(219, 234, 254, 0.5);
+        pointer-events: none;
+    }
+
+    .ongoing-card-content {
+        position: relative;
+        z-index: 2;
+        padding: 22px;
+    }
+
+    .ongoing-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .ongoing-category {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 11px;
+        border: 1px solid #bfdbfe;
+        border-radius: 999px;
+        color: #2563eb;
+        background: #eff6ff;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+        .ongoing-category .material-symbols-outlined {
+            font-size: 16px;
+        }
+
+    .ongoing-status-area {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ongoing-star {
+        color: #f4b400;
+        font-size: 27px;
+        filter: drop-shadow(0 2px 2px rgba(180, 83, 9, 0.2));
+    }
+
+    .ongoing-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        color: #c2410c;
+        background: #fff7ed;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .ongoing-status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #f97316;
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.14);
+    }
+
+    .ongoing-task-information {
+        margin-top: 21px;
+    }
+
+        .ongoing-task-information h3 {
+            margin: 0;
+            color: #172033;
+            font-size: 21px;
+            font-weight: 800;
+            line-height: 1.35;
+        }
+
+        .ongoing-task-information p {
+            display: -webkit-box;
+            margin: 9px 0 0;
+            overflow: hidden;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+
+    .ongoing-progress-area {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #dbeafe;
+        border-radius: 14px;
+        background: rgba(239, 246, 255, 0.78);
+    }
+
+    .ongoing-progress-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        color: #475569;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+        .ongoing-progress-heading > div {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ongoing-progress-heading .material-symbols-outlined {
+            color: #2563eb;
+            font-size: 17px;
+        }
+
+        .ongoing-progress-heading strong {
+            color: #2563eb;
+            font-size: 11px;
+        }
+
+    .ongoing-progress-track {
+        height: 8px;
+        margin-top: 11px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #dbeafe;
+    }
+
+    .ongoing-progress-value {
+        height: 100%;
+        min-width: 0;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #2563eb, #38bdf8, #f97316);
+        transition: width 0.4s ease;
+    }
+
+    .ongoing-progress-detail {
+        margin-top: 8px;
+        color: #64748b;
+        font-size: 10px;
+    }
+
+    .ongoing-subtasks {
+        margin-top: 18px;
+        padding: 14px 15px;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    .ongoing-subtask-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 11px;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .ongoing-subtasks ul {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .ongoing-subtasks li {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        color: #475569;
+        font-size: 13px;
+    }
+
+        .ongoing-subtasks li .material-symbols-outlined {
+            flex-shrink: 0;
+            color: #94a3b8;
+            font-size: 19px;
+        }
+
+        .ongoing-subtasks li.ongoing-subtask-completed {
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+
+            .ongoing-subtasks li.ongoing-subtask-completed .material-symbols-outlined {
+                color: #16a34a;
+            }
+
+    .ongoing-dates {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+        padding-top: 17px;
+        border-top: 1px dashed #cbd5e1;
+    }
+
+    .ongoing-date-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .ongoing-date-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        color: #64748b;
+        background: #f1f5f9;
+    }
+
+        .ongoing-date-icon .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+    .ongoing-due-icon {
+        color: #2563eb;
+        background: #eff6ff;
+    }
+
+    .ongoing-overdue-icon {
+        color: white;
+        background: #ef4444;
+    }
+
+    .ongoing-date-item span:not(.material-symbols-outlined) {
+        display: block;
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    .ongoing-date-item strong {
+        display: block;
+        margin-top: 3px;
+        color: #475569;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .ongoing-due-date {
+        color: #2563eb !important;
+    }
+
+    .ongoing-overdue-date {
+        color: #dc2626 !important;
+    }
+
+    .ongoing-overdue-warning {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        padding: 10px 12px;
+        border: 1px solid #fecaca;
+        border-radius: 11px;
+        color: #dc2626;
+        background: #fff1f2;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+        .ongoing-overdue-warning .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+    .ongoing-detail {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+        margin-top: 17px;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 800;
+        opacity: 0;
+        transform: translateX(-6px);
+        transition: all 0.2s ease;
+    }
+
+        .ongoing-detail .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+    .ongoing-card:hover .ongoing-detail {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .ongoing-empty-state {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        text-align: center;
+        background: linear-gradient(145deg, #f8fbff, #ffffff);
+    }
+
+    .ongoing-empty-illustration {
+        position: relative;
+        width: 155px;
+        height: 145px;
+        margin-bottom: 24px;
+    }
+
+    .ongoing-empty-circle {
+        position: absolute;
+        inset: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #bfdbfe;
+        border-radius: 50%;
+        color: #2563eb;
+        background: #eff6ff;
+        box-shadow: 0 14px 35px rgba(37, 99, 235, 0.12);
+    }
+
+        .ongoing-empty-circle .material-symbols-outlined {
+            font-size: 54px;
+        }
+
+    .ongoing-empty-decoration {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 39px;
+        height: 39px;
+        border-radius: 13px;
+        color: white;
+        font-family: "Material Symbols Outlined";
+        font-size: 21px;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14);
+    }
+
+    .decoration-one {
+        top: 2px;
+        right: 0;
+        background: #f97316;
+        transform: rotate(8deg);
+    }
+
+    .decoration-two {
+        bottom: 2px;
+        left: 0;
+        background: #22c55e;
+        transform: rotate(-8deg);
+    }
+
+    .ongoing-empty-state h3 {
+        margin: 0;
+        color: #172033;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .ongoing-empty-state p {
+        max-width: 390px;
+        margin: 9px 0 0;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .ongoing-create-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-top: 23px;
+        padding: 11px 18px;
+        border-radius: 999px;
+        color: white;
+        text-decoration: none;
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        box-shadow: 0 9px 20px rgba(37, 99, 235, 0.22);
+        transition: all 0.2s ease;
+    }
+
+        .ongoing-create-button:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 13px 25px rgba(37, 99, 235, 0.3);
+        }
+
+    @@media (max-width: 768px) {
+        .ongoing-page-header {
+            align-items: flex-start;
+            padding: 16px 18px;
+        }
+
+        .ongoing-heading-icon {
+            display: none;
+        }
+
+        .ongoing-task-count {
+            flex-shrink: 0;
+        }
+
+        .ongoing-content {
+            padding: 20px 15px;
+        }
+
+        .ongoing-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .ongoing-card-top {
+            flex-direction: column;
+        }
+
+        .ongoing-dates {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- Sayfa başlığı -->
+<div class="ongoing-page-header">
+
+    <div class="ongoing-heading">
+
+        <div class="ongoing-heading-icon">
+            <span class="material-symbols-outlined">
+                pending_actions
+            </span>
+        </div>
+
+        <div>
+            <h2>Devam Eden Görevler</h2>
+
+            <p>
+                Üzerinde çalıştığınız görevleri ve ilerleme durumlarını takip edin.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="ongoing-task-count">
+        <span class="material-symbols-outlined">
+            format_list_bulleted
+        </span>
+
+        @Model.Count görev
+    </div>
+
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <!-- Boş durum -->
+    <div class="ongoing-empty-state">
+
+        <div class="ongoing-empty-illustration">
+
+            <div class="ongoing-empty-circle">
+                <span class="material-symbols-outlined">
+                    task_alt
+                </span>
+            </div>
+
+            <span class="ongoing-empty-decoration decoration-one">
+                schedule
+            </span>
+
+            <span class="ongoing-empty-decoration decoration-two">
+                done
+            </span>
+
+        </div>
+
+        <h3>Devam eden göreviniz yok</h3>
+
+        <p>
+            Yeni bir görev oluşturarak çalışmalarınızı burada takip edebilirsiniz.
+        </p>
+
+        <a asp-controller="Task"
+           asp-action="CreateTask"
+           class="ongoing-create-button">
+
+            <span class="material-symbols-outlined">
+                add
+            </span>
+
+            Yeni Görev Oluştur
+        </a>
+
+    </div>
+}
+else
+{
+    <div class="ongoing-content">
+
+        <div class="ongoing-grid">
+
+            @foreach (var task in Model)
+            {
+                var isOverdue =
+                    task.DueDate.HasValue &&
+                    task.DueDate.Value < DateTime.Now;
+
+                var totalSubTasks = task.SubTasks?.Count ?? 0;
+
+                var completedSubTasks = task.SubTasks?
+                    .Count(x => x.IsCompleted) ?? 0;
+
+                var progressPercentage = totalSubTasks > 0
+                    ? (completedSubTasks * 100) / totalSubTasks
+                    : 0;
+
+                <a asp-controller="Task"
+                   asp-action="TaskDetail"
+                   asp-route-id="@task.UserTaskId"
+                   class="ongoing-card @(isOverdue ? "ongoing-card-overdue" : "")">
+
+                    <!-- Üst renk şeridi -->
+                    <div class="ongoing-card-line"></div>
+
+                    <!-- Dekorasyon -->
+                    <div class="ongoing-card-decoration"></div>
+
+                    <div class="ongoing-card-content">
+
+                        <!-- Kategori ve durum -->
+                        <div class="ongoing-card-top">
+
+                            <span class="ongoing-category">
+                                <span class="material-symbols-outlined">
+                                    folder
+                                </span>
+
+                                @(task.TaskList?.Name ?? "Kategorisiz")
+                            </span>
+
+                            <div class="ongoing-status-area">
+
+                                @if (task.IsImportant)
+                                {
+                                    <span class="material-symbols-outlined ongoing-star"
+                                          title="Önemli görev"
+                                          style="font-variation-settings:
+                                                 'FILL' 1,
+                                                 'wght' 600,
+                                                 'GRAD' 0,
+                                                 'opsz' 28;">
+                                        star
+                                    </span>
+                                }
+
+                                <span class="ongoing-status">
+                                    <span class="ongoing-status-dot"></span>
+                                    Devam ediyor
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Görev bilgileri -->
+                        <div class="ongoing-task-information">
+
+                            <h3>@task.Title</h3>
+
+                            @if (!string.IsNullOrWhiteSpace(task.Description))
+                            {
+                                <p>
+                                    @task.Description
+                                </p>
+                            }
+
+                        </div>
+
+                        <!-- İlerleme alanı -->
+                        <div class="ongoing-progress-area">
+
+                            <div class="ongoing-progress-heading">
+
+                                <div>
+                                    <span class="material-symbols-outlined">
+                                        monitoring
+                                    </span>
+
+                                    Görev ilerlemesi
+                                </div>
+
+                                @if (totalSubTasks > 0)
+                                {
+                                    <strong>
+                                        %@progressPercentage
+                                    </strong>
+                                }
+                                else
+                                {
+                                    <strong>Başlanmadı</strong>
+                                }
+
+                            </div>
+
+                            <div class="ongoing-progress-track">
+                                <div class="ongoing-progress-value"
+                                     style="width: @progressPercentage%">
+                                </div>
+                            </div>
+
+                            <div class="ongoing-progress-detail">
+
+                                @if (totalSubTasks > 0)
+                                {
+                                    <span>
+                                        @completedSubTasks / @totalSubTasks ayrıntı tamamlandı
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>Bu göreve henüz ayrıntı eklenmedi.</span>
+                                }
+
+                            </div>
+
+                        </div>
+
+                        <!-- Alt görevler -->
+                        @if (task.SubTasks != null && task.SubTasks.Any())
+                        {
+                            <div class="ongoing-subtasks">
+
+                                <div class="ongoing-subtask-title">
+                                    <span>Ayrıntılar</span>
+                                    <span>@totalSubTasks madde</span>
+                                </div>
+
+                                <ul>
+                                    @foreach (var subTask in task.SubTasks)
+                                    {
+                                        <li class="@(subTask.IsCompleted
+                                            ? "ongoing-subtask-completed"
+                                            : "")">
+
+                                            <span class="material-symbols-outlined">
+                                                @(subTask.IsCompleted
+                                                    ? "check_circle"
+                                                    : "radio_button_unchecked")
+                                            </span>
+
+                                            <span>@subTask.Title</span>
+
+                                        </li>
+                                    }
+                                </ul>
+
+                            </div>
+                        }
+
+                        <!-- Tarihler -->
+                        <div class="ongoing-dates">
+
+                            <div class="ongoing-date-item">
+
+                                <div class="ongoing-date-icon">
+                                    <span class="material-symbols-outlined">
+                                        calendar_today
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <span>Oluşturulma tarihi</span>
+
+                                    <strong>
+                                        @task.CreatedDate.ToString("dd MMM yyyy HH:mm")
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                            <div class="ongoing-date-item">
+
+                                <div class="ongoing-date-icon
+                                    @(isOverdue ? "ongoing-overdue-icon" : "ongoing-due-icon")">
+
+                                    <span class="material-symbols-outlined">
+                                        @(isOverdue ? "event_busy" : "event")
+                                    </span>
+
+                                </div>
+
+                                <div>
+                                    <span>Bitiş tarihi</span>
+
+                                    @if (task.DueDate.HasValue)
+                                    {
+                                        <strong class="@(isOverdue
+                                            ? "ongoing-overdue-date"
+                                            : "ongoing-due-date")">
+
+                                            @task.DueDate.Value.ToString("dd MMM yyyy HH:mm")
+                                        </strong>
+                                    }
+                                    else
+                                    {
+                                        <strong>Belirlenmedi</strong>
+                                    }
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        @if (isOverdue)
+                        {
+                            <div class="ongoing-overdue-warning">
+                                <span class="material-symbols-outlined">
+                                    warning
+                                </span>
+
+                                Bu görevin bitiş tarihi geçti.
+                            </div>
+                        }
+
+                        <!-- Detay bağlantısı -->
+                        <div class="ongoing-detail">
+                            Görevin ayrıntılarını aç
+
+                            <span class="material-symbols-outlined">
+                                arrow_forward
+                            </span>
+                        </div>
+
+                    </div>
+
+                </a>
+            }
+
+        </div>
+
+    </div>
+}

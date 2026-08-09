@@ -1,0 +1,542 @@
+﻿@using IdentityEmailApp.DTOs.TaskDtos
+@model CreateTaskListDto
+
+@{
+    ViewData["Title"] = "Yeni Kategori";
+    Layout = "~/Views/Task/Layout.cshtml";
+}
+
+<style>
+    .create-category-page {
+        width: 100%;
+        padding: 35px 25px 55px;
+    }
+
+    .category-form-wrapper {
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    .category-page-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .category-back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 8px;
+        color: #6c788a;
+        font-size: 13px;
+        text-decoration: none !important;
+        transition: color 0.2s ease;
+    }
+
+        .category-back-link:hover {
+            color: #0b63ce;
+        }
+
+    .category-page-heading h1 {
+        margin: 0;
+        color: #172033;
+        font-size: 27px;
+        font-weight: 750;
+    }
+
+    .category-page-heading p {
+        margin: 6px 0 0;
+        color: #788497;
+        font-size: 13px;
+    }
+
+    /* Not defteri */
+    .category-form-note {
+        position: relative;
+        min-height: 390px;
+        padding: 48px 45px 38px 85px;
+        background-color: #fffefb;
+        background-image: repeating-linear-gradient( to bottom, transparent 0, transparent 39px, rgba(181, 200, 224, 0.55) 40px );
+        border: 1px solid #d5deeb;
+        border-radius: 11px;
+        box-shadow: 0 16px 42px rgba(38, 55, 82, 0.13), 5px 5px 0 #edf1f6;
+    }
+
+        /* Kırmızı defter çizgisi */
+        .category-form-note::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 57px;
+            width: 2px;
+            background: rgba(231, 76, 76, 0.62);
+        }
+
+        /* Alttaki ikinci kâğıt */
+        .category-form-note::after {
+            content: "";
+            position: absolute;
+            left: 9px;
+            right: 9px;
+            bottom: -9px;
+            height: 10px;
+            z-index: -1;
+            background: #f1f4f8;
+            border: 1px solid #dae2ed;
+            border-radius: 0 0 10px 10px;
+        }
+
+    .category-note-holes {
+        position: absolute;
+        top: 28px;
+        bottom: 25px;
+        left: 17px;
+        width: 15px;
+        background-image: radial-gradient( circle, #b9c4d3 0, #b9c4d3 3.5px, #f6f7f9 4px, #f6f7f9 5.5px, transparent 6px );
+        background-size: 15px 47px;
+        background-repeat: repeat-y;
+    }
+
+    /* Kırmızı ataş */
+    .category-paperclip {
+        position: absolute;
+        top: -28px;
+        right: 35px;
+        z-index: 5;
+        color: #e53935;
+        transform: rotate(11deg);
+        filter: drop-shadow(2px 4px 2px rgba(0, 0, 0, 0.18));
+    }
+
+        .category-paperclip .material-symbols-outlined {
+            font-size: 65px;
+            font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 48;
+        }
+
+    .category-form-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .category-form-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 49px;
+        height: 49px;
+        margin-bottom: 20px;
+        color: #fff;
+        background: #0b63ce;
+        border-radius: 15px;
+        box-shadow: 0 7px 17px rgba(11, 99, 206, 0.22);
+    }
+
+        .category-form-icon .material-symbols-outlined {
+            font-size: 26px;
+        }
+
+    .category-field-label {
+        display: block;
+        margin-bottom: 9px;
+        color: #465267;
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    .category-name-input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 13px 5px 14px;
+        color: #172033;
+        background: rgba(255, 255, 255, 0.88);
+        border: 0;
+        border-bottom: 2px solid #8eafd7;
+        border-radius: 7px 7px 0 0;
+        outline: none;
+        font-family: inherit;
+        font-size: 25px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+
+        .category-name-input::placeholder {
+            color: #a0aaba;
+            font-weight: 500;
+        }
+
+        .category-name-input:focus {
+            padding-left: 12px;
+            background: #fff;
+            border-bottom-color: #0b63ce;
+            box-shadow: 0 6px 18px rgba(11, 99, 206, 0.09);
+        }
+
+    .category-validation {
+        display: block;
+        margin-top: 7px;
+        color: #d32f2f;
+        font-size: 12px;
+    }
+
+    .category-help {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        margin-top: 21px;
+        padding: 12px 14px;
+        color: #526075;
+        background: rgba(237, 245, 255, 0.90);
+        border: 1px solid #cee1f8;
+        border-radius: 10px;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+        .category-help .material-symbols-outlined {
+            color: #0b63ce;
+            font-size: 19px;
+        }
+
+    .category-suggestions {
+        margin-top: 24px;
+    }
+
+    .category-suggestions-title {
+        display: block;
+        margin-bottom: 10px;
+        color: #788497;
+        font-size: 11px;
+        font-weight: 650;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+    }
+
+    .category-suggestion-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .category-suggestion {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 11px;
+        color: #596678;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid #d3dce8;
+        border-radius: 18px;
+        font-family: inherit;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .category-suggestion:hover {
+            color: #0b63ce;
+            background: #edf5ff;
+            border-color: #b9d5f5;
+            transform: translateY(-1px);
+        }
+
+        .category-suggestion .material-symbols-outlined {
+            font-size: 16px;
+        }
+
+    .category-form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 11px;
+        margin-top: 28px;
+        padding-top: 21px;
+        border-top: 1px dashed #adb9c9;
+    }
+
+    .category-cancel-button,
+    .category-save-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 42px;
+        padding: 0 19px;
+        border-radius: 22px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 650;
+        text-decoration: none !important;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .category-cancel-button {
+        color: #536074;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid #ccd5e3;
+    }
+
+        .category-cancel-button:hover {
+            color: #263244;
+            background: #f2f5f9;
+        }
+
+    .category-save-button {
+        color: #fff;
+        background: #0b63ce;
+        border: 1px solid #0b63ce;
+        box-shadow: 0 5px 14px rgba(11, 99, 206, 0.22);
+    }
+
+        .category-save-button:hover {
+            background: #0758b9;
+            box-shadow: 0 7px 18px rgba(11, 99, 206, 0.28);
+            transform: translateY(-1px);
+        }
+
+        .category-save-button .material-symbols-outlined {
+            font-size: 19px;
+        }
+
+    .validation-summary-valid {
+        display: none;
+    }
+
+    .validation-summary-errors {
+        margin-bottom: 20px;
+        padding: 11px 14px;
+        color: #b3261e;
+        background: #fff1f0;
+        border: 1px solid #efc5c2;
+        border-radius: 10px;
+        font-size: 12px;
+    }
+
+    @@media (max-width: 650px) {
+        .create-category-page {
+            padding: 25px 12px 45px;
+        }
+
+        .category-form-note {
+            padding: 42px 20px 30px;
+        }
+
+            .category-form-note::before,
+            .category-note-holes {
+                display: none;
+            }
+
+        .category-page-heading h1 {
+            font-size: 23px;
+        }
+
+        .category-name-input {
+            font-size: 21px;
+        }
+
+        .category-form-actions {
+            justify-content: stretch;
+        }
+
+        .category-cancel-button,
+        .category-save-button {
+            flex: 1;
+        }
+    }
+</style>
+
+<div class="create-category-page">
+
+    <div class="category-form-wrapper">
+
+        <!-- Sayfa başlığı -->
+        <div class="category-page-heading">
+
+            <div>
+                <a asp-controller="Task"
+                       asp-action="TaskList"
+                       class="category-back-link">
+
+                    <span class="material-symbols-outlined"
+                          style="font-size:17px;">
+                        arrow_back
+                    </span>
+
+                    Kategorilere dön
+                </a>
+
+                <h1>Yeni Kategori</h1>
+
+                <p>
+                    Görevlerinizi düzenlemek için yeni bir kategori oluşturun.
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Not defteri formu -->
+        <form asp-controller="Task"
+              asp-action="CreateTaskList"
+              method="post"
+              class="category-form-note">
+
+            <div class="category-note-holes"></div>
+
+            <div class="category-paperclip" aria-hidden="true">
+                <span class="material-symbols-outlined">
+                    attach_file
+                </span>
+            </div>
+
+            <div class="category-form-content">
+
+                <div asp-validation-summary="ModelOnly"></div>
+
+                <div class="category-form-icon">
+                    <span class="material-symbols-outlined">
+                        create_new_folder
+                    </span>
+                </div>
+
+                <div>
+                    <label asp-for="Name"
+                           class="category-field-label">
+                        Kategori adı
+                    </label>
+
+                    <input asp-for="Name"
+                           id="categoryNameInput"
+                           class="category-name-input"
+                           placeholder="Örneğin: Eğitim"
+                           autocomplete="off"
+                           maxlength="50" />
+
+                    <span asp-validation-for="Name"
+                          class="category-validation">
+                    </span>
+                </div>
+
+                <div class="category-help">
+                    <span class="material-symbols-outlined">
+                        lightbulb
+                    </span>
+
+                    <span>
+                        Kategoriler, benzer görevlerinizi bir arada tutmanızı
+                        ve daha kolay takip etmenizi sağlar.
+                    </span>
+                </div>
+
+                <!-- Öneriler -->
+                <div class="category-suggestions">
+
+                    <span class="category-suggestions-title">
+                        Hızlı öneriler
+                    </span>
+
+                    <div class="category-suggestion-list">
+
+                        <button type="button"
+                                class="category-suggestion"
+                                data-name="Kişisel">
+
+                            <span class="material-symbols-outlined">
+                                person
+                            </span>
+
+                            Kişisel
+                        </button>
+
+                        <button type="button"
+                                class="category-suggestion"
+                                data-name="İş">
+
+                            <span class="material-symbols-outlined">
+                                work
+                            </span>
+
+                            İş
+                        </button>
+
+                        <button type="button"
+                                class="category-suggestion"
+                                data-name="Eğitim">
+
+                            <span class="material-symbols-outlined">
+                                school
+                            </span>
+
+                            Eğitim
+                        </button>
+
+                        <button type="button"
+                                class="category-suggestion"
+                                data-name="Alışveriş">
+
+                            <span class="material-symbols-outlined">
+                                shopping_cart
+                            </span>
+
+                            Alışveriş
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Butonlar -->
+                <div class="category-form-actions">
+
+                    <a asp-controller="Task"
+                           asp-action="TaskList"
+                           class="category-cancel-button">
+                        İptal
+                    </a>
+
+                    <button type="submit"
+                            class="category-save-button">
+
+                        <span class="material-symbols-outlined">
+                            check
+                        </span>
+
+                        Kategoriyi Oluştur
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const categoryInput =
+            document.getElementById("categoryNameInput");
+
+        const suggestionButtons =
+            document.querySelectorAll(".category-suggestion");
+
+        suggestionButtons.forEach(function (button) {
+
+            button.addEventListener("click", function () {
+
+                categoryInput.value =
+                    button.dataset.name;
+
+                categoryInput.focus();
+            });
+
+        });
+
+    });
+</script>

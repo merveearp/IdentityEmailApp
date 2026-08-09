@@ -5,13 +5,133 @@
     Layout = "~/Views/Task/Layout.cshtml";
 }
 
-    <!-- Canvas Header -->
-    <div class="h-14 border-b border-outline-variant flex items-center justify-between px-6 bg-white/50 backdrop-blur-sm">
-        <h2 class="font-headline-md text-headline-md text-on-surface">Görevlerim</h2>
-        <button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
-            <span class="material-symbols-outlined">more_vert</span>
-        </button>
+<style>
+    .task-note-card {
+        position: relative;
+        display: block;
+        overflow: visible;
+        min-height: 230px;
+        padding: 28px 24px 22px 65px;
+        color: inherit;
+        background-color: #fffefb;
+        background-image: repeating-linear-gradient( to bottom, transparent 0, transparent 35px, rgba(185, 202, 224, 0.48) 36px );
+        border: 1px solid #d7dfeb;
+        border-radius: 11px;
+        box-shadow: 0 9px 24px rgba(38, 55, 82, 0.10), 4px 4px 0 #eef1f6;
+        text-decoration: none !important;
+        transition: all 0.22s ease;
+    }
+
+        .task-note-card:hover {
+            color: inherit;
+            border-color: #a9c4e6;
+            box-shadow: 0 16px 34px rgba(38, 55, 82, 0.16), 5px 5px 0 #e8edf5;
+            transform: translateY(-5px) rotate(-0.2deg);
+        }
+
+        /* Defterin kırmızı dikey çizgisi */
+        .task-note-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 43px;
+            width: 2px;
+            background: rgba(231, 76, 76, 0.58);
+        }
+
+        /* Kartın altındaki ikinci kâğıt */
+        .task-note-card::after {
+            content: "";
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            bottom: -7px;
+            height: 8px;
+            z-index: -1;
+            background: #f1f4f8;
+            border: 1px solid #dce3ed;
+            border-radius: 0 0 9px 9px;
+        }
+
+    .task-note-holes {
+        position: absolute;
+        top: 25px;
+        bottom: 20px;
+        left: 13px;
+        width: 14px;
+        background-image: radial-gradient( circle, #bac5d4 0, #bac5d4 3px, #f6f7f9 3.5px, #f6f7f9 5px, transparent 5.5px );
+        background-size: 14px 42px;
+        background-repeat: repeat-y;
+    }
+
+    /* Kırmızı ataş */
+    .task-card-paperclip {
+        position: absolute;
+        top: -22px;
+        right: 21px;
+        z-index: 6;
+        color: #e53935;
+        filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.17));
+        transform: rotate(11deg);
+        transition: transform 0.2s ease;
+    }
+
+        .task-card-paperclip .material-symbols-outlined {
+            font-size: 52px;
+            font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 48;
+        }
+
+    .task-note-card:hover .task-card-paperclip {
+        transform: rotate(16deg) translateY(-3px);
+    }
+
+    .task-note-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .task-subtask-area {
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(210, 220, 234, 0.82);
+        border-radius: 11px;
+    }
+
+    .task-date-area {
+        padding: 13px;
+        background: rgba(247, 249, 252, 0.82);
+        border: 1px solid rgba(210, 220, 234, 0.78);
+        border-radius: 11px;
+    }
+</style>
+<!-- Canvas Header -->
+<div class="min-h-16 border-b border-outline-variant
+    flex items-center justify-between gap-4
+    px-6 py-3 bg-white/50 backdrop-blur-sm">
+
+    <div>
+        <h2 class="font-headline-md text-headline-md text-on-surface">
+            Görevlerim
+        </h2>
+
+        <p class="mt-1 text-xs text-on-surface-variant">
+            Devam eden görevlerinizi görüntüleyin ve yönetin.
+        </p>
     </div>
+
+    <div class="flex items-center gap-2 px-3 py-1.5
+        rounded-full bg-blue-50 border border-blue-200
+        text-blue-700 text-xs font-semibold">
+
+        <span class="material-symbols-outlined text-lg">
+            pending_actions
+        </span>
+
+        @Model.Count görev
+    </div>
+
+</div>
     <!-- Empty State Content -->
     @if (Model == null || !Model.Any())
     {
@@ -54,30 +174,43 @@
             </a>
         </div>
     }
-    else
-    {
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+else
+{
+    <div class="grid grid-cols-1 md:grid-cols-2
+        xl:grid-cols-3 gap-6 p-6">
 
-            @foreach (var task in Model)
-            {
-                var isOverdue =
-                    task.DueDate.HasValue &&
-                    task.DueDate.Value < DateTime.Now &&
-                    !task.IsCompleted;
+        @foreach (var task in Model)
+        {
+            var isOverdue =
+                task.DueDate.HasValue &&
+                task.DueDate.Value < DateTime.Now &&
+                !task.IsCompleted;
 
-                <a asp-controller="Task"
-                       asp-action="TaskDetail"
-                       asp-route-id="@task.UserTaskId"
-                       class="relative block bg-white border border-outline-variant
-                    rounded-2xl p-5 shadow-sm hover:shadow-md
-                    hover:-translate-y-1 transition-all cursor-pointer">
+            <a asp-controller="Task"
+                   asp-action="TaskDetail"
+                   asp-route-id="@task.UserTaskId"
+                   class="task-note-card">
+
+                <!-- Defter delikleri -->
+                <div class="task-note-holes"></div>
+
+                <!-- Kırmızı ataş -->
+                <div class="task-card-paperclip" aria-hidden="true">
+                    <span class="material-symbols-outlined">
+                        attach_file
+                    </span>
+                </div>
+
+                <div class="task-note-content">
 
                     <!-- Kategori ve önemli yıldızı -->
-                    <div class="flex items-center justify-between gap-3 mb-4">
+                    <div class="flex items-start justify-between
+                        gap-3 mb-4 pr-10">
 
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1
-                            rounded-full bg-blue-100 text-blue-700
-                            text-xs font-semibold">
+                        <span class="inline-flex items-center gap-1.5
+                            px-3 py-1 rounded-full
+                            bg-blue-50 border border-blue-200
+                            text-blue-700 text-xs font-semibold">
 
                             <span class="material-symbols-outlined text-sm">
                                 label
@@ -88,8 +221,9 @@
 
                         @if (task.IsImportant)
                         {
-                            <span class="material-symbols-outlined text-yellow-500
-                                text-3xl drop-shadow-sm"
+                            <span class="material-symbols-outlined
+                                text-yellow-500 text-3xl
+                                drop-shadow-sm"
                                   title="Önemli görev"
                                   style="font-variation-settings:
                                 'FILL' 1,
@@ -103,72 +237,109 @@
                     </div>
 
                     <!-- Ana görev -->
-                    <h3 class="text-xl font-bold text-on-surface leading-snug
+                    <h3 class="text-xl font-bold text-slate-800
+                        leading-snug
                         @(task.IsCompleted
-                                                ? "line-through opacity-60"
-                                                : "")">
+                                                    ? "line-through opacity-60"
+                                                    : "")">
+
                         @task.Title
+
                     </h3>
+
+                    <!-- Açıklama -->
+                    @if (!string.IsNullOrWhiteSpace(task.Description))
+                    {
+                        <p class="mt-3 text-sm text-slate-500 line-clamp-2">
+                            @task.Description
+                        </p>
+                    }
 
                     <!-- Alt görevler -->
                     @if (task.SubTasks != null && task.SubTasks.Any())
                     {
-                        <ul class="mt-5 space-y-3">
+                        <div class="task-subtask-area mt-5">
 
-                            @foreach (var subTask in task.SubTasks)
-                            {
-                                <li class="flex items-start gap-3 text-sm">
+                            <div class="flex items-center justify-between mb-3">
 
-                                    <span class="material-symbols-outlined text-xl
-                                        @(subTask.IsCompleted
-                                                                                  ? "text-green-600"
-                                                                                  : "text-outline")">
+                                <span class="text-xs font-semibold text-slate-600">
+                                    Ayrıntılar
+                                </span>
 
-                                        @(subTask.IsCompleted
-                                            ? "check_circle"
-                                            : "radio_button_unchecked")
-                                    </span>
+                                <span class="text-[11px] text-slate-400">
+                                    @task.SubTasks.Count madde
+                                </span>
 
-                                    <span class="text-on-surface-variant
-                                        @(subTask.IsCompleted
-                                                                                  ? "line-through opacity-60"
-                                                                                  : "")">
-                                        @subTask.Title
-                                    </span>
+                            </div>
 
-                                </li>
-                            }
+                            <ul class="space-y-2.5">
 
-                        </ul>
+                                @foreach (var subTask in task.SubTasks)
+                                {
+                                    <li class="flex items-start gap-2.5 text-sm">
+
+                                        <span class="material-symbols-outlined
+                                            text-lg
+                                            @(subTask.IsCompleted
+                                                                                              ? "text-green-600"
+                                                                                              : "text-slate-400")">
+
+                                            @(subTask.IsCompleted
+                                                ? "check_circle"
+                                                : "radio_button_unchecked")
+                                        </span>
+
+                                        <span class="@(subTask.IsCompleted
+                                                                                                                                                    ? "line-through text-slate-400"
+                                                                                                                                                    : "text-slate-600")">
+
+                                            @subTask.Title
+
+                                        </span>
+
+                                    </li>
+                                }
+
+                            </ul>
+
+                        </div>
                     }
                     else
                     {
-                        <p class="mt-4 text-sm italic text-on-surface-variant">
+                        <p class="mt-4 text-xs italic text-slate-400">
                             Bu göreve henüz ayrıntı eklenmedi.
                         </p>
                     }
 
                     <!-- Tarihler -->
-                    <div class="mt-6 pt-4 border-t border-outline-variant
+                    <div class="task-date-area mt-5
                         grid grid-cols-1 sm:grid-cols-2 gap-3">
 
                         <!-- Oluşturulma tarihi -->
                         <div class="flex items-start gap-2">
 
-                            <span class="material-symbols-outlined text-lg
-                                text-on-surface-variant">
-                                calendar_today
+                            <span class="flex items-center justify-center
+                                w-8 h-8 rounded-lg bg-white
+                                border border-slate-200
+                                text-slate-500">
+
+                                <span class="material-symbols-outlined text-lg">
+                                    calendar_today
+                                </span>
+
                             </span>
 
                             <div>
-                                <span class="block text-[11px]
-                                    text-on-surface-variant">
+                                <span class="block text-[10px] text-slate-400">
                                     Oluşturulma tarihi
                                 </span>
 
-                                <strong class="block mt-0.5 text-xs
-                                    text-on-surface font-medium">
+                                <strong class="block mt-0.5
+                                    text-xs text-slate-700
+                                    font-medium">
+
                                     @task.CreatedDate.ToString("dd MMM yyyy HH:mm")
+
                                 </strong>
                             </div>
 
@@ -177,42 +348,39 @@
                         <!-- Bitiş tarihi -->
                         <div class="flex items-start gap-2">
 
-                            <span class="material-symbols-outlined text-lg
+                            <span class="flex items-center justify-center
+                                w-8 h-8 rounded-lg
                                 @(isOverdue
-                                                                  ? "text-red-600"
-                                                                  : task.IsCompleted
-                                                                      ? "text-green-600"
-                                                                      : "text-blue-600")">
+                                                                      ? "bg-red-500 text-white"
+                                                                      : "bg-blue-50 border border-blue-200 text-blue-600")">
 
-                                @(isOverdue
-                                    ? "event_busy"
-                                    : task.IsCompleted
-                                        ? "event_available"
-                                        : "event")
+                                <span class="material-symbols-outlined text-lg">
+                                    @(isOverdue ? "event_busy" : "event")
+                                </span>
+
                             </span>
 
                             <div>
-                                <span class="block text-[11px]
-                                    text-on-surface-variant">
+                                <span class="block text-[10px] text-slate-400">
                                     Bitiş tarihi
                                 </span>
 
                                 @if (task.DueDate.HasValue)
                                 {
-                                    <strong class="block mt-0.5 text-xs font-medium
+                                    <strong class="block mt-0.5 text-xs
+                                        font-semibold
                                         @(isOverdue
-                                                                                    ? "text-red-600"
-                                                                                    : task.IsCompleted
-                                                                                        ? "text-green-600"
-                                                                                        : "text-blue-600")">
+                                                                                        ? "text-red-600"
+                                                                                        : "text-blue-700")">
 
                                         @task.DueDate.Value.ToString("dd MMM yyyy HH:mm")
+
                                     </strong>
                                 }
                                 else
                                 {
-                                    <strong class="block mt-0.5 text-xs
-                                        font-medium text-on-surface-variant">
+                                    <strong class="block mt-0.5
+                                        text-xs text-slate-500">
                                         Belirlenmedi
                                     </strong>
                                 }
@@ -222,12 +390,12 @@
 
                     </div>
 
-                    <!-- Süresi geçen görev uyarısı -->
                     @if (isOverdue)
                     {
-                        <div class="flex items-center gap-2 mt-4 px-3 py-2
-                            rounded-lg bg-red-50 text-red-600
-                            text-xs font-semibold">
+                        <div class="flex items-center gap-2 mt-4
+                            px-3 py-2 rounded-lg
+                            bg-red-50 border border-red-200
+                            text-red-600 text-xs font-semibold">
 
                             <span class="material-symbols-outlined text-lg">
                                 warning
@@ -237,8 +405,10 @@
                         </div>
                     }
 
-                </a>
-            }
+                </div>
 
-        </div>
-    }
+            </a>
+        }
+
+    </div>
+}

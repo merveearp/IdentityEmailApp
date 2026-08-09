@@ -19,9 +19,32 @@
             Görev Oluştur
         </a>
     </div>
+    <div class="mb-stack-lg px-2">
+        <a asp-controller="Task"
+               asp-action="TaskList"
+               class="flex items-center gap-3 px-4 py-3 rounded-full
+            text-on-surface-variant hover:bg-surface-container">
+
+            <span class="material-symbols-outlined">
+                folder_open
+            </span>
+
+            Kategori Listesi
+        </a>
+    </div>
     <div class="flex-1 overflow-y-auto space-y-1 pr-2">
-        <a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-full px-4 py-2 font-bold font-label-lg text-label-lg" asp-controller="Task" asp-action="Index">
-            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">task_alt</span> Görevler</a>
+        <a asp-controller="Task"
+               asp-action="Index"
+               class="flex items-center gap-3 px-4 py-3 rounded-full
+            text-on-surface-variant hover:bg-surface-container
+            transition-colors">
+
+            <span class="material-symbols-outlined">
+                task_alt
+            </span>
+
+            Görevler
+        </a>
         <a asp-controller="Task"
                asp-action="StarredIndex"
                class="flex items-center gap-3 px-4 py-3 rounded-full
@@ -39,6 +62,29 @@
             Yıldızlı
         </a>
         <a asp-controller="Task"
+               asp-action="UnCompletedIndex"
+               class="flex items-center gap-3 px-4 py-3 rounded-full
+            text-on-surface-variant hover:bg-surface-container">
+
+            <span class="material-symbols-outlined text-blue-600">
+                pending_actions
+            </span>
+
+            Devam Edenler
+        </a>
+
+        <a asp-controller="Task"
+               asp-action="CompletedIndex"
+               class="flex items-center gap-3 px-4 py-3 rounded-full
+            text-on-surface-variant hover:bg-surface-container">
+
+            <span class="material-symbols-outlined text-green-600">
+                task_alt
+            </span>
+
+            Tamamlananlar
+        </a>
+        <a asp-controller="Task"
                asp-action="DeletedIndex"
                class="flex items-center gap-3 px-4 py-3 rounded-full
             text-on-surface-variant hover:bg-surface-container">
@@ -49,6 +95,8 @@
 
             Silinen Görevler
         </a>
+       
+       
        
         @await Component.InvokeAsync("_TaskListComponent")
         
