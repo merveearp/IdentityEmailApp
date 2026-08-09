@@ -1,0 +1,236 @@
+﻿@using IdentityEmailApp.Entities
+@model List<UserTask>
+
+
+@{
+    ViewData["Title"] = "Öenemli Görevler";
+    Layout = "~/Views/Task/Layout.cshtml";
+}
+
+<!-- Canvas Header -->
+<div class="h-14 border-b border-outline-variant flex items-center justify-between px-6 bg-white/50 backdrop-blur-sm">
+    <h2 class="font-headline-md text-headline-md text-on-surface">Yıldızlı Görevlerim</h2>
+    <button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
+        <span class="material-symbols-outlined">more_vert</span>
+    </button>
+</div>
+<!-- Empty State Content -->
+@if (Model == null || !Model.Any())
+{
+    <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+
+        <div class="w-48 h-48 mb-8 opacity-80">
+            <div class="relative w-full h-full flex items-center justify-center">
+                <div class="absolute w-32 h-24 bg-surface-container rounded-lg border border-outline-variant transform -rotate-6"></div>
+
+                <div class="absolute w-32 h-24 bg-white rounded-lg border border-outline-variant transform rotate-3 flex items-center justify-center shadow-sm">
+                    <span class="material-symbols-outlined text-4xl text-outline-variant">
+                        check_circle
+                    </span>
+                </div>
+
+                <div class="absolute -top-4 right-8 w-10 h-10 bg-primary-container rounded-full flex items-center justify-center">
+                    <span class="material-symbols-outlined text-on-primary-container text-sm">
+                        done
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <h3>Yıldızlı göreviniz yok</h3>
+
+        <p>
+            Önemli olarak işaretlediğiniz görevler burada görüntülenir.
+        </p>
+
+       
+    </div>
+}
+else
+{
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+        @foreach (var task in Model)
+        {
+            var isOverdue =
+                task.DueDate.HasValue &&
+                task.DueDate.Value < DateTime.Now &&
+                !task.IsCompleted;
+
+            <a asp-controller="Task"
+                   asp-action="TaskDetail"
+                   asp-route-id="@task.UserTaskId"
+                   class="relative block bg-white border border-outline-variant
+                rounded-2xl p-5 shadow-sm hover:shadow-md
+                hover:-translate-y-1 transition-all cursor-pointer">
+
+                <!-- Kategori ve önemli yıldızı -->
+                <div class="flex items-center justify-between gap-3 mb-4">
+
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1
+                        rounded-full bg-blue-100 text-blue-700
+                        text-xs font-semibold">
+
+                        <span class="material-symbols-outlined text-sm">
+                            label
+                        </span>
+
+                        @(task.TaskList?.Name ?? "Kategorisiz")
+                    </span>
+
+                    @if (task.IsImportant)
+                    {
+                        <span class="material-symbols-outlined text-yellow-500
+                            text-3xl drop-shadow-sm"
+                              title="Önemli görev"
+                              style="font-variation-settings:
+                            'FILL' 1,
+                            'wght' 500,
+                            'GRAD' 0,
+                            'opsz' 32;">
+                            star
+                        </span>
+                    }
+
+                </div>
+
+                <!-- Ana görev -->
+                <h3 class="text-xl font-bold text-on-surface leading-snug
+                    @(task.IsCompleted
+                                                                    ? "line-through opacity-60"
+                                                                    : "")">
+                    @task.Title
+                </h3>
+
+                <!-- Alt görevler -->
+                @if (task.SubTasks != null && task.SubTasks.Any())
+                {
+                    <ul class="mt-5 space-y-3">
+
+                        @foreach (var subTask in task.SubTasks)
+                        {
+                            <li class="flex items-start gap-3 text-sm">
+
+                                <span class="material-symbols-outlined text-xl
+                                    @(subTask.IsCompleted
+                                                                                                                        ? "text-green-600"
+                                                                                                                        : "text-outline")">
+
+                                    @(subTask.IsCompleted
+                                        ? "check_circle"
+                                        : "radio_button_unchecked")
+                                </span>
+
+                                <span class="text-on-surface-variant
+                                    @(subTask.IsCompleted
+                                                                                                                        ? "line-through opacity-60"
+                                                                                                                        : "")">
+                                    @subTask.Title
+                                </span>
+
+                            </li>
+                        }
+
+                    </ul>
+                }
+                else
+                {
+                    <p class="mt-4 text-sm italic text-on-surface-variant">
+                        Bu göreve henüz ayrıntı eklenmedi.
+                    </p>
+                }
+
+                <!-- Tarihler -->
+                <div class="mt-6 pt-4 border-t border-outline-variant
+                    grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                    <!-- Oluşturulma tarihi -->
+                    <div class="flex items-start gap-2">
+
+                        <span class="material-symbols-outlined text-lg
+                            text-on-surface-variant">
+                            calendar_today
+                        </span>
+
+                        <div>
+                            <span class="block text-[11px]
+                                text-on-surface-variant">
+                                Oluşturulma tarihi
+                            </span>
+
+                            <strong class="block mt-0.5 text-xs
+                                text-on-surface font-medium">
+                                @task.CreatedDate.ToString("dd MMM yyyy HH:mm")
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <!-- Bitiş tarihi -->
+                    <div class="flex items-start gap-2">
+
+                        <span class="material-symbols-outlined text-lg
+                            @(isOverdue
+                                                                                                ? "text-red-600"
+                                                                                                : task.IsCompleted
+                                                                                                    ? "text-green-600"
+                                                                                                    : "text-blue-600")">
+
+                            @(isOverdue
+                                ? "event_busy"
+                                : task.IsCompleted
+                                    ? "event_available"
+                                    : "event")
+                        </span>
+
+                        <div>
+                            <span class="block text-[11px]
+                                text-on-surface-variant">
+                                Bitiş tarihi
+                            </span>
+
+                            @if (task.DueDate.HasValue)
+                            {
+                                <strong class="block mt-0.5 text-xs font-medium
+                                    @(isOverdue
+                                                                                                                            ? "text-red-600"
+                                                                                                                            : task.IsCompleted
+                                                                                                                                ? "text-green-600"
+                                                                                                                                : "text-blue-600")">
+
+                                    @task.DueDate.Value.ToString("dd MMM yyyy HH:mm")
+                                </strong>
+                            }
+                            else
+                            {
+                                <strong class="block mt-0.5 text-xs
+                                    font-medium text-on-surface-variant">
+                                    Belirlenmedi
+                                </strong>
+                            }
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Süresi geçen görev uyarısı -->
+                @if (isOverdue)
+                {
+                    <div class="flex items-center gap-2 mt-4 px-3 py-2
+                        rounded-lg bg-red-50 text-red-600
+                        text-xs font-semibold">
+
+                        <span class="material-symbols-outlined text-lg">
+                            warning
+                        </span>
+
+                        Bu görevin bitiş tarihi geçti.
+                    </div>
+                }
+
+            </a>
+        }
+
+    </div>
+}

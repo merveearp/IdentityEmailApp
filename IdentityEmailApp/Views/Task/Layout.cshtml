@@ -19,9 +19,10 @@
         @await Component.InvokeAsync("_TaskSideNavbarComponent")
 
         <!-- Main Content Area (Empty State) -->
-       
-  @RenderBody()
-    
+ 
+        <main class="flex-1 bg-surface-container-lowest rounded-xl border border-outline-variant flex flex-col overflow-hidden relative">
+            @RenderBody()
+        </main>
     </div>
 </body>
 

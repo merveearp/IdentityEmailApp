@@ -1,29 +1,380 @@
-﻿
-@*
+﻿@*
     _TaskHeaderComponent
 *@
 
-<header class="flex items-center justify-between px-margin-page h-16 w-full z-50 bg-background border-b border-outline-variant docked full-width top-0">
-    <div class="flex items-center gap-4">
-        <button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
-            <span class="material-symbols-outlined">menu</span>
-        </button>
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mail</span>
-            </div>
-            <span class="font-headline-lg text-headline-lg font-bold text-primary">Notika</span>
+<style>
+    .task-app-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 94px;
+        color: #374151;
+        border: 1px solid transparent;
+        border-radius: 13px;
+        text-decoration: none !important;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+        .task-app-item:hover {
+            border-color: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+    .task-app-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 47px;
+        height: 47px;
+        margin-bottom: 8px;
+        color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 13px rgba(31, 41, 55, 0.17);
+        transition: all 0.2s ease;
+    }
+
+    .task-app-item:hover .task-app-icon {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(31, 41, 55, 0.21);
+    }
+
+    .task-app-icon .material-symbols-outlined {
+        font-size: 25px;
+    }
+
+    @@media (max-width: 500px) {
+        #appsMenu {
+            position: fixed;
+            top: 72px;
+            right: 12px;
+            left: 12px;
+            width: auto;
+        }
+
+        .apps-menu-arrow {
+            display: none;
+        }
+    }
+</style>
+
+<header class="relative flex items-center justify-between
+    px-margin-page h-16 w-full z-50
+    bg-background border-b border-outline-variant">
+
+    <!-- Notika Logo -->
+    <a asp-controller="Task"
+           asp-action="Index"
+           class="flex items-center gap-2"
+           style="text-decoration:none;">
+
+        <div class="w-8 h-8 bg-primary rounded-full
+            flex items-center justify-center text-white">
+
+            <span class="material-symbols-outlined"
+                  style="font-variation-settings:'FILL' 1;">
+                mail
+            </span>
+
         </div>
+
+        <span class="font-headline-lg text-headline-lg
+            font-bold text-primary">
+            Notika
+        </span>
+
+    </a>
+
+    <!-- Sağ Menü -->
+    <div class="flex items-center gap-1">
+
+        <!-- AI Destek -->
+        <a asp-controller="AISupport"
+               asp-action="Index"
+               title="AI Destek"
+               class="p-2 rounded-lg text-on-surface-variant
+            hover:bg-surface-variant/50 hover:text-on-surface
+            transition-all flex items-center justify-center"
+               style="text-decoration:none;">
+
+            <span class="material-symbols-outlined">
+                support_agent
+            </span>
+
+        </a>
+
+        <!-- Mail -->
+        <a asp-controller="Message"
+               asp-action="Inbox"
+               title="Notika Mail"
+               class="p-2 rounded-lg text-on-surface-variant
+            hover:bg-surface-variant/50 hover:text-on-surface
+            transition-all flex items-center justify-center"
+               style="text-decoration:none;">
+
+            <span class="material-symbols-outlined">
+                mail
+            </span>
+
+        </a>
+
+        <!-- Uygulamalar -->
+        <div id="appsMenuWrapper" class="relative">
+
+            <!-- Uygulamalar Butonu -->
+            <button type="button"
+                    id="appsMenuButton"
+                    title="Notika Uygulamaları"
+                    aria-expanded="false"
+                    aria-controls="appsMenu"
+                    class="p-2 rounded-lg text-on-surface-variant
+                hover:bg-surface-variant/50
+                hover:text-on-surface transition-all
+                flex items-center justify-center">
+
+                <span class="material-symbols-outlined">
+                    apps
+                </span>
+
+            </button>
+
+            <!-- Uygulamalar Menüsü -->
+            <div id="appsMenu"
+                 class="hidden absolute right-0 top-full mt-3
+                w-[350px] max-w-[calc(100vw-24px)]
+                bg-white rounded-2xl
+                border border-gray-200
+                shadow-[0_18px_50px_rgba(31,41,55,0.18)]
+                z-[100]">
+
+                <!-- Menü oku -->
+                <div class="apps-menu-arrow absolute -top-2 right-3
+                    w-4 h-4 bg-white
+                    border-l border-t border-gray-200
+                    rotate-45">
+                </div>
+
+                <!-- Menü başlığı -->
+                <div class="relative flex items-center gap-3
+                    px-5 py-4 bg-gradient-to-r
+                    from-blue-50 to-white
+                    border-b border-gray-100
+                    rounded-t-2xl">
+
+                    <div class="flex items-center justify-center
+                        w-10 h-10 rounded-xl
+                        bg-blue-600 text-white shadow-sm">
+
+                        <span class="material-symbols-outlined">
+                            apps
+                        </span>
+
+                    </div>
+
+                    <div>
+                        <h3 class="m-0 text-base font-bold text-gray-900">
+                            Notika Uygulamaları
+                        </h3>
+
+                        <p class="mt-0.5 mb-0 text-xs text-gray-500">
+                            Kullanmak istediğiniz servisi seçin
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Uygulama listesi -->
+                <div class="grid grid-cols-3 gap-3 p-4">
+
+                    <!-- Mail -->
+                    <a asp-controller="Message"
+                           asp-action="Inbox"
+                           class="task-app-item hover:bg-blue-50">
+
+                        <div class="task-app-icon bg-blue-600">
+                            <span class="material-symbols-outlined">
+                                mail
+                            </span>
+                        </div>
+
+                        <span>Mail</span>
+                    </a>
+
+                    <!-- Haberler -->
+                    <a asp-controller="News"
+                           asp-action="Index"
+                           asp-route-category="latest"
+                           class="task-app-item hover:bg-sky-50">
+
+                        <div class="task-app-icon bg-sky-500">
+                            <span class="material-symbols-outlined">
+                                newspaper
+                            </span>
+                        </div>
+
+                        <span>Haberler</span>
+                    </a>
+
+                    <!-- Finans -->
+                    <a asp-controller="Finance"
+                           asp-action="Index"
+                           class="task-app-item hover:bg-purple-50">
+
+                        <div class="task-app-icon bg-purple-500">
+                            <span class="material-symbols-outlined">
+                                monitoring
+                            </span>
+                        </div>
+
+                        <span>Finans</span>
+                    </a>
+
+                    <!-- Görevler -->
+                    <a asp-controller="Task"
+                           asp-action="Index"
+                           class="task-app-item hover:bg-orange-50">
+
+                        <div class="task-app-icon bg-orange-500">
+                            <span class="material-symbols-outlined">
+                                task_alt
+                            </span>
+                        </div>
+
+                        <span>Görevler</span>
+                    </a>
+
+                    <!-- Translate -->
+                    <a asp-controller="Translate"
+                           asp-action="Index"
+                           class="task-app-item hover:bg-teal-50">
+
+                        <div class="task-app-icon bg-teal-500">
+                            <span class="material-symbols-outlined">
+                                translate
+                            </span>
+                        </div>
+
+                        <span>Translate</span>
+                    </a>
+
+                    <!-- Panel -->
+                    <a asp-controller="Dashboard"
+                           asp-action="Index"
+                           class="task-app-item hover:bg-emerald-50">
+
+                        <div class="task-app-icon bg-emerald-500">
+                            <span class="material-symbols-outlined">
+                                bar_chart
+                            </span>
+                        </div>
+
+                        <span>Panel</span>
+                    </a>
+
+                    <!-- Ayarlar -->
+                    <a asp-controller="Settings"
+                           asp-action="Index"
+                           class="task-app-item hover:bg-slate-50">
+
+                        <div class="task-app-icon bg-slate-500">
+                            <span class="material-symbols-outlined">
+                                settings
+                            </span>
+                        </div>
+
+                        <span>Ayarlar</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Profil -->
+        <a asp-controller="Profile"
+               asp-action="Index"
+               title="@ViewBag.FullName"
+               class="ml-2 w-9 h-9 rounded-full overflow-hidden
+            border border-outline-variant cursor-pointer
+            hover:ring-2 hover:ring-secondary/50
+            transition-all block"
+               style="text-decoration:none;">
+
+            @if (!string.IsNullOrWhiteSpace(ViewBag.ImageUrl))
+            {
+                <img src="@ViewBag.ImageUrl"
+                     alt="@ViewBag.FullName"
+                     class="w-full h-full object-cover" />
+            }
+            else
+            {
+                <div class="w-full h-full bg-secondary/20
+                    flex items-center justify-center">
+
+                    <span class="material-symbols-outlined text-secondary">
+                        person
+                    </span>
+
+                </div>
+            }
+
+        </a>
+
     </div>
 
-    <!-- Search Bar -->
-    <div class="flex items-center gap-2">
-        <button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors hidden sm:block">
-            <span class="material-symbols-outlined">help</span>
-        </button>
-        <button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors hidden sm:block">
-            <span class="material-symbols-outlined">apps</span>
-        </button>
-        <img alt="User Profile" class="w-8 h-8 rounded-full ml-2 object-cover border border-outline-variant" data-alt="A small, circular profile picture of a professional individual against a clean, light background, optimized for a bright, modern UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlUeeeBbikJdHCMTsdCEIOV9Dk1rjtfricJ9LvC0D6B5AOCxsX-GzuzdYZvy0lsy4G88FkwnaLxMmWb4v0kNB8sN0pb8dKNBcweiJBRBDVW-jXmrPAirqtbIDTAsIsNBWh70Si_wKiQ76FomfZqmYdEUtM6dNasJO7QVjjNTgeD-nEr8DUokZTbs8q_F-AgemkCXoxZvLacElBw3SE4B-V68rhvoifLCnkOUYrswpU7dy46GILhtLMYw" />
-    </div>
 </header>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const wrapper =
+            document.getElementById("appsMenuWrapper");
+
+        const button =
+            document.getElementById("appsMenuButton");
+
+        const menu =
+            document.getElementById("appsMenu");
+
+        if (!wrapper || !button || !menu) {
+            return;
+        }
+
+        function closeAppsMenu() {
+            menu.classList.add("hidden");
+            button.setAttribute("aria-expanded", "false");
+        }
+
+        button.addEventListener("click", function (event) {
+            event.stopPropagation();
+
+            const willOpen =
+                menu.classList.contains("hidden");
+
+            menu.classList.toggle("hidden");
+
+            button.setAttribute(
+                "aria-expanded",
+                willOpen ? "true" : "false"
+            );
+        });
+
+        menu.addEventListener("click", function (event) {
+            event.stopPropagation();
+        });
+
+        document.addEventListener("click", function () {
+            closeAppsMenu();
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                closeAppsMenu();
+            }
+        });
+
+    });
+</script>
