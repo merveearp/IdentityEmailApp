@@ -1,0 +1,33 @@
+﻿
+@*
+   _DashboardTopNavbarComponent
+*@
+
+<nav class="glass-card flex justify-between items-center h-16 px-6 w-full fixed top-0 z-50 rounded-none border-t-0 border-l-0 border-r-0">
+    <div class="flex items-center gap-4 w-sidebar-width">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-glacier-accent to-glacier-chart-4 flex items-center justify-center shadow-glacier-glow">
+            <span class="material-symbols-outlined text-glacier-bg font-bold text-lg">ac_unit</span>
+        </div>
+        <span class="font-bold text-xl tracking-tight text-white"> Notika </span>
+    </div>
+    <!-- Search -->
+    <div class="hidden md:flex flex-1 max-w-lg mx-8">
+        <div class="relative w-full group">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-glacier-text-muted group-focus-within:text-glacier-accent transition-colors">search</span>
+            <input class="w-full pl-12 pr-4 py-2 bg-black/20 border border-glacier-card-border rounded-full focus:outline-none focus:border-glacier-accent focus:bg-black/40 text-sm text-white placeholder-glacier-text-muted transition-all backdrop-blur-md" placeholder="Search across dashboard..." type="text" />
+            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-mono text-glacier-text-muted bg-white/5 px-2 py-0.5 rounded border border-white/10">⌘K</span>
+        </div>
+    </div>
+    <div class="flex items-center gap-3">
+        <button class="w-10 h-10 rounded-full glass-button flex items-center justify-center text-glacier-text-muted hover:text-white transition-colors relative">
+            <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+            <span class="absolute top-2 right-2 w-2 h-2 bg-glacier-accent rounded-full shadow-[0_0_8px_#7dd3fc]"></span>
+        </button>
+        <button class="w-10 h-10 rounded-full glass-button flex items-center justify-center text-glacier-text-muted hover:text-white transition-colors">
+            <span class="material-symbols-outlined" data-icon="settings">settings</span>
+        </button>
+        <div class="w-10 h-10 rounded-full p-0.5 bg-gradient-to-br from-glacier-accent to-glacier-chart-4 cursor-pointer ml-2">
+            <img alt="User profile" class="w-full h-full rounded-full object-cover border-2 border-glacier-bg" data-alt="A professional headshot of a corporate user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA39tmYDb7vV1A45XoP-VSqlsNaZ9OVDYOHG_AXt2PpuEDUU1b1EeTBi4S5_xDh64PzMIO-Hxwq65V1xWBTiWOWuXqVHB5cBF8fQDpcWkcy6aRq-XYndk6A5mmfLttt__6ECPSyR2aWAf_gfWpet4j_htqTgK8tecq9m5weHS5g4jDKFck8S6NSPsGDW1GgtXOj337t0ec430XcWT0rHx6BB0VOJx-PabJUYFt4D_227PWtmLyartFsZg" />
+        </div>
+    </div>
+</nav>

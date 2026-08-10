@@ -1,0 +1,121 @@
+﻿
+@*
+   _DashboardHeadComponent
+*@
+
+
+    <head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notika Mail - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "glacier-bg": "#001113",
+                        "glacier-card": "rgba(255, 255, 255, 0.03)",
+                        "glacier-card-border": "rgba(255, 255, 255, 0.1)",
+                        "glacier-card-hover": "rgba(255, 255, 255, 0.06)",
+                        "glacier-accent": "#7dd3fc",
+                        "glacier-accent-dim": "rgba(125, 211, 252, 0.2)",
+                        "glacier-text": "#f1f5f9",
+                        "glacier-text-muted": "#94a3b8",
+                        "glacier-danger": "#ef4444",
+                        "glacier-success": "#10b981",
+                        "glacier-warning": "#f59e0b",
+                        "glacier-chart-1": "#7dd3fc",
+                        "glacier-chart-2": "#38bdf8",
+                        "glacier-chart-3": "#0284c7",
+                        "glacier-chart-4": "#0369a1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "list-width": "380px",
+                        "margin-page": "24px",
+                        "stack-lg": "24px",
+                        "stack-md": "16px",
+                        "gutter": "24px",
+                        "sidebar-width": "260px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "sans": ["Inter", "sans-serif"]
+                    },
+                    "boxShadow": {
+                        'glacier': '0 4px 24px -1px rgba(0, 0, 0, 0.2), 0 0 1px 1px rgba(255, 255, 255, 0.05)',
+                        'glacier-glow': '0 0 20px rgba(125, 211, 252, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #001113; color: #f1f5f9; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1; }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(125, 211, 252, 0.3);
+            box-shadow: 0 0 20px rgba(125, 211, 252, 0.1);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(125, 211, 252, 0.4);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .chart-bar {
+            background: linear-gradient(180deg, #7dd3fc 0%, rgba(125, 211, 252, 0.2) 100%);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .chart-bar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: #ffffff;
+            opacity: 0.5;
+        }
+    </style>
+
+    </head>

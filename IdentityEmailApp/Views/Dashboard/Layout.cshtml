@@ -1,0 +1,35 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html class="dark" lang="tr">
+    
+    
+    @await Component.InvokeAsync("_DashboardHeadComponent")
+
+
+<body class="flex flex-col min-h-screen overflow-hidden selection:bg-glacier-accent selection:text-glacier-bg">
+
+
+<!-- TopNavBar -->
+    @await Component.InvokeAsync("_DashboardTopNavbarComponent")
+
+<div class="flex flex-1 pt-16 h-screen">
+
+
+<!-- SideNavBar -->
+
+    @await Component.InvokeAsync("_DashboardSideNavbarComponent")
+
+
+<!-- Main Content Area -->
+        @RenderBody()
+
+</div>
+
+</body>
+
+</html>

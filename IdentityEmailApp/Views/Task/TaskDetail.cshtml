@@ -12,7 +12,12 @@
 }
 
 <style>
-
+    .back-link {
+    border: none;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
     .subtask-delete-button {
     display: flex;
     align-items: center;
@@ -519,16 +524,17 @@
             <header class="detail-header">
 
                 <div>
-                    <a asp-controller="Task"
-                           asp-action="Index"
-                           class="back-link">
-                        <span class="material-symbols-outlined"
-                              style="font-size: 17px;">
-                            arrow_back
-                        </span>
-                        Görevlere dön
-                    </a>
+                      <button type="button"
+                        class="back-link"
+                        onclick="goBackToTaskList()">
 
+                    <span class="material-symbols-outlined"
+                          style="font-size:17px;">
+                        arrow_back
+                    </span>
+
+                    Geri dön
+                </button>
                     <div>
                         <span class="category-badge">
                             <span class="material-symbols-outlined">
@@ -931,4 +937,14 @@
         });
 
     });
+</script>
+
+ <script>
+    function goBackToTaskList() {
+        if (document.referrer && window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = '@Url.Action("Index", "Task")';
+        }
+    }
 </script>

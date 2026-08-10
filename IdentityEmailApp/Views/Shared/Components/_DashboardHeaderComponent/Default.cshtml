@@ -1,0 +1,65 @@
+﻿@using System.Globalization
+
+@{
+    var today = DateTime.Now.ToString(
+        "dd MMMM yyyy, dddd",
+        new CultureInfo("tr-TR")
+    );
+}
+
+<header class="mb-8 flex flex-col md:flex-row justify-between
+    items-start md:items-end gap-4 relative z-10">
+
+    <div>
+        <span class="inline-flex items-center gap-2 mb-2
+            text-xs font-semibold tracking-widest uppercase
+            text-[#00c292]">
+
+            <span class="w-2 h-2 rounded-full bg-[#00c292]"></span>
+
+            Notika Genel Bakış
+        </span>
+
+        <h1 class="text-3xl font-bold text-white tracking-tight
+            text-gradient mb-2">
+
+            Hoş geldin, @ViewBag.FullName 👋
+        </h1>
+
+        <p class="text-sm text-glacier-text-muted">
+            Bugünkü mesajlarını, görevlerini ve uygulama özetini
+            buradan takip edebilirsin.
+        </p>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+
+        @if (!string.IsNullOrWhiteSpace(
+                    ViewBag.City as string))
+        {
+            <div class="px-4 py-2 glass-button rounded-lg
+                text-sm text-white font-medium
+                flex items-center gap-2">
+
+                <span class="material-symbols-outlined text-[18px]">
+                    location_on
+                </span>
+
+                @ViewBag.City
+            </div>
+        }
+
+        <div class="px-4 py-2 glass-button rounded-lg
+            text-sm text-white font-medium
+            flex items-center gap-2">
+
+            <span class="material-symbols-outlined text-[18px]">
+                calendar_today
+            </span>
+
+            @today
+        </div>
+
+    </div>
+
+</header>

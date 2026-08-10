@@ -1,0 +1,330 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Dashboard/Layout.cshtml";
+}
+
+
+<main class="flex-1 ml-0 md:ml-sidebar-width p-6 overflow-y-auto relative bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#002226] via-[#001113] to-[#001113]">
+    <!-- Decorative background glow -->
+    <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-glacier-accent opacity-5 blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-glacier-chart-4 opacity-10 blur-[120px] pointer-events-none"></div>
+
+    @await Component.InvokeAsync("_DashboardHeaderComponent")
+    <!-- 8-Widget Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-12 gap-6 relative z-10 pb-12">
+        <!-- Quick Stats Row (Spans all 12 cols, 4 cards of 3 cols each) -->
+      
+        <!-- Card 1: Revenue -->
+        <div class="glass-card rounded-2xl p-6 xl:col-span-3 flex flex-col relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-6 opacity-10 transform group-hover:scale-110 transition-transform duration-500">
+                <span class="material-symbols-outlined text-6xl">attach_money</span>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-medium text-glacier-text-muted">Total Revenue</h3>
+                <span class="px-2 py-1 rounded bg-glacier-success/10 text-glacier-success text-xs font-medium border border-glacier-success/20 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">trending_up</span> +12.5%
+                </span>
+            </div>
+            <p class="text-3xl font-bold text-white tracking-tight">$84,290</p>
+            <p class="text-xs text-glacier-text-muted mt-2">Compared to $74,924 last month</p>
+        </div>
+        <!-- Card 2: Active Users -->
+        <div class="glass-card rounded-2xl p-6 xl:col-span-3 flex flex-col relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-6 opacity-10 transform group-hover:scale-110 transition-transform duration-500">
+                <span class="material-symbols-outlined text-6xl">group</span>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-medium text-glacier-text-muted">Active Users</h3>
+                <span class="px-2 py-1 rounded bg-glacier-success/10 text-glacier-success text-xs font-medium border border-glacier-success/20 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">trending_up</span> +5.2%
+                </span>
+            </div>
+            <p class="text-3xl font-bold text-white tracking-tight">12,842</p>
+            <p class="text-xs text-glacier-text-muted mt-2">+430 this week</p>
+        </div>
+        <!-- Card 3: Tasks -->
+        <div class="glass-card rounded-2xl p-6 xl:col-span-3 flex flex-col relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-6 opacity-10 transform group-hover:scale-110 transition-transform duration-500">
+                <span class="material-symbols-outlined text-6xl">task_alt</span>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-medium text-glacier-text-muted">Pending Tasks</h3>
+                <span class="px-2 py-1 rounded bg-glacier-warning/10 text-glacier-warning text-xs font-medium border border-glacier-warning/20">Needs Attention</span>
+            </div>
+            <p class="text-3xl font-bold text-white tracking-tight">34</p>
+            <div class="w-full bg-white/5 h-1.5 rounded-full mt-4 overflow-hidden">
+                <div class="bg-glacier-warning h-full rounded-full shadow-[0_0_10px_#f59e0b]" style="width: 65%"></div>
+            </div>
+            <p class="text-xs text-glacier-text-muted mt-2">65% completed</p>
+        </div>
+        <!-- Card 4: Weather/Time -->
+        <div class="glass-card rounded-2xl p-6 xl:col-span-3 flex flex-col relative overflow-hidden bg-gradient-to-br from-[#001113] to-[#002233] border-glacier-accent/20">
+            <div class="absolute top-[-20%] right-[-10%] w-32 h-32 bg-glacier-accent opacity-20 blur-[40px]"></div>
+            <div class="flex justify-between items-start mb-2 z-10">
+                <div>
+                    <h3 class="text-sm font-medium text-glacier-text-muted">Current Location</h3>
+                    <p class="text-lg font-semibold text-white">Seattle, WA</p>
+                </div>
+                <span class="material-symbols-outlined text-glacier-accent text-3xl drop-shadow-[0_0_8px_#7dd3fc]">cloud</span>
+            </div>
+            <div class="mt-auto z-10">
+                <p class="text-4xl font-bold text-white tracking-tight">42°<span class="text-xl text-glacier-text-muted">F</span></p>
+                <p class="text-xs text-glacier-text-muted mt-1">Light Rain • 10:24 AM PST</p>
+            </div>
+        </div>
+        <!-- Row 2 -->
+        <!-- Widget 5: Weekly Activity Chart (Spans 8 cols) -->
+        <div class="glass-card rounded-2xl p-6 xl:col-span-8 flex flex-col min-h-[320px]">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-base font-semibold text-white">Weekly Activity</h2>
+                <div class="flex gap-2">
+                    <span class="flex items-center gap-1 text-xs text-glacier-text-muted"><div class="w-2 h-2 rounded-full bg-glacier-accent shadow-[0_0_5px_#7dd3fc]"></div> This Week</span>
+                    <span class="flex items-center gap-1 text-xs text-glacier-text-muted"><div class="w-2 h-2 rounded-full bg-white/20"></div> Last Week</span>
+                </div>
+            </div>
+            <div class="flex-1 flex items-end justify-between gap-2 md:gap-4 pt-4 px-2">
+                <!-- Bar 1 -->
+                <div class="flex flex-col items-center gap-2 w-full group">
+                    <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                        <div class="w-1/2 bg-white/10 rounded-t-sm h-[40%] transition-all group-hover:bg-white/20"></div>
+                        <div class="w-1/2 chart-bar h-[65%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+                    </div>
+                    <span class="text-xs text-glacier-text-muted">Mon</span>
+                </div>
+                <!-- Bar 2 -->
+                <div class="flex flex-col items-center gap-2 w-full group">
+                    <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                        <div class="w-1/2 bg-white/10 rounded-t-sm h-[35%] transition-all group-hover:bg-white/20"></div>
+                        <div class="w-1/2 chart-bar h-[45%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+                    </div>
+                    <span class="text-xs text-glacier-text-muted">Tue</span>
+                </div>
+                <!-- Bar 3 -->
+                <div class="flex flex-col items-center gap-2 w-full group">
+                    <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                        <div class="w-1/2 bg-white/10 rounded-t-sm h-[60%] transition-all group-hover:bg-white/20"></div>
+                        <div class="w-1/2 chart-bar h-[85%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+                    </div>
+                    <span class="text-xs text-glacier-text-muted">Wed</span>
+                </div>
+                <!-- Bar 4 -->
+                <div class="flex flex-col items-center gap-2 w-full group">
+                    <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                        <div class="w-1/2 bg-white/10 rounded-t-sm h-[50%] transition-all group-hover:bg-white/20"></div>
+                        <div class="w-1/2 chart-bar h-[70%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+                    </div>
+                    <span class="text-xs text-glacier-text-muted">Thu</span>
+                </div>
+                <!-- Bar 5 -->
+                <div class="flex flex-col items-center gap-2 w-full group">
+                    <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                        <div class="w-1/2 bg-white/10 rounded-t-sm h-[75%] transition-all group-hover:bg-white/20"></div>
+                        <div class="w-1/2 chart-bar h-[95%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+                    </div>
+                    <span class="text-xs text-glacier-text-muted">Fri</span>
+                </div>
+                <!-- Bar 6 -->
+                <div class="flex flex-col items-center gap-2 w-full group">
+                    <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                        <div class="w-1/2 bg-white/10 rounded-t-sm h-[30%] transition-all group-hover:bg-white/20"></div>
+                        <div class="w-1/2 chart-bar h-[40%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+                    </div>
+                    <span class="text-xs text-glacier-text-muted">Sat</span>
+                </div>
+                <!-- Bar 7 -->
+                <div class="flex flex-col items-center gap-2 w-full group">
+                    <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                        <div class="w-1/2 bg-white/10 rounded-t-sm h-[20%] transition-all group-hover:bg-white/20"></div>
+                        <div class="w-1/2 chart-bar h-[25%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+                    </div>
+                    <span class="text-xs text-glacier-text-muted">Sun</span>
+                </div>
+            </div>
+        </div>
+        <!-- Widget 6: Distribution Pie (Spans 4 cols) -->
+        <div class="glass-card rounded-2xl p-6 xl:col-span-4 flex flex-col min-h-[320px]">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-base font-semibold text-white">Traffic Sources</h2>
+                <button class="text-glacier-text-muted hover:text-white"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+            </div>
+            <div class="flex-1 flex flex-col items-center justify-center relative">
+                <!-- Fake Pie Chart using conic-gradient -->
+                <div class="w-40 h-40 rounded-full relative shadow-[0_0_30px_rgba(125,211,252,0.1)] flex items-center justify-center" style="background: conic-gradient(
+                    #7dd3fc 0% 45%,
+                    #0284c7 45% 75%,
+                    #0369a1 75% 90%,
+                    #ffffff33 90% 100%
+                    );">
+                    <div class="w-28 h-28 bg-[#001113] rounded-full absolute flex flex-col items-center justify-center border border-white/5">
+                        <span class="text-xl font-bold text-white">100%</span>
+                        <span class="text-[10px] text-glacier-text-muted uppercase tracking-wider">Total</span>
+                    </div>
+                </div>
+                <div class="w-full grid grid-cols-2 gap-4 mt-8">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-sm bg-[#7dd3fc]"></div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-glacier-text-muted">Direct</span>
+                            <span class="text-sm font-semibold text-white">45%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-sm bg-[#0284c7]"></div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-glacier-text-muted">Referral</span>
+                            <span class="text-sm font-semibold text-white">30%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-sm bg-[#0369a1]"></div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-glacier-text-muted">Social</span>
+                            <span class="text-sm font-semibold text-white">15%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-sm bg-white/20"></div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-glacier-text-muted">Other</span>
+                            <span class="text-sm font-semibold text-white">10%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Row 3 -->
+        <!-- Widget 7: Recent Messages / Activity List (Spans 8 cols) -->
+        <div class="glass-card rounded-2xl border border-glacier-card-border shadow-glacier xl:col-span-8 flex flex-col min-h-[400px]">
+            <div class="p-6 border-b border-glacier-card-border flex justify-between items-center bg-white/[0.01]">
+                <h2 class="text-base font-semibold text-white">Recent Activity</h2>
+                <button class="text-glacier-accent text-sm font-medium hover:text-white transition-colors">View All</button>
+            </div>
+            <div class="flex-1 overflow-auto p-4">
+                <div class="space-y-2">
+                    <!-- List Item 1 -->
+                    <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/[0.03] transition-colors group cursor-pointer border border-transparent hover:border-white/5">
+                        <div class="w-10 h-10 rounded-full bg-[#7dd3fc]/10 text-[#7dd3fc] flex items-center justify-center shadow-[0_0_10px_rgba(125,211,252,0.1)]">
+                            <span class="material-symbols-outlined text-[20px]">cloud_upload</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate">System Backup Completed</p>
+                            <p class="text-xs text-glacier-text-muted truncate mt-0.5">Automated backup to secure cloud storage.</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-glacier-text-muted">10:45 AM</p>
+                            <div class="mt-1 opacity-0 group-hover:opacity-100 transition-opacity flex justify-end gap-1">
+                                <button class="w-6 h-6 rounded glass-button flex items-center justify-center text-glacier-text-muted hover:text-white"><span class="material-symbols-outlined text-[14px]">more_horiz</span></button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- List Item 2 -->
+                    <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/[0.03] transition-colors group cursor-pointer border border-transparent hover:border-white/5">
+                        <div class="relative">
+                            <img alt="Elif Demir" class="w-10 h-10 rounded-full object-cover border border-white/10" data-alt="A smiling professional woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVvtrxnjX-I4AVsIrjiz1Bt7ra2CFbiui1E9n2wFmGRi3NUNoM9QV7csrtgpvB4v_-j-grdf0bOnVqCb1TOj9JNqMCgzVTk7Ohp7QcaWFaBJvMFedXKQ0N02UB404KBB0AeFifQ9YBwOSWxCbiceIWpShNspm1U833ebSDDcCWrgK0NhP6WRAr1k8C_ZBlKvatMPTaGEPjER1ApDyrmIMWISxScoSgl2nkuqnoVUPqKWEeJQ2M8ibpFw" />
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-glacier-success rounded-full border-2 border-[#001113]"></div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate">Elif Demir mentioned you in <span class="text-glacier-accent">#design-system</span></p>
+                            <p class="text-xs text-glacier-text-muted truncate mt-0.5">"Could you review the new Glacier palette implementation?"</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-glacier-text-muted">Yesterday</p>
+                            <div class="mt-1 opacity-0 group-hover:opacity-100 transition-opacity flex justify-end gap-1">
+                                <button class="w-6 h-6 rounded glass-button flex items-center justify-center text-glacier-text-muted hover:text-white"><span class="material-symbols-outlined text-[14px]">reply</span></button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- List Item 3 -->
+                    <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/[0.03] transition-colors group cursor-pointer border border-transparent hover:border-white/5">
+                        <div class="w-10 h-10 rounded-full bg-glacier-warning/10 text-glacier-warning flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">warning</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate">Storage Warning</p>
+                            <p class="text-xs text-glacier-text-muted truncate mt-0.5">Server #02 is reaching 90% capacity.</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-glacier-text-muted">12 Oct</p>
+                            <div class="mt-1 opacity-0 group-hover:opacity-100 transition-opacity flex justify-end gap-1">
+                                <button class="w-6 h-6 rounded glass-button flex items-center justify-center text-glacier-text-muted hover:text-white"><span class="material-symbols-outlined text-[14px]">arrow_forward</span></button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- List Item 4 -->
+                    <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/[0.03] transition-colors group cursor-pointer border border-transparent hover:border-white/5">
+                        <div class="w-10 h-10 rounded-full bg-white/5 text-white flex items-center justify-center border border-white/10">
+                            <img alt="Tech News" class="w-6 h-6 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1ACpVLITo9tOI099jvB43JzgVWZ5cwMLD6U0GubPSh0WF_i-QAgkg_8tdXqLaKx7yiQ3P3WM0ktQSIUSBXM_sE7DvY_bgV41yluXq2jRxlq1vLz1L69rDoC2ndlqSZ_CWlp8i96GSv77fVjJA5F2pYAyI-RKywQf2pUMyZLjaLQLHmF15wti-YHpbb-uvyQ0yww6wm6GQJpJ-SqLKt0kdM0dKWn_8RYOdYwjlG9U76j5PKSXuKNjaPg" />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate">Integration Successful</p>
+                            <p class="text-xs text-glacier-text-muted truncate mt-0.5">Tech Services API is now fully connected.</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-glacier-text-muted">11 Oct</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Widget 8: Storage/System Status (Spans 4 cols) -->
+        <div class="flex flex-col gap-6 xl:col-span-4">
+            <!-- Storage Card -->
+            <div class="glass-card rounded-2xl p-6 flex flex-col relative overflow-hidden">
+                <div class="absolute top-[-50px] right-[-50px] w-32 h-32 rounded-full border-[20px] border-glacier-chart-3/10 pointer-events-none"></div>
+                <h3 class="text-base font-semibold text-white mb-6">System Storage</h3>
+                <div class="flex justify-between items-end mb-2">
+                    <div>
+                        <p class="text-3xl font-bold text-white">842 <span class="text-sm font-normal text-glacier-text-muted">GB</span></p>
+                        <p class="text-xs text-glacier-text-muted mt-1">Used of 1 TB</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-lg font-semibold text-glacier-accent drop-shadow-[0_0_8px_rgba(125,211,252,0.5)]">84%</span>
+                    </div>
+                </div>
+                <div class="w-full h-2 bg-white/10 rounded-full mt-2 mb-4 overflow-hidden flex">
+                    <div class="h-full bg-glacier-chart-4 w-[30%]"></div>
+                    <div class="h-full bg-glacier-chart-3 w-[40%]"></div>
+                    <div class="h-full bg-glacier-chart-1 w-[14%] shadow-[0_0_10px_#7dd3fc]"></div>
+                </div>
+                <div class="flex justify-between text-xs text-glacier-text-muted">
+                    <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-glacier-chart-4"></div> System</span>
+                    <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-glacier-chart-3"></div> Media</span>
+                    <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-glacier-chart-1"></div> Docs</span>
+                </div>
+            </div>
+            <!-- Quick Actions -->
+            <div class="glass-card rounded-2xl p-6 flex-1 flex flex-col">
+                <h3 class="text-base font-semibold text-white mb-4">Quick Actions</h3>
+                <div class="grid grid-cols-2 gap-3 flex-1">
+                    <button class="glass-button rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/10 transition-all group">
+                        <div class="p-2 rounded-full bg-white/5 group-hover:bg-glacier-accent/20 transition-colors text-white group-hover:text-glacier-accent group-hover:shadow-glacier-glow">
+                            <span class="material-symbols-outlined text-[20px]">person_add</span>
+                        </div>
+                        <span class="text-xs font-medium text-white">Add User</span>
+                    </button>
+                    <button class="glass-button rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/10 transition-all group">
+                        <div class="p-2 rounded-full bg-white/5 group-hover:bg-glacier-accent/20 transition-colors text-white group-hover:text-glacier-accent group-hover:shadow-glacier-glow">
+                            <span class="material-symbols-outlined text-[20px]">description</span>
+                        </div>
+                        <span class="text-xs font-medium text-white">New Report</span>
+                    </button>
+                    <button class="glass-button rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/10 transition-all group">
+                        <div class="p-2 rounded-full bg-white/5 group-hover:bg-glacier-accent/20 transition-colors text-white group-hover:text-glacier-accent group-hover:shadow-glacier-glow">
+                            <span class="material-symbols-outlined text-[20px]">security</span>
+                        </div>
+                        <span class="text-xs font-medium text-white">Security Scan</span>
+                    </button>
+                    <button class="glass-button rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-white/10 transition-all group">
+                        <div class="p-2 rounded-full bg-white/5 group-hover:bg-glacier-accent/20 transition-colors text-white group-hover:text-glacier-accent group-hover:shadow-glacier-glow">
+                            <span class="material-symbols-outlined text-[20px]">sync</span>
+                        </div>
+                        <span class="text-xs font-medium text-white">Sync Data</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
