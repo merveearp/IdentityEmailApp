@@ -10,24 +10,264 @@
         </div>
         <span class="font-bold text-xl tracking-tight text-white"> Notika </span>
     </div>
-    <!-- Search -->
-    <div class="hidden md:flex flex-1 max-w-lg mx-8">
-        <div class="relative w-full group">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-glacier-text-muted group-focus-within:text-glacier-accent transition-colors">search</span>
-            <input class="w-full pl-12 pr-4 py-2 bg-black/20 border border-glacier-card-border rounded-full focus:outline-none focus:border-glacier-accent focus:bg-black/40 text-sm text-white placeholder-glacier-text-muted transition-all backdrop-blur-md" placeholder="Search across dashboard..." type="text" />
-            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-mono text-glacier-text-muted bg-white/5 px-2 py-0.5 rounded border border-white/10">⌘K</span>
-        </div>
-    </div>
+
+   
     <div class="flex items-center gap-3">
-        <button class="w-10 h-10 rounded-full glass-button flex items-center justify-center text-glacier-text-muted hover:text-white transition-colors relative">
-            <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-            <span class="absolute top-2 right-2 w-2 h-2 bg-glacier-accent rounded-full shadow-[0_0_8px_#7dd3fc]"></span>
-        </button>
-        <button class="w-10 h-10 rounded-full glass-button flex items-center justify-center text-glacier-text-muted hover:text-white transition-colors">
-            <span class="material-symbols-outlined" data-icon="settings">settings</span>
-        </button>
+        <a asp-controller="AISupport"
+               asp-action="Index"
+               title="AI Destek"
+               class="p-2 rounded-lg text-on-surface-variant
+            hover:bg-surface-variant/50 hover:text-on-surface
+            transition-all flex items-center justify-center"
+               style="text-decoration:none;">
+
+            <span class="material-symbols-outlined">
+                support_agent
+            </span>
+
+        </a>
+        <!-- Mail -->
+        <a asp-controller="Message"
+               asp-action="Inbox"
+               title="Notika Mail"
+               class="p-2 rounded-lg text-on-surface-variant
+            hover:bg-surface-variant/50 hover:text-on-surface
+            transition-all flex items-center justify-center"
+               style="text-decoration:none;">
+
+            <span class="material-symbols-outlined">
+                mail
+            </span>
+
+        </a>
+        <!-- Uygulamalar -->
+        <div id="appsMenuWrapper" class="relative">
+
+            <!-- Uygulamalar Butonu -->
+            <button type="button"
+                    id="appsMenuButton"
+                    title="Notika Uygulamaları"
+                    aria-expanded="false"
+                    aria-controls="appsMenu"
+                    class="p-2 rounded-lg text-on-surface-variant
+                hover:bg-surface-variant/50
+                hover:text-on-surface transition-all
+                flex items-center justify-center">
+
+                <span class="material-symbols-outlined">
+                    apps
+                </span>
+
+            </button>
+
+            <!-- Uygulamalar Menüsü -->
+            <div id="appsMenu"
+                 class="hidden absolute right-0 top-full mt-3
+                w-[350px] max-w-[calc(100vw-24px)]
+                bg-white rounded-2xl
+                border border-gray-200
+                shadow-[0_18px_50px_rgba(31,41,55,0.18)]
+                z-[100]">
+
+                <!-- Menü oku -->
+                <div class="apps-menu-arrow absolute -top-2 right-3
+                    w-4 h-4 bg-white
+                    border-l border-t border-gray-200
+                    rotate-45">
+                </div>
+
+                <!-- Menü başlığı -->
+                <div class="relative flex items-center gap-3
+                    px-5 py-4 bg-gradient-to-r
+                    from-blue-50 to-white
+                    border-b border-gray-100
+                    rounded-t-2xl">
+
+                    <div class="flex items-center justify-center
+                        w-10 h-10 rounded-xl
+                        bg-blue-600 text-white shadow-sm">
+
+                        <span class="material-symbols-outlined">
+                            apps
+                        </span>
+
+                    </div>
+
+                    <div>
+                        <h3 class="m-0 text-base font-bold text-gray-900">
+                            Notika Uygulamaları
+                        </h3>
+
+                        <p class="mt-0.5 mb-0 text-xs text-gray-500">
+                            Kullanmak istediğiniz servisi seçin
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Uygulama listesi -->
+                <div class="grid grid-cols-3 gap-1 p-4">
+
+                    <!-- Mail -->
+                    <a asp-controller="Message"
+                           asp-action="Inbox"
+                           class="task-app-item hover:bg-blue-50">
+
+                        <div class="task-app-icon bg-blue-600">
+                            <span class="material-symbols-outlined">
+                                mail
+                            </span>
+                        </div>
+
+                        <span>Mail</span>
+                    </a>
+
+                    <!-- Haberler -->
+                    <a asp-controller="News"
+                           asp-action="Index"
+                           asp-route-category="latest"
+                           class="task-app-item hover:bg-sky-50">
+
+                        <div class="task-app-icon bg-sky-500">
+                            <span class="material-symbols-outlined">
+                                newspaper
+                            </span>
+                        </div>
+
+                        <span>Haberler</span>
+                    </a>
+
+                    <!-- Finans -->
+                    <a asp-controller="Finance"
+                           asp-action="Index"
+                           class="task-app-item hover:bg-purple-50">
+
+                        <div class="task-app-icon bg-purple-500">
+                            <span class="material-symbols-outlined">
+                                monitoring
+                            </span>
+                        </div>
+
+                        <span>Finans</span>
+                    </a>
+
+                    <!-- Görevler -->
+                    <a asp-controller="Task"
+                           asp-action="Index"
+                           class="task-app-item hover:bg-orange-50">
+
+                        <div class="task-app-icon bg-orange-500">
+                            <span class="material-symbols-outlined">
+                                task_alt
+                            </span>
+                        </div>
+
+                        <span>Görevler</span>
+                    </a>
+
+                    <!-- Translate -->
+                    <a asp-controller="Translate"
+                           asp-action="Index"
+                           class="task-app-item hover:bg-teal-50">
+
+                        <div class="task-app-icon bg-teal-500">
+                            <span class="material-symbols-outlined">
+                                translate
+                            </span>
+                        </div>
+
+                        <span>Translate</span>
+                    </a>
+
+                    <!-- Panel -->
+                    <a asp-controller="Dashboard"
+                           asp-action="Index"
+                           class="task-app-item hover:bg-emerald-50">
+
+                        <div class="task-app-icon bg-emerald-500">
+                            <span class="material-symbols-outlined">
+                                bar_chart
+                            </span>
+                        </div>
+
+                        <span>Panel</span>
+                    </a>
+
+                    <!-- Ayarlar -->
+                    <a asp-controller="Settings"
+                           asp-action="Index"
+                           class="task-app-item hover:bg-slate-50">
+
+                        <div class="task-app-icon bg-slate-500">
+                            <span class="material-symbols-outlined">
+                                settings
+                            </span>
+                        </div>
+
+                        <span>Ayarlar</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
         <div class="w-10 h-10 rounded-full p-0.5 bg-gradient-to-br from-glacier-accent to-glacier-chart-4 cursor-pointer ml-2">
-            <img alt="User profile" class="w-full h-full rounded-full object-cover border-2 border-glacier-bg" data-alt="A professional headshot of a corporate user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA39tmYDb7vV1A45XoP-VSqlsNaZ9OVDYOHG_AXt2PpuEDUU1b1EeTBi4S5_xDh64PzMIO-Hxwq65V1xWBTiWOWuXqVHB5cBF8fQDpcWkcy6aRq-XYndk6A5mmfLttt__6ECPSyR2aWAf_gfWpet4j_htqTgK8tecq9m5weHS5g4jDKFck8S6NSPsGDW1GgtXOj337t0ec430XcWT0rHx6BB0VOJx-PabJUYFt4D_227PWtmLyartFsZg" />
+            <img alt="@ViewBag.FullName" class="w-full h-full rounded-full object-cover border-2 border-glacier-bg" data-alt="A professional headshot of a corporate user" src="@ViewBag.ImageUrl" />
         </div>
     </div>
 </nav>
+
+
+                        
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const wrapper =
+            document.getElementById("appsMenuWrapper");
+
+        const button =
+            document.getElementById("appsMenuButton");
+
+        const menu =
+            document.getElementById("appsMenu");
+
+        if (!wrapper || !button || !menu) {
+            return;
+        }
+
+        function closeAppsMenu() {
+            menu.classList.add("hidden");
+            button.setAttribute("aria-expanded", "false");
+        }
+
+        button.addEventListener("click", function (event) {
+            event.stopPropagation();
+
+            const willOpen =
+                menu.classList.contains("hidden");
+
+            menu.classList.toggle("hidden");
+
+            button.setAttribute(
+                "aria-expanded",
+                willOpen ? "true" : "false"
+            );
+        });
+
+        menu.addEventListener("click", function (event) {
+            event.stopPropagation();
+        });
+
+        document.addEventListener("click", function () {
+            closeAppsMenu();
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                closeAppsMenu();
+            }
+        });
+
+    });
+</script>

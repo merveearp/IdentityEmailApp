@@ -1,0 +1,416 @@
+﻿@using System.Globalization
+@using System.Net
+@using System.Text.RegularExpressions
+@model List<IdentityEmailApp.Entities.Message>
+
+@*
+    _DashboardLastMessageComponent
+*@
+
+@{
+    var turkishCulture = new CultureInfo("tr-TR");
+}
+
+<div class="glass-card rounded-2xl
+    border border-glacier-card-border
+    shadow-glacier xl:col-span-8
+    flex flex-col min-h-[400px]">
+
+    <!-- Başlık -->
+    <div class="p-6 border-b border-glacier-card-border bg-white/[0.01]">
+        <h2 class="text-base font-semibold text-white">
+            Son Gelen Mesajlar
+        </h2>
+
+        <p class="text-xs text-glacier-text-muted mt-1">
+            Gelen kutunuza ulaşan son 10 mesaj
+        </p>
+    </div>
+
+    <div class="flex-1 overflow-x-auto">
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="min-h-[300px] flex flex-col
+                items-center justify-center text-center px-6">
+
+                <div class="w-14 h-14 rounded-full
+                    bg-white/5 text-glacier-text-muted
+                    flex items-center justify-center mb-4">
+
+                    <span class="material-symbols-outlined text-3xl">
+                        inbox
+                    </span>
+                </div>
+
+                <p class="text-sm font-medium text-white">
+                    Henüz mesaj bulunmuyor
+                </p>
+
+                <p class="text-xs text-glacier-text-muted mt-1">
+                    Gelen mesajlar burada görüntülenecek.
+                </p>
+            </div>
+        }
+        else
+        {
+            <table class="w-full border-collapse">
+
+                <thead>
+                    <tr class="border-b border-white/5 text-left">
+
+                        <th class="px-6 py-4 text-xs font-medium
+                            text-glacier-text-muted">
+                            Gönderen
+                        </th>
+
+                        <th class="px-4 py-4 text-xs font-medium
+                            text-glacier-text-muted">
+                            Konu
+                        </th>
+
+                        <th class="px-4 py-4 text-xs font-medium
+                            text-glacier-text-muted">
+                            Durum
+                        </th>
+
+                        <th class="px-4 py-4 text-xs font-medium
+                            text-glacier-text-muted">
+                            Tarih
+                        </th>
+
+                        <th class="px-6 py-4 text-xs font-medium
+                            text-glacier-text-muted text-right">
+                            Görüntüle
+                        </th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var message in Model)
+                    {
+                        var senderInitial =
+                            !string.IsNullOrWhiteSpace(message.SenderEmail)
+                                ? message.SenderEmail[..1].ToUpper()
+                                : "?";
+
+                        var subject =
+                            string.IsNullOrWhiteSpace(message.Subject)
+                                ? "Konu belirtilmemiş"
+                                : message.Subject;
+
+                        var dateText =
+                            message.SendDate.Date == DateTime.Today
+                                ? message.SendDate.ToString("HH:mm")
+                                : message.SendDate.Date == DateTime.Today.AddDays(-1)
+                                    ? "Dün"
+                                    : message.SendDate.ToString(
+                                        "dd MMM",
+                                        turkishCulture
+                                    );
+
+                        var rowBackground = message.IsRead
+                            ? "bg-transparent"
+                            : "bg-[#7dd3fc]/[0.06]";
+
+                        var subjectStyle = message.IsRead
+                            ? "text-glacier-text-muted font-normal"
+                            : "text-white font-semibold";
+
+                        // HTML mail içeriğini popup için düz metne çeviriyoruz.
+                        var rawDetail = message.MessageDetail ?? "";
+
+                        rawDetail = Regex.Replace(
+                            rawDetail,
+                            @"<br\s*/?>|</p>|</div>|</li>",
+                            "\n",
+                            RegexOptions.IgnoreCase
+                        );
+
+                        var cleanDetail = Regex.Replace(
+                            rawDetail,
+                            "<[^>]+>",
+                            ""
+                        );
+
+                        cleanDetail = WebUtility
+                            .HtmlDecode(cleanDetail)
+                            .Trim();
+
+                        <tr class="@rowBackground border-b border-white/5">
+
+                            <!-- Gönderen -->
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+
+                                    <div class="w-9 h-9 rounded-full
+                                        bg-[#7dd3fc]/10 text-[#7dd3fc]
+                                        flex items-center justify-center
+                                        text-sm font-semibold">
+
+                                        @senderInitial
+                                    </div>
+
+                                    <span class="text-sm text-white
+                                        max-w-[180px] truncate">
+                                        @message.SenderEmail
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- Konu -->
+                            <td class="px-4 py-4">
+                                <p class="text-sm truncate max-w-[250px]
+                                    @subjectStyle">
+                                    @subject
+                                </p>
+                            </td>
+
+                            <!-- Durum -->
+                            <td class="px-4 py-4">
+                                @if (message.IsRead)
+                                {
+                                    <div class="inline-flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full
+                                            bg-slate-500">
+                                        </span>
+
+                                        <span class="text-xs
+                                            text-glacier-text-muted">
+                                            Okundu
+                                        </span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="inline-flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full
+                                            bg-glacier-accent
+                                            shadow-[0_0_7px_#7dd3fc]">
+                                        </span>
+
+                                        <span class="text-xs font-medium
+                                            text-glacier-accent">
+                                            Okunmadı
+                                        </span>
+                                    </div>
+                                }
+                            </td>
+
+                            <!-- Tarih -->
+                            <td class="px-4 py-4">
+                                <span class="text-xs text-glacier-text-muted
+                                    whitespace-nowrap">
+                                    @dateText
+                                </span>
+                            </td>
+
+                            <!-- Göz ikonu -->
+                            <td class="px-6 py-4 text-right">
+                                <button type="button"
+                                        class="dashboard-message-preview
+                                    w-8 h-8 rounded-lg glass-button
+                                    inline-flex items-center justify-center
+                                    text-glacier-text-muted
+                                    hover:text-glacier-accent
+                                    transition-colors"
+                                        data-message-id="@message.MessageId"
+                                        title="Mesaj içeriğini görüntüle"
+                                        aria-label="Mesaj içeriğini görüntüle">
+
+                                    <span class="material-symbols-outlined
+                                        text-[19px]">
+                                        visibility
+                                    </span>
+                                </button>
+
+                                <!-- Popup verileri -->
+                                <div id="dashboard-message-@message.MessageId"
+                                     class="hidden">
+
+                                    <span data-sender>
+                                        @message.SenderEmail
+                                    </span>
+
+                                    <span data-subject>
+                                        @subject
+                                    </span>
+
+                                    <span data-date>
+                                        @message.SendDate.ToString(
+                                            "dd MMMM yyyy HH:mm",
+                                            turkishCulture
+                                        )
+                                    </span>
+
+                                    <div data-content>
+                                        @cleanDetail
+                                    </div>
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+</div>
+
+
+<!-- Mesaj popup -->
+<div id="dashboardMessageModal"
+     class="hidden fixed inset-0 z-[9999]
+    bg-black/70 backdrop-blur-sm
+    flex items-center justify-center p-4"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="dashboardModalSubject">
+
+    <div class="w-full max-w-2xl max-h-[85vh]
+        glass-card rounded-2xl
+        border border-white/10
+        shadow-[0_25px_80px_rgba(0,0,0,0.6)]
+        overflow-hidden">
+
+        <!-- Popup başlığı -->
+        <div class="flex items-start justify-between
+            gap-4 px-6 py-5
+            border-b border-white/10">
+
+            <div class="min-w-0">
+                <h3 id="dashboardModalSubject"
+                    class="text-lg font-semibold text-white truncate">
+                </h3>
+
+                <p id="dashboardModalSender"
+                       class="text-xs text-glacier-text-muted mt-1">
+                </p>
+            </div>
+
+            <button type="button"
+                    id="closeDashboardMessageModal"
+                    class="w-9 h-9 rounded-lg glass-button
+                flex items-center justify-center
+                text-glacier-text-muted hover:text-white"
+                    aria-label="Pencereyi kapat">
+
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+            </button>
+        </div>
+
+        <!-- Popup içeriği -->
+        <div class="px-6 py-5 overflow-y-auto max-h-[60vh]">
+
+            <p id="dashboardModalDate"
+                   class="text-xs text-glacier-text-muted mb-5">
+            </p>
+
+            <div id="dashboardModalContent"
+                 class="text-sm leading-7 text-slate-200
+                whitespace-pre-wrap break-words">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const modal =
+            document.getElementById("dashboardMessageModal");
+
+        const closeButton =
+            document.getElementById("closeDashboardMessageModal");
+
+        const modalSubject =
+            document.getElementById("dashboardModalSubject");
+
+        const modalSender =
+            document.getElementById("dashboardModalSender");
+
+        const modalDate =
+            document.getElementById("dashboardModalDate");
+
+        const modalContent =
+            document.getElementById("dashboardModalContent");
+
+
+        function closeModal() {
+            modal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+        }
+
+
+        document
+            .querySelectorAll(".dashboard-message-preview")
+            .forEach(function (button) {
+
+                button.addEventListener("click", function () {
+
+                    const messageId =
+                        button.dataset.messageId;
+
+                    const messageData =
+                        document.getElementById(
+                            "dashboard-message-" + messageId
+                        );
+
+                    if (!messageData) {
+                        return;
+                    }
+
+                    modalSubject.textContent =
+                        messageData
+                            .querySelector("[data-subject]")
+                            .textContent
+                            .trim();
+
+                    modalSender.textContent =
+                        messageData
+                            .querySelector("[data-sender]")
+                            .textContent
+                            .trim();
+
+                    modalDate.textContent =
+                        messageData
+                            .querySelector("[data-date]")
+                            .textContent
+                            .trim();
+
+                    modalContent.textContent =
+                        messageData
+                            .querySelector("[data-content]")
+                            .textContent
+                            .trim();
+
+                    modal.classList.remove("hidden");
+                    document.body.classList.add("overflow-hidden");
+                });
+            });
+
+
+        closeButton.addEventListener("click", closeModal);
+
+        modal.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" &&
+                !modal.classList.contains("hidden")) {
+
+                closeModal();
+            }
+        });
+
+    });
+</script>

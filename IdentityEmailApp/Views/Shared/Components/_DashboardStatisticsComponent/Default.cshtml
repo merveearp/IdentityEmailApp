@@ -1,0 +1,173 @@
+﻿@*
+    _DashboardStatisticsComponent
+*@
+
+<!-- Bugün Gelen Mesajlar -->
+<button type="button"
+        data-report-type="today-messages"
+        class="glass-card rounded-2xl p-6 xl:col-span-3
+    flex flex-col relative overflow-hidden group text-left">
+
+    <div class="absolute top-0 right-0 p-6 opacity-10
+        transform group-hover:scale-110
+        transition-transform duration-500">
+
+        <span class="material-symbols-outlined text-6xl">
+            move_to_inbox
+        </span>
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-sm font-medium text-glacier-text-muted">
+            Bugün Gelen Mesajlar
+        </h3>
+
+        <span class="px-2 py-1 rounded
+            bg-glacier-success/10
+            text-glacier-success text-xs font-medium
+            border border-glacier-success/20
+            flex items-center gap-1">
+
+            <span class="material-symbols-outlined text-[14px]">
+                today
+            </span>
+
+            Bugün
+        </span>
+    </div>
+
+    <p class="text-3xl font-bold text-white tracking-tight">
+        @ViewBag.TodayMessageCount
+    </p>
+
+    <p class="text-xs text-glacier-text-muted mt-2">
+        Bugün gelen kutunuza ulaşan mesajlar
+    </p>
+</button>
+
+
+<!-- Okunmamış Mesajlar -->
+<button type="button"
+        data-report-type="unread-messages"
+        class="glass-card rounded-2xl p-6 xl:col-span-3
+    flex flex-col relative overflow-hidden group text-left">
+
+    <div class="absolute top-0 right-0 p-6 opacity-10
+        transform group-hover:scale-110
+        transition-transform duration-500">
+
+        <span class="material-symbols-outlined text-6xl">
+            mark_email_unread
+        </span>
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-sm font-medium text-glacier-text-muted">
+            Okunmamış Mesajlar
+        </h3>
+
+        <span class="px-2 py-1 rounded
+            bg-glacier-warning/10
+            text-glacier-warning text-xs font-medium
+            border border-glacier-warning/20">
+
+            Bekliyor
+        </span>
+    </div>
+
+    <p class="text-3xl font-bold text-white tracking-tight">
+        @ViewBag.UnreadMessageCount
+    </p>
+
+    <p class="text-xs text-glacier-text-muted mt-2">
+        Okunmayı bekleyen toplam mesaj
+    </p>
+</button>
+
+
+<!-- Okunmamış Bildirimler -->
+<button type="button"
+        data-report-type="notifications"
+        class="glass-card rounded-2xl p-6 xl:col-span-3
+    flex flex-col relative overflow-hidden group text-left">
+
+    <div class="absolute top-0 right-0 p-6 opacity-10
+        transform group-hover:scale-110
+        transition-transform duration-500">
+
+        <span class="material-symbols-outlined text-6xl">
+            notifications_active
+        </span>
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-sm font-medium text-glacier-text-muted">
+            Okunmamış Bildirimler
+        </h3>
+
+        <span class="px-2 py-1 rounded
+            bg-glacier-accent/10
+            text-glacier-accent text-xs font-medium
+            border border-glacier-accent/20
+            flex items-center gap-1">
+
+            <span class="material-symbols-outlined text-[14px]">
+                notifications
+            </span>
+
+            Yeni
+        </span>
+    </div>
+
+    <p class="text-3xl font-bold text-white tracking-tight">
+        @ViewBag.UnreadNotificationCount
+    </p>
+
+    <p class="text-xs text-glacier-text-muted mt-2">
+        Görüntülenmeyi bekleyen bildirim
+    </p>
+</button>
+
+
+<!-- Aktif Görevler -->
+<button type="button"
+        data-report-type="active-tasks"
+        class="glass-card rounded-2xl p-6 xl:col-span-3
+    flex flex-col relative overflow-hidden group text-left
+    bg-gradient-to-br from-[#001113] to-[#002233]
+    border-glacier-accent/20">
+
+    <div class="absolute top-[-20%] right-[-10%]
+        w-32 h-32 bg-glacier-accent
+        opacity-20 blur-[40px]">
+    </div>
+
+    <div class="flex justify-between items-center mb-4 z-10">
+        <h3 class="text-sm font-medium text-glacier-text-muted">
+            Aktif Görevler
+        </h3>
+
+        <span class="px-2 py-1 rounded
+            bg-glacier-warning/10
+            text-glacier-warning text-xs font-medium
+            border border-glacier-warning/20">
+
+            Devam Ediyor
+        </span>
+    </div>
+
+    <p class="text-3xl font-bold text-white tracking-tight z-10">
+        @ViewBag.ActiveTaskCount
+    </p>
+
+    <p class="text-xs text-glacier-text-muted mt-2 z-10">
+        Tamamlanmayı bekleyen aktif görev
+    </p>
+
+    <span class="material-symbols-outlined
+        absolute bottom-5 right-6
+        text-glacier-accent text-4xl opacity-30">
+
+        task_alt
+    </span>
+</button>

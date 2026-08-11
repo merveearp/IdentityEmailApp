@@ -24,9 +24,19 @@
 
     @await Component.InvokeAsync("_DashboardSideNavbarComponent")
 
+        <main class="ml-0 md:ml-sidebar-width
+            mt-16
+            h-[calc(100vh-4rem)]
+            p-6 pb-20
+            box-border
+            overflow-y-auto overflow-x-hidden
+            relative
+            bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))]
+            from-[#002226] via-[#001113] to-[#001113]">
 
-<!-- Main Content Area -->
-        @RenderBody()
+            @RenderBody()
+
+        </main>
 
 </div>
 

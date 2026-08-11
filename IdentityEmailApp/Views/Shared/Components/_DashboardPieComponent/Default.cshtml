@@ -1,0 +1,281 @@
+﻿@using System.Globalization
+
+@*
+    _DashboardPieComponent
+*@
+
+@{
+    var draftCount =
+        Convert.ToInt32(ViewBag.DraftMessage ?? 0);
+
+    var spamCount =
+        Convert.ToInt32(ViewBag.SpamMessage ?? 0);
+
+    var starCount =
+        Convert.ToInt32(ViewBag.StarMessage ?? 0);
+
+    var unreadCount =
+        Convert.ToInt32(ViewBag.UnreadMessage ?? 0);
+
+    var deletedCount =
+        Convert.ToInt32(ViewBag.DeletedMessage ?? 0);
+
+
+    var totalStatusCount =
+        draftCount +
+        spamCount +
+        starCount +
+        unreadCount +
+        deletedCount;
+
+
+    double GetPercent(int count)
+    {
+        return totalStatusCount == 0
+            ? 0
+            : count * 100.0 / totalStatusCount;
+    }
+
+
+    string CssNumber(double value)
+    {
+        return value.ToString(
+            "0.##",
+            CultureInfo.InvariantCulture
+        );
+    }
+
+
+    var draftPercent =
+        GetPercent(draftCount);
+
+    var spamPercent =
+        GetPercent(spamCount);
+
+    var starPercent =
+        GetPercent(starCount);
+
+    var unreadPercent =
+        GetPercent(unreadCount);
+
+    var deletedPercent =
+        GetPercent(deletedCount);
+
+
+    var draftEnd =
+        draftPercent;
+
+    var spamEnd =
+        draftEnd + spamPercent;
+
+    var starEnd =
+        spamEnd + starPercent;
+
+    var unreadEnd =
+        starEnd + unreadPercent;
+
+
+    var chartBackground = totalStatusCount == 0
+        ? "conic-gradient(rgba(255,255,255,0.12) 0% 100%)"
+        : $@"conic-gradient(
+                #a855f7 0% {CssNumber(draftEnd)}%,
+                #ef4444 {CssNumber(draftEnd)}% {CssNumber(spamEnd)}%,
+                #f59e0b {CssNumber(spamEnd)}% {CssNumber(starEnd)}%,
+                #38bdf8 {CssNumber(starEnd)}% {CssNumber(unreadEnd)}%,
+                #64748b {CssNumber(unreadEnd)}% 100%
+            )";
+}
+
+
+<!-- Mesaj kartının ana kapsayıcısı -->
+<div class="glass-card rounded-2xl p-6
+    xl:col-span-4
+    flex flex-col
+    min-h-[430px] h-full ">
+
+    <!-- Başlık -->
+    <div class="mb-5">
+
+        <h2 class="text-base font-semibold text-white">
+            Mesaj Durumları
+        </h2>
+
+        <p class="text-xs text-glacier-text-muted mt-1">
+            Mail kutunuzdaki mesaj durumlarının özeti
+        </p>
+
+    </div>
+
+
+    <!-- Grafik ve açıklamalar -->
+    <div class="flex-1 flex flex-col
+        items-center justify-center">
+
+        <!-- Donut grafik -->
+        <div class="w-40 h-40 rounded-full relative
+            shrink-0
+            shadow-[0_0_30px_rgba(125,211,252,0.1)]
+            flex items-center justify-center"
+             style="background:@chartBackground;">
+
+            <!-- Donut iç alanı -->
+            <div class="w-28 h-28
+                bg-[#001113]
+                rounded-full absolute
+                flex flex-col
+                items-center justify-center
+                border border-white/5">
+
+                <span class="text-2xl font-bold text-white">
+                    @totalStatusCount
+                </span>
+
+                <span class="text-[10px]
+                    text-glacier-text-muted
+                    uppercase tracking-wider">
+                    Durum
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Grafik açıklamaları -->
+        <div class="w-full grid grid-cols-2
+            gap-x-5 gap-y-4 mt-8">
+
+            <!-- Taslak -->
+            <div class="flex items-center gap-3">
+
+                <div class="w-3 h-3 shrink-0
+                    rounded-sm bg-[#a855f7]">
+                </div>
+
+                <div class="flex flex-col">
+
+                    <span class="text-xs text-glacier-text-muted">
+                        Taslak
+                    </span>
+
+                    <span class="text-sm font-semibold text-white">
+                        @draftCount
+
+                        <small class="text-glacier-text-muted">
+                            (@($"{draftPercent:0}%"))
+                        </small>
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Spam -->
+            <div class="flex items-center gap-3">
+
+                <div class="w-3 h-3 shrink-0
+                    rounded-sm bg-[#ef4444]">
+                </div>
+
+                <div class="flex flex-col">
+
+                    <span class="text-xs text-glacier-text-muted">
+                        Spam
+                    </span>
+
+                    <span class="text-sm font-semibold text-white">
+                        @spamCount
+
+                        <small class="text-glacier-text-muted">
+                            (@($"{spamPercent:0}%"))
+                        </small>
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Yıldızlı -->
+            <div class="flex items-center gap-3">
+
+                <div class="w-3 h-3 shrink-0
+                    rounded-sm bg-[#f59e0b]">
+                </div>
+
+                <div class="flex flex-col">
+
+                    <span class="text-xs text-glacier-text-muted">
+                        Yıldızlı
+                    </span>
+
+                    <span class="text-sm font-semibold text-white">
+                        @starCount
+
+                        <small class="text-glacier-text-muted">
+                            (@($"{starPercent:0}%"))
+                        </small>
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Okunmamış -->
+            <div class="flex items-center gap-3">
+
+                <div class="w-3 h-3 shrink-0
+                    rounded-sm bg-[#38bdf8]">
+                </div>
+
+                <div class="flex flex-col">
+
+                    <span class="text-xs text-glacier-text-muted">
+                        Okunmamış
+                    </span>
+
+                    <span class="text-sm font-semibold text-white">
+                        @unreadCount
+
+                        <small class="text-glacier-text-muted">
+                            (@($"{unreadPercent:0}%"))
+                        </small>
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Silinen -->
+            <div class="flex items-center gap-3">
+
+                <div class="w-3 h-3 shrink-0
+                    rounded-sm bg-[#64748b]">
+                </div>
+
+                <div class="flex flex-col">
+
+                    <span class="text-xs text-glacier-text-muted">
+                        Silinen
+                    </span>
+
+                    <span class="text-sm font-semibold text-white">
+                        @deletedCount
+
+                        <small class="text-glacier-text-muted">
+                            (@($"{deletedPercent:0}%"))
+                        </small>
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

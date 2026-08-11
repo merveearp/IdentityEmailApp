@@ -1,0 +1,279 @@
+﻿@using System.Globalization
+
+@*
+    _DashboardPie1Component
+*@
+
+@{
+    var totalNotifications =
+        Convert.ToInt32(ViewBag.TotalNotifications ?? 0);
+
+    var todayNotifications =
+        Convert.ToInt32(ViewBag.TodayNotifications ?? 0);
+
+    var unreadNotifications =
+        Convert.ToInt32(ViewBag.UnreadNotifications ?? 0);
+
+    var accountCount =
+        Convert.ToInt32(ViewBag.AccountNotifications ?? 0);
+
+    var profileCount =
+        Convert.ToInt32(ViewBag.ProfileNotifications ?? 0);
+
+    var messageCount =
+        Convert.ToInt32(ViewBag.MessageNotifications ?? 0);
+
+    var securityCount =
+        Convert.ToInt32(ViewBag.SecurityNotifications ?? 0);
+
+    var systemCount =
+        Convert.ToInt32(ViewBag.SystemNotifications ?? 0);
+
+
+    var totalTypeCount =
+        accountCount +
+        profileCount +
+        messageCount +
+        securityCount +
+        systemCount;
+
+
+    double GetPercent(int count)
+    {
+        return totalTypeCount == 0
+            ? 0
+            : count * 100.0 / totalTypeCount;
+    }
+
+
+    string CssNumber(double value)
+    {
+        return value.ToString(
+            "0.##",
+            CultureInfo.InvariantCulture
+        );
+    }
+
+
+    var accountPercent = GetPercent(accountCount);
+    var profilePercent = GetPercent(profileCount);
+    var messagePercent = GetPercent(messageCount);
+    var securityPercent = GetPercent(securityCount);
+    var systemPercent = GetPercent(systemCount);
+
+
+    var accountEnd = accountPercent;
+
+    var profileEnd =
+        accountEnd + profilePercent;
+
+    var messageEnd =
+        profileEnd + messagePercent;
+
+    var securityEnd =
+        messageEnd + securityPercent;
+
+
+    var chartBackground = totalTypeCount == 0
+        ? "conic-gradient(rgba(255,255,255,0.12) 0% 100%)"
+        : $@"conic-gradient(
+                #3b82f6 0% {CssNumber(accountEnd)}%,
+                #a855f7 {CssNumber(accountEnd)}% {CssNumber(profileEnd)}%,
+                #14b8a6 {CssNumber(profileEnd)}% {CssNumber(messageEnd)}%,
+                #ef4444 {CssNumber(messageEnd)}% {CssNumber(securityEnd)}%,
+                #f59e0b {CssNumber(securityEnd)}% 100%
+            )";
+}
+
+
+<div class="glass-card rounded-2xl p-6 xl:col-span-6
+    flex flex-col min-h-[430px] h-full">
+<!-- Başlık -->
+<div class="mb-5">
+    <h2 class="text-base font-semibold text-white">
+        Bildirim Dağılımı
+    </h2>
+
+    <p class="text-xs text-glacier-text-muted mt-1">
+        Bildirimlerinizin türlere göre genel özeti
+    </p>
+</div>
+
+
+<!-- Bildirim özetleri -->
+<div class="grid grid-cols-2 gap-3 mb-6">
+
+    <!-- Bugünkü bildirimler -->
+    <div class="rounded-xl border border-white/5
+        bg-white/[0.03] px-4 py-3">
+
+        <div class="flex items-center gap-2 mb-1">
+            <span class="material-symbols-outlined
+                text-[17px] text-[#38bdf8]">
+                today
+            </span>
+
+            <span class="text-xs text-glacier-text-muted">
+                Bugün
+            </span>
+        </div>
+
+        <span class="text-xl font-bold text-white">
+            @todayNotifications
+        </span>
+    </div>
+
+
+    <!-- Okunmamış bildirimler -->
+    <div class="rounded-xl border border-white/5
+        bg-white/[0.03] px-4 py-3">
+
+        <div class="flex items-center gap-2 mb-1">
+            <span class="material-symbols-outlined
+                text-[17px] text-[#f59e0b]">
+                notifications_unread
+            </span>
+
+            <span class="text-xs text-glacier-text-muted">
+                Okunmamış
+            </span>
+        </div>
+
+        <span class="text-xl font-bold text-white">
+            @unreadNotifications
+        </span>
+    </div>
+
+</div>
+
+
+<div class="flex-1 flex flex-col items-center justify-center">
+
+    <!-- Dinamik donut grafik -->
+    <div class="w-40 h-40 rounded-full relative
+        shadow-[0_0_30px_rgba(125,211,252,0.1)]
+        flex items-center justify-center"
+         style="background:@chartBackground;">
+
+        <div class="w-28 h-28 bg-[#001113] rounded-full
+            absolute flex flex-col items-center justify-center
+            border border-white/5">
+
+            <span class="text-2xl font-bold text-white">
+                @totalNotifications
+            </span>
+
+            <span class="text-[10px] text-glacier-text-muted
+                uppercase tracking-wider">
+                Bildirim
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- Grafik açıklamaları -->
+    <div class="w-full grid grid-cols-2 gap-x-5 gap-y-4 mt-8">
+
+        <!-- Hesap -->
+        <div class="flex items-center gap-3">
+            <div class="w-3 h-3 rounded-sm bg-[#3b82f6]"></div>
+
+            <div class="flex flex-col">
+                <span class="text-xs text-glacier-text-muted">
+                    Hesap
+                </span>
+
+                <span class="text-sm font-semibold text-white">
+                    @accountCount
+
+                    <small class="text-glacier-text-muted">
+                        (@($"{accountPercent:0}%"))
+                    </small>
+                </span>
+            </div>
+        </div>
+
+
+        <!-- Profil -->
+        <div class="flex items-center gap-3">
+            <div class="w-3 h-3 rounded-sm bg-[#a855f7]"></div>
+
+            <div class="flex flex-col">
+                <span class="text-xs text-glacier-text-muted">
+                    Profil
+                </span>
+
+                <span class="text-sm font-semibold text-white">
+                    @profileCount
+
+                    <small class="text-glacier-text-muted">
+                        (@($"{profilePercent:0}%"))
+                    </small>
+                </span>
+            </div>
+        </div>
+
+
+        <!-- Mesaj -->
+        <div class="flex items-center gap-3">
+            <div class="w-3 h-3 rounded-sm bg-[#14b8a6]"></div>
+
+            <div class="flex flex-col">
+                <span class="text-xs text-glacier-text-muted">
+                    Mesaj
+                </span>
+
+                <span class="text-sm font-semibold text-white">
+                    @messageCount
+
+                    <small class="text-glacier-text-muted">
+                        (@($"{messagePercent:0}%"))
+                    </small>
+                </span>
+            </div>
+        </div>
+
+
+        <!-- Güvenlik -->
+        <div class="flex items-center gap-3">
+            <div class="w-3 h-3 rounded-sm bg-[#ef4444]"></div>
+
+            <div class="flex flex-col">
+                <span class="text-xs text-glacier-text-muted">
+                    Güvenlik
+                </span>
+
+                <span class="text-sm font-semibold text-white">
+                    @securityCount
+
+                    <small class="text-glacier-text-muted">
+                        (@($"{securityPercent:0}%"))
+                    </small>
+                </span>
+            </div>
+        </div>
+
+
+        <!-- Sistem -->
+        <div class="flex items-center gap-3">
+            <div class="w-3 h-3 rounded-sm bg-[#f59e0b]"></div>
+
+            <div class="flex flex-col">
+                <span class="text-xs text-glacier-text-muted">
+                    Sistem
+                </span>
+
+                <span class="text-sm font-semibold text-white">
+                    @systemCount
+
+                    <small class="text-glacier-text-muted">
+                        (@($"{systemPercent:0}%"))
+                    </small>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>

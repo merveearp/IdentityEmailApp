@@ -1,0 +1,73 @@
+﻿
+@*
+    _DashbordWeeklyChartComponent
+*@
+
+
+<div class="glass-card rounded-2xl p-6 xl:col-span-8 flex flex-col min-h-[320px]">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-base font-semibold text-white">Weekly Activity</h2>
+        <div class="flex gap-2">
+            <span class="flex items-center gap-1 text-xs text-glacier-text-muted"><div class="w-2 h-2 rounded-full bg-glacier-accent shadow-[0_0_5px_#7dd3fc]"></div> This Week</span>
+            <span class="flex items-center gap-1 text-xs text-glacier-text-muted"><div class="w-2 h-2 rounded-full bg-white/20"></div> Last Week</span>
+        </div>
+    </div>
+    <div class="flex-1 flex items-end justify-between gap-2 md:gap-4 pt-4 px-2">
+        <!-- Bar 1 -->
+        <div class="flex flex-col items-center gap-2 w-full group">
+            <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                <div class="w-1/2 bg-white/10 rounded-t-sm h-[40%] transition-all group-hover:bg-white/20"></div>
+                <div class="w-1/2 chart-bar h-[65%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+            </div>
+            <span class="text-xs text-glacier-text-muted">Mon</span>
+        </div>
+        <!-- Bar 2 -->
+        <div class="flex flex-col items-center gap-2 w-full group">
+            <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                <div class="w-1/2 bg-white/10 rounded-t-sm h-[35%] transition-all group-hover:bg-white/20"></div>
+                <div class="w-1/2 chart-bar h-[45%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+            </div>
+            <span class="text-xs text-glacier-text-muted">Tue</span>
+        </div>
+        <!-- Bar 3 -->
+        <div class="flex flex-col items-center gap-2 w-full group">
+            <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                <div class="w-1/2 bg-white/10 rounded-t-sm h-[60%] transition-all group-hover:bg-white/20"></div>
+                <div class="w-1/2 chart-bar h-[85%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+            </div>
+            <span class="text-xs text-glacier-text-muted">Wed</span>
+        </div>
+        <!-- Bar 4 -->
+        <div class="flex flex-col items-center gap-2 w-full group">
+            <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                <div class="w-1/2 bg-white/10 rounded-t-sm h-[50%] transition-all group-hover:bg-white/20"></div>
+                <div class="w-1/2 chart-bar h-[70%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+            </div>
+            <span class="text-xs text-glacier-text-muted">Thu</span>
+        </div>
+        <!-- Bar 5 -->
+        <div class="flex flex-col items-center gap-2 w-full group">
+            <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                <div class="w-1/2 bg-white/10 rounded-t-sm h-[75%] transition-all group-hover:bg-white/20"></div>
+                <div class="w-1/2 chart-bar h-[95%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+            </div>
+            <span class="text-xs text-glacier-text-muted">Fri</span>
+        </div>
+        <!-- Bar 6 -->
+        <div class="flex flex-col items-center gap-2 w-full group">
+            <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                <div class="w-1/2 bg-white/10 rounded-t-sm h-[30%] transition-all group-hover:bg-white/20"></div>
+                <div class="w-1/2 chart-bar h-[40%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+            </div>
+            <span class="text-xs text-glacier-text-muted">Sat</span>
+        </div>
+        <!-- Bar 7 -->
+        <div class="flex flex-col items-center gap-2 w-full group">
+            <div class="w-full flex items-end justify-center gap-1 h-[200px]">
+                <div class="w-1/2 bg-white/10 rounded-t-sm h-[20%] transition-all group-hover:bg-white/20"></div>
+                <div class="w-1/2 chart-bar h-[25%] shadow-[0_0_15px_rgba(125,211,252,0.3)]"></div>
+            </div>
+            <span class="text-xs text-glacier-text-muted">Sun</span>
+        </div>
+    </div>
+</div>
