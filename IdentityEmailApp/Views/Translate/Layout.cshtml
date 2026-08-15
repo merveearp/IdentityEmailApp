@@ -1,0 +1,38 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+@await Component.InvokeAsync("_TranslateHeadComponent")
+  
+<body class="bg-surface-container font-body-md text-on-surface antialiased min-h-screen flex" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLuYXXJ4K4ksSgDYjhN7JOjcnrlG_T6zhgP48quP-Y3lmt3tH2DUaiqGdyS8ErXgGu7xYX7vYeepNGSp1ORI0Hf73bH0JaEHaP26pC8pJM2ldqPlYKZVwtI8OuVA-XHuzUqMhzZ3y-t-WcuDytrKNl8jE8EJyLEogFIKJSGaz9C6SzNhFPhvF8V5BjBN1Kq1mf39Pv38w6BqbQIewCn8mFdcbNwTDn5GNvGqlucGC06tjt6L7yh7L1IwJYw'); background-size: cover; background-position: center; background-attachment: fixed;">
+
+<!-- SideNavBar (from JSON) -->
+
+ @await Component.InvokeAsync("_TranslateSideNavBarComponent")
+
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-sidebar-width min-h-screen w-full relative">
+
+
+<!-- TopNavBar (from JSON) -->
+
+ @await Component.InvokeAsync("_TranslateHeaderComponent")
+
+
+<!-- Translation Workspace Canvas -->
+
+        <main class="flex-1 p-container-padding flex flex-col items-center justify-center z-10 w-full max-w-5xl mx-auto">
+
+    @RenderBody()
+
+        </main>
+
+</div>
+
+
+</body>
+</html>

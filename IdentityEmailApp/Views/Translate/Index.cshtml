@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Translate/Layout.cshtml";
+}
+
+
+
+    <div class="w-full mb-6 text-center md:text-left">
+        <h2 class="text-primary font-headline-lg text-headline-lg font-bold tracking-tight">
+           
+        </h2>
+        <p class="text-on-surface-variant text-body-md mt-1 opacity-80">
+            Hızlı ve profesyonel çeviri aracı
+        </p>
+    </div>
+
+
+    <!-- Glassmorphism Translation Card -->
+    <div class="glass-panel w-full rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col border border-white/40">
+
+        <!-- Language Selector Header -->
+        <div class="bg-surface-container-highest/50 border-b border-white/20 p-4 flex items-center justify-between">
+            <!-- Source Language -->
+            <div class="flex-1">
+                <button class="flex items-center space-x-2 text-primary font-headline-md text-body-md hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors">
+                    <span class="">Turkish</span>
+                    <span class="material-symbols-outlined text-[18px]">expand_more</span>
+                </button>
+            </div>
+
+            <!-- Swap Action -->
+            <button class="w-10 h-10 rounded-full bg-white/50 flex items-center justify-center text-primary hover:bg-white/80 transition-all hover:rotate-180 duration-300 mx-4 border border-white/40 shadow-sm">
+                <span class="material-symbols-outlined" data-icon="sync_alt">sync_alt</span>
+            </button>
+            <!-- Target Language -->
+            <div class="flex-1 flex justify-end">
+                <button class="flex items-center space-x-2 text-primary font-headline-md text-body-md hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors">
+                    <span class="">English</span>
+                    <span class="material-symbols-outlined text-[18px]">expand_more</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Text Areas Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/20 min-h-[400px]">
+            <!-- Source Column -->
+            <div class="flex flex-col p-6 bg-transparent hover:bg-white/10 transition-colors duration-300 group">
+                <textarea class="flex-1 w-full bg-transparent border-0 resize-none font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 p-0 textarea-focus outline-none" placeholder="Enter text to translate..."></textarea>
+                <!-- Actions Footer -->
+                <div class="flex justify-between items-center mt-4 opacity-70 group-hover:opacity-100 transition-opacity">
+                    <div class="flex space-x-2">
+                        <button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-white/40 rounded-full transition-colors" title="Clear">
+                            <span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-white/40 rounded-full transition-colors" title="Voice Input">
+                            <span class="material-symbols-outlined text-[20px]" data-icon="mic">mic</span>
+                        </button>
+                    </div>
+                    <span class="text-label-sm text-on-surface-variant/50 font-label-sm">0/5000</span>
+                </div>
+            </div>
+            <!-- Target Column -->
+            <div class="flex flex-col p-6 bg-surface-container-lowest/20">
+                <div class="flex-1 w-full bg-transparent font-body-lg text-body-lg text-on-surface/70">
+                    Translation will appear here...
+                </div>
+                <!-- Actions Footer -->
+                <div class="flex justify-start items-center mt-4 space-x-2 opacity-70 hover:opacity-100 transition-opacity">
+                    <button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-white/40 rounded-full transition-colors" title="Copy">
+                        <span class="material-symbols-outlined text-[20px]" data-icon="content_copy">content_copy</span>
+                    </button>
+                    <button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-white/40 rounded-full transition-colors" title="Listen">
+                        <span class="material-symbols-outlined text-[20px]" data-icon="volume_up">volume_up</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Optional Bottom Bar for secondary tools -->
+        <div class="bg-white/20 px-6 py-3 border-t border-white/20 flex justify-end items-center">
+            <button class="bg-primary text-on-primary px-6 py-2 rounded-lg font-headline-md text-body-md hover:bg-primary-container/90 transition-colors shadow-sm">
+                Translate
+            </button>
+        </div>
+    </div>
+
+
+
