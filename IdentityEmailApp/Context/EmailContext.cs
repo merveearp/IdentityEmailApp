@@ -18,6 +18,7 @@ namespace IdentityEmailApp.Context
         public DbSet<TaskList> TaskLists { get; set; }
         public DbSet<UserTask> UserTasks { get; set; }
         public DbSet<SubTask> SubTasks { get; set; }
+        public DbSet<TranslationHistory> TranslationHistories { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
