@@ -2,6 +2,9 @@
 {
     public interface ITranslateService
     {
-        Task<string> TranlateAsync(string text);
+        Task<string> TranslateAsync(
+            string text,
+            string targetLanguage ="tr",
+            string sourceLanguage="auto");
     }
 }

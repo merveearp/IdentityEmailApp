@@ -1,0 +1,364 @@
+﻿@*
+    _DashboardProfileStatusComponent
+*@
+
+@{
+    var profilePercentage =
+        Convert.ToInt32(ViewBag.ProfilePercentage ?? 0);
+
+    var completedFieldCount =
+        Convert.ToInt32(ViewBag.CompletedFieldCount ?? 0);
+
+    var totalFieldCount =
+        Convert.ToInt32(ViewBag.TotalFieldCount ?? 5);
+
+    var hasName =
+        Convert.ToBoolean(ViewBag.HasName ?? false);
+
+    var hasSurname =
+        Convert.ToBoolean(ViewBag.HasSurname ?? false);
+
+    var hasCity =
+        Convert.ToBoolean(ViewBag.HasCity ?? false);
+
+    var hasPhoneNumber =
+        Convert.ToBoolean(ViewBag.HasPhoneNumber ?? false);
+
+    var hasProfilePhoto =
+        Convert.ToBoolean(ViewBag.HasProfilePhoto ?? false);
+
+    var isEmailConfirmed =
+        Convert.ToBoolean(ViewBag.IsEmailConfirmed ?? false);
+
+    var fullName =
+        Convert.ToString(ViewBag.FullName) ?? "Kullanıcı";
+
+    var email =
+        Convert.ToString(ViewBag.Email) ?? "E-posta bulunmuyor";
+
+    var imageUrl =
+        Convert.ToString(ViewBag.ImageUrl);
+
+    var chartBackground =
+        $"conic-gradient(#38bdf8 0% {profilePercentage}%, " +
+        $"rgba(255,255,255,0.08) {profilePercentage}% 100%)";
+}
+
+<div class="glass-card rounded-2xl
+    border border-glacier-card-border
+    shadow-glacier xl:col-span-6
+    flex flex-col min-h-[400px]">
+
+    <!-- Başlık -->
+    <div class="p-6 border-b border-glacier-card-border
+        bg-white/[0.01]">
+
+        <div class="flex items-center gap-3">
+
+            <div class="w-10 h-10 rounded-xl
+                bg-glacier-accent/10
+                text-glacier-accent
+                flex items-center justify-center">
+
+                <span class="material-symbols-outlined text-[22px]">
+                    manage_accounts
+                </span>
+            </div>
+
+            <div>
+                <h2 class="text-base font-semibold text-white">
+                    Profil ve Hesap Durumu
+                </h2>
+
+                <p class="text-xs text-glacier-text-muted mt-1">
+                    Profil bilgilerinizin tamamlanma özeti
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- İçerik -->
+    <div class="flex-1 grid grid-cols-1
+        md:grid-cols-[220px_1fr]
+        gap-6 p-6">
+
+        <!-- Sol bölüm -->
+        <div class="flex flex-col
+            items-center justify-center
+            md:border-r border-white/5
+            md:pr-6">
+
+            <!-- Yüzde grafiği -->
+            <div class="relative w-40 h-40
+                rounded-full flex
+                items-center justify-center
+                shadow-[0_0_35px_rgba(56,189,248,0.12)]"
+                 style="background:@chartBackground;">
+
+                <div class="absolute w-[122px] h-[122px]
+                    rounded-full bg-[#001113]
+                    border border-white/5
+                    flex flex-col items-center justify-center">
+
+                    <span class="text-3xl font-bold text-white">
+                        %@profilePercentage
+                    </span>
+
+                    <span class="text-[10px]
+                        uppercase tracking-wider
+                        text-glacier-text-muted mt-1">
+                        Tamamlandı
+                    </span>
+                </div>
+            </div>
+
+            <p class="text-sm font-semibold text-white mt-4">
+                @completedFieldCount / @totalFieldCount bilgi tamamlandı
+            </p>
+
+            @if (profilePercentage == 100)
+            {
+                <span class="inline-flex items-center gap-1.5 mt-3
+                    px-3 py-1 rounded-full
+                    bg-emerald-500/10 text-emerald-400
+                    border border-emerald-500/20
+                    text-xs font-medium">
+
+                    <span class="material-symbols-outlined text-[16px]">
+                        verified
+                    </span>
+
+                    Profiliniz hazır
+                </span>
+            }
+            else
+            {
+                <span class="inline-flex items-center gap-1.5 mt-3
+                    px-3 py-1 rounded-full
+                    bg-amber-500/10 text-amber-400
+                    border border-amber-500/20
+                    text-xs font-medium">
+
+                    <span class="material-symbols-outlined text-[16px]">
+                        info
+                    </span>
+
+                    Eksik bilgiler var
+                </span>
+            }
+
+        </div>
+
+        <!-- Sağ bölüm -->
+        <div class="flex flex-col justify-center">
+
+            <!-- Kullanıcı özeti -->
+            <div class="flex items-center gap-4
+                pb-5 mb-4 border-b border-white/5">
+
+                <div class="w-14 h-14 rounded-full p-0.5
+                    shrink-0
+                    bg-gradient-to-br
+                    from-glacier-accent
+                    to-glacier-chart-4">
+
+                    @if (!string.IsNullOrWhiteSpace(imageUrl))
+                    {
+                        <img src="@imageUrl"
+                             alt="@fullName"
+                             class="w-full h-full rounded-full
+                        object-cover border-2
+                        border-glacier-bg" />
+                    }
+                    else
+                    {
+                        <div class="w-full h-full rounded-full
+                            bg-[#102426]
+                            border-2 border-glacier-bg
+                            flex items-center justify-center">
+
+                            <span class="material-symbols-outlined
+                                text-glacier-accent text-2xl">
+                                person
+                            </span>
+                        </div>
+                    }
+                </div>
+
+                <div class="min-w-0">
+
+                    <h3 class="text-base font-semibold
+                        text-white truncate">
+                        @fullName
+                    </h3>
+
+                    <div class="flex items-center gap-2 mt-1">
+
+                        <p class="text-xs text-glacier-text-muted
+                            truncate">
+                            @email
+                        </p>
+
+                        @if (isEmailConfirmed)
+                        {
+                            <span class="material-symbols-outlined
+                                text-[16px] text-emerald-400"
+                                  title="E-posta doğrulandı"
+                                  style="font-variation-settings:'FILL' 1;">
+                                verified
+                            </span>
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Kontrol listesi -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                @{
+                    var profileFields = new[]
+                    {
+                        new
+                        {
+                            Title = "Ad",
+                            IsCompleted = hasName,
+                            Icon = "badge"
+                        },
+                        new
+                        {
+                            Title = "Soyad",
+                            IsCompleted = hasSurname,
+                            Icon = "badge"
+                        },
+                        new
+                        {
+                            Title = "Şehir",
+                            IsCompleted = hasCity,
+                            Icon = "location_on"
+                        },
+                        new
+                        {
+                            Title = "Telefon",
+                            IsCompleted = hasPhoneNumber,
+                            Icon = "phone"
+                        },
+                        new
+                        {
+                            Title = "Profil fotoğrafı",
+                            IsCompleted = hasProfilePhoto,
+                            Icon = "account_circle"
+                        }
+                    };
+                }
+
+                @foreach (var field in profileFields)
+                {
+                    <div class="flex items-center gap-3
+                        rounded-xl border
+                        @(field.IsCompleted
+                                                     ? "border-emerald-500/10 bg-emerald-500/[0.04]"
+                                                     : "border-white/5 bg-white/[0.02]")
+                        px-3 py-3">
+
+                        <div class="w-8 h-8 rounded-lg
+                            flex items-center justify-center
+                            @(field.IsCompleted
+                                                             ? "bg-emerald-500/10 text-emerald-400"
+                                                             : "bg-white/5 text-glacier-text-muted")">
+
+                            <span class="material-symbols-outlined text-[18px]">
+                                @field.Icon
+                            </span>
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+
+                            <p class="text-xs font-medium
+                                @(field.IsCompleted
+                                                                   ? "text-slate-200"
+                                                                   : "text-glacier-text-muted")">
+                                @field.Title
+                            </p>
+
+                            <p class="text-[10px] mt-0.5
+                                @(field.IsCompleted
+                                                                   ? "text-emerald-400"
+                                                                   : "text-amber-400")">
+
+                                @(field.IsCompleted
+                                    ? "Tamamlandı"
+                                    : "Eksik")
+                            </p>
+                        </div>
+
+                        <span class="material-symbols-outlined
+                            text-[18px]
+                            @(field.IsCompleted
+                                                              ? "text-emerald-400"
+                                                              : "text-slate-600")">
+
+                            @(field.IsCompleted
+                                ? "check_circle"
+                                : "radio_button_unchecked")
+                        </span>
+
+                    </div>
+                }
+
+                <!-- E-posta durumu -->
+                <div class="flex items-center gap-3
+                    rounded-xl border
+                    @(isEmailConfirmed
+                                             ? "border-emerald-500/10 bg-emerald-500/[0.04]"
+                                             : "border-amber-500/10 bg-amber-500/[0.04]")
+                    px-3 py-3">
+
+                    <div class="w-8 h-8 rounded-lg
+                        flex items-center justify-center
+                        @(isEmailConfirmed
+                                                     ? "bg-emerald-500/10 text-emerald-400"
+                                                     : "bg-amber-500/10 text-amber-400")">
+
+                        <span class="material-symbols-outlined text-[18px]">
+                            mail
+                        </span>
+                    </div>
+
+                    <div class="flex-1 min-w-0">
+
+                        <p class="text-xs font-medium text-slate-200">
+                            E-posta
+                        </p>
+
+                        <p class="text-[10px] mt-0.5
+                            @(isEmailConfirmed
+                                                           ? "text-emerald-400"
+                                                           : "text-amber-400")">
+
+                            @(isEmailConfirmed
+                                ? "Doğrulandı"
+                                : "Doğrulanmadı")
+                        </p>
+                    </div>
+
+                    <span class="material-symbols-outlined
+                        text-[18px]
+                        @(isEmailConfirmed
+                                                      ? "text-emerald-400"
+                                                      : "text-amber-400")">
+
+                        @(isEmailConfirmed
+                            ? "verified"
+                            : "warning")
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

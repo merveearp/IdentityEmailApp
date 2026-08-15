@@ -2,6 +2,7 @@
 using IdentityEmailApp.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityEmailApp.ViewComponents.DashboardViewComponents
 {
@@ -18,7 +19,20 @@ namespace IdentityEmailApp.ViewComponents.DashboardViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if(user == null)
+            {
+                return View("SignIn", "Login");
+            }
+
+            var task = await _emailContext.UserTasks
+                .Where(x => x.AppUserId == user.Id && x.IsDeleted ==false)
+                .Include(x => x.TaskList)
+                .Include(x => x.SubTasks)
+                .OrderByDescending(x => x.CreatedDate)
+                .FirstOrDefaultAsync();
+            return View(task);
         }
     }
 }

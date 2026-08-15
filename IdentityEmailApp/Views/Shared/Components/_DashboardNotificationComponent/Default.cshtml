@@ -1,0 +1,641 @@
+﻿@using System.Globalization
+@using IdentityEmailApp.Enums
+@model List<IdentityEmailApp.Entities.Notification>
+
+@*
+    _DashboardNotificationComponent
+*@
+
+@{
+    var turkishCulture = new CultureInfo("tr-TR");
+}
+
+<div class="glass-card rounded-2xl
+    border border-glacier-card-border
+    shadow-glacier xl:col-span-6
+    flex flex-col min-h-[400px]">
+
+    <!-- Başlık -->
+    <div class="p-6 border-b border-glacier-card-border
+        bg-white/[0.01]">
+
+        <div class="flex items-center gap-3">
+
+            <div class="w-10 h-10 rounded-xl
+                bg-glacier-accent/10
+                text-glacier-accent
+                flex items-center justify-center">
+
+                <span class="material-symbols-outlined text-[22px]">
+                    notifications
+                </span>
+            </div>
+
+            <div>
+                <h2 class="text-base font-semibold text-white">
+                    Son Bildirimler
+                </h2>
+
+                <p class="text-xs text-glacier-text-muted mt-1">
+                    En son oluşturulan 5 bildirim
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="flex-1 p-4">
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="min-h-[290px]
+                flex flex-col items-center justify-center
+                text-center">
+
+                <div class="w-14 h-14 rounded-full
+                    bg-white/5 text-glacier-text-muted
+                    flex items-center justify-center mb-4">
+
+                    <span class="material-symbols-outlined text-3xl">
+                        notifications_off
+                    </span>
+                </div>
+
+                <p class="text-sm font-medium text-white">
+                    Bildirim bulunmuyor
+                </p>
+
+                <p class="text-xs text-glacier-text-muted mt-1">
+                    Yeni bildirimler burada görüntülenecek.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="space-y-2">
+
+                @foreach (var notification in Model)
+                {
+                    (string Icon,
+                     string Background,
+                     string Color,
+                     string TypeName) appearance =
+
+                        notification.NotificationType switch
+                        {
+                            NotificationType.AccountCreated =>
+                                (
+                                    "person_add",
+                                    "#2563eb1a",
+                                    "#60a5fa",
+                                    "Hesap oluşturuldu"
+                                ),
+
+                            NotificationType.EmailVerified =>
+                                (
+                                    "verified",
+                                    "#10b9811a",
+                                    "#34d399",
+                                    "E-posta doğrulandı"
+                                ),
+
+                            NotificationType.LoginSucceeded =>
+                                (
+                                    "login",
+                                    "#10b9811a",
+                                    "#34d399",
+                                    "Başarılı giriş"
+                                ),
+
+                            NotificationType.LoginFailed =>
+                                (
+                                    "gpp_bad",
+                                    "#ef44441a",
+                                    "#f87171",
+                                    "Başarısız giriş"
+                                ),
+
+                            NotificationType.PasswordChanged =>
+                                (
+                                    "password",
+                                    "#a855f71a",
+                                    "#c084fc",
+                                    "Şifre değiştirildi"
+                                ),
+
+                            NotificationType.PasswordResetRequested =>
+                                (
+                                    "lock_reset",
+                                    "#f973161a",
+                                    "#fb923c",
+                                    "Şifre sıfırlama"
+                                ),
+
+                            NotificationType.ProfileUpdated =>
+                                (
+                                    "manage_accounts",
+                                    "#06b6d41a",
+                                    "#22d3ee",
+                                    "Profil güncellendi"
+                                ),
+
+                            NotificationType.ProfilePhotoUpdated =>
+                                (
+                                    "add_a_photo",
+                                    "#ec48991a",
+                                    "#f472b6",
+                                    "Profil fotoğrafı"
+                                ),
+
+                            NotificationType.ProfileCompletionReminder =>
+                                (
+                                    "person_alert",
+                                    "#f59e0b1a",
+                                    "#fbbf24",
+                                    "Profil hatırlatması"
+                                ),
+
+                            NotificationType.RoleAssigned =>
+                                (
+                                    "admin_panel_settings",
+                                    "#6366f11a",
+                                    "#818cf8",
+                                    "Rol ataması"
+                                ),
+
+                            NotificationType.NewMessageReceived =>
+                                (
+                                    "mail",
+                                    "#14b8a61a",
+                                    "#2dd4bf",
+                                    "Yeni mesaj"
+                                ),
+
+                            NotificationType.SecurityAlert =>
+                                (
+                                    "security",
+                                    "#ef44441a",
+                                    "#f87171",
+                                    "Güvenlik uyarısı"
+                                ),
+
+                            NotificationType.NewUser =>
+                                (
+                                    "group_add",
+                                    "#3b82f61a",
+                                    "#60a5fa",
+                                    "Yeni kullanıcı"
+                                ),
+
+                            NotificationType.WelcomeTip =>
+                                (
+                                    "lightbulb",
+                                    "#f59e0b1a",
+                                    "#fbbf24",
+                                    "Bilgilendirme"
+                                ),
+
+                            _ =>
+                                (
+                                    "notifications",
+                                    "#64748b1a",
+                                    "#94a3b8",
+                                    "Bildirim"
+                                )
+                        };
+
+
+                    var dateText =
+                        notification.CreatedDate.Date == DateTime.Today
+                            ? notification.CreatedDate.ToString("HH:mm")
+                            : notification.CreatedDate.Date ==
+                              DateTime.Today.AddDays(-1)
+                                ? "Dün"
+                                : notification.CreatedDate.ToString(
+                                    "dd MMM yyyy",
+                                    turkishCulture
+                                );
+
+
+                    var fullDateText =
+                        notification.CreatedDate.ToString(
+                            "dd MMMM yyyy, dddd HH:mm",
+                            turkishCulture
+                        );
+
+
+                    var rowBackground = notification.IsRead
+                        ? "bg-transparent"
+                        : "bg-[#7dd3fc]/[0.05] border-[#7dd3fc]/10";
+
+
+                    <div class="@rowBackground
+                        flex items-center gap-4
+                        p-3 rounded-xl
+                        border border-transparent">
+
+                        <!-- Bildirim ikonu -->
+                        <div class="w-11 h-11 rounded-xl
+                            shrink-0 flex items-center justify-center"
+                             style="background-color:@appearance.Background;
+                            color:@appearance.Color;">
+
+                            <span class="material-symbols-outlined text-[22px]">
+                                @appearance.Icon
+                            </span>
+                        </div>
+
+
+                        <!-- Bildirim içeriği -->
+                        <div class="flex-1 min-w-0">
+
+                            <div class="flex items-center gap-2">
+
+                                <p class="text-sm truncate
+                                    @(notification.IsRead
+                                                                           ? "font-medium text-slate-300"
+                                                                           : "font-semibold text-white")">
+
+                                    @notification.Title
+                                </p>
+
+                                @if (!notification.IsRead)
+                                {
+                                    <span class="w-2 h-2 rounded-full
+                                        bg-glacier-accent
+                                        shadow-[0_0_7px_#7dd3fc]
+                                        shrink-0">
+                                    </span>
+                                }
+                            </div>
+
+                            <p class="text-xs text-glacier-text-muted
+                                truncate mt-1">
+                                @notification.Detail
+                            </p>
+                        </div>
+
+
+                        <!-- Tarih -->
+                        <div class="shrink-0 text-right">
+
+                            <span class="text-xs text-glacier-text-muted
+                                whitespace-nowrap">
+                                @dateText
+                            </span>
+
+                            @if (!notification.IsRead)
+                            {
+                                <p class="text-[10px]
+                                    text-glacier-accent mt-1">
+                                    Yeni
+                                </p>
+                            }
+                        </div>
+
+
+                        <!-- Göz ikonu -->
+                        <button type="button"
+                                class="dashboard-notification-preview
+                            w-8 h-8 rounded-lg glass-button
+                            shrink-0
+                            inline-flex items-center justify-center
+                            text-glacier-text-muted
+                            hover:text-glacier-accent
+                            transition-colors"
+                                data-notification-id="@notification.NotificationId"
+                                title="Bildirimi görüntüle"
+                                aria-label="Bildirimi görüntüle">
+
+                            <span class="material-symbols-outlined text-[19px]">
+                                visibility
+                            </span>
+                        </button>
+
+
+                        <!-- Popup verileri -->
+                        <div id="dashboard-notification-@notification.NotificationId"
+                             class="hidden">
+
+                            <span data-notification-title>
+                                @notification.Title
+                            </span>
+
+                            <span data-notification-type>
+                                @appearance.TypeName
+                            </span>
+
+                            <span data-notification-date>
+                                @fullDateText
+                            </span>
+
+                            <span data-notification-icon>
+                                @appearance.Icon
+                            </span>
+
+                            <span data-notification-background>
+                                @appearance.Background
+                            </span>
+
+                            <span data-notification-color>
+                                @appearance.Color
+                            </span>
+
+                            <div data-notification-detail>
+                                @notification.Detail
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+</div>
+
+
+<!-- Bildirim popup -->
+<div id="dashboardNotificationModal"
+     class="hidden fixed inset-0 z-[9999]
+    bg-black/70 backdrop-blur-sm
+    flex items-center justify-center p-4"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="dashboardNotificationModalTitle">
+
+    <div class="w-full max-w-lg
+        glass-card rounded-2xl
+        border border-white/10
+        shadow-[0_25px_80px_rgba(0,0,0,0.65)]
+        overflow-hidden">
+
+        <!-- Popup başlığı -->
+        <div class="relative px-6 py-5
+            border-b border-white/10">
+
+            <button type="button"
+                    id="closeDashboardNotificationModal"
+                    class="absolute top-4 right-4
+                w-9 h-9 rounded-lg glass-button
+                flex items-center justify-center
+                text-glacier-text-muted
+                hover:text-white transition-colors"
+                    aria-label="Pencereyi kapat">
+
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+            </button>
+
+
+            <!-- Bildirim türü ikonu -->
+            <div id="dashboardNotificationModalIconWrapper"
+                 class="w-16 h-16 rounded-2xl
+                flex items-center justify-center mb-5">
+
+                <span id="dashboardNotificationModalIcon"
+                      class="material-symbols-outlined text-[32px]">
+                </span>
+            </div>
+
+
+            <!-- Bildirim türü -->
+            <span id="dashboardNotificationModalType"
+                  class="inline-flex items-center
+                px-3 py-1 rounded-full
+                bg-white/5 border border-white/10
+                text-[10px] font-semibold uppercase
+                tracking-wider text-glacier-text-muted">
+            </span>
+
+
+            <!-- Başlık -->
+            <h3 id="dashboardNotificationModalTitle"
+                class="text-xl font-semibold
+                text-white mt-3 pr-10">
+            </h3>
+
+
+            <!-- Tarih -->
+            <p id="dashboardNotificationModalDate"
+                   class="text-xs text-glacier-text-muted mt-2">
+            </p>
+
+        </div>
+
+
+        <!-- Popup içeriği -->
+        <div class="px-6 py-5">
+
+            <div class="rounded-xl
+                border border-white/5
+                bg-white/[0.025]
+                p-5">
+
+                <p id="dashboardNotificationModalDetail"
+                       class="text-sm leading-7
+                    text-slate-200
+                    whitespace-pre-wrap break-words">
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const modal =
+            document.getElementById(
+                "dashboardNotificationModal"
+            );
+
+        const closeButton =
+            document.getElementById(
+                "closeDashboardNotificationModal"
+            );
+
+        const modalIconWrapper =
+            document.getElementById(
+                "dashboardNotificationModalIconWrapper"
+            );
+
+        const modalIcon =
+            document.getElementById(
+                "dashboardNotificationModalIcon"
+            );
+
+        const modalType =
+            document.getElementById(
+                "dashboardNotificationModalType"
+            );
+
+        const modalTitle =
+            document.getElementById(
+                "dashboardNotificationModalTitle"
+            );
+
+        const modalDate =
+            document.getElementById(
+                "dashboardNotificationModalDate"
+            );
+
+        const modalDetail =
+            document.getElementById(
+                "dashboardNotificationModalDetail"
+            );
+
+
+        function closeNotificationModal() {
+
+            modal.classList.add("hidden");
+
+            document.body.classList.remove(
+                "overflow-hidden"
+            );
+        }
+
+
+        document
+            .querySelectorAll(
+                ".dashboard-notification-preview"
+            )
+            .forEach(function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        const notificationId =
+                            button.dataset.notificationId;
+
+                        const notificationData =
+                            document.getElementById(
+                                "dashboard-notification-" +
+                                notificationId
+                            );
+
+                        if (!notificationData) {
+                            return;
+                        }
+
+
+                        modalTitle.textContent =
+                            notificationData
+                                .querySelector(
+                                    "[data-notification-title]"
+                                )
+                                .textContent
+                                .trim();
+
+
+                        modalType.textContent =
+                            notificationData
+                                .querySelector(
+                                    "[data-notification-type]"
+                                )
+                                .textContent
+                                .trim();
+
+
+                        modalDate.textContent =
+                            notificationData
+                                .querySelector(
+                                    "[data-notification-date]"
+                                )
+                                .textContent
+                                .trim();
+
+
+                        modalDetail.textContent =
+                            notificationData
+                                .querySelector(
+                                    "[data-notification-detail]"
+                                )
+                                .textContent
+                                .trim();
+
+
+                        modalIcon.textContent =
+                            notificationData
+                                .querySelector(
+                                    "[data-notification-icon]"
+                                )
+                                .textContent
+                                .trim();
+
+
+                        const background =
+                            notificationData
+                                .querySelector(
+                                    "[data-notification-background]"
+                                )
+                                .textContent
+                                .trim();
+
+
+                        const color =
+                            notificationData
+                                .querySelector(
+                                    "[data-notification-color]"
+                                )
+                                .textContent
+                                .trim();
+
+
+                        modalIconWrapper.style.backgroundColor =
+                            background;
+
+                        modalIconWrapper.style.color =
+                            color;
+
+
+                        modal.classList.remove("hidden");
+
+                        document.body.classList.add(
+                            "overflow-hidden"
+                        );
+                    }
+                );
+            });
+
+
+        closeButton.addEventListener(
+            "click",
+            closeNotificationModal
+        );
+
+
+        modal.addEventListener(
+            "click",
+            function (event) {
+
+                if (event.target === modal) {
+                    closeNotificationModal();
+                }
+            }
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (event.key === "Escape" &&
+                    !modal.classList.contains("hidden")) {
+
+                    closeNotificationModal();
+                }
+            }
+        );
+
+    });
+</script>

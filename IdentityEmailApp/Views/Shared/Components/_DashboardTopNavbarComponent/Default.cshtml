@@ -1,96 +1,213 @@
-﻿
-@*
-   _DashboardTopNavbarComponent
+﻿@*
+    _DashboardTopNavbarComponent
 *@
 
-<nav class="glass-card flex justify-between items-center h-16 px-6 w-full fixed top-0 z-50 rounded-none border-t-0 border-l-0 border-r-0">
+<style>
+    #appsMenu {
+        color: #1f2937;
+    }
+
+        #appsMenu .dashboard-app-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            padding: 16px;
+        }
+
+        #appsMenu .dashboard-app-item {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100%;
+            height: 98px;
+            padding: 8px;
+            color: #374151 !important;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none !important;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+            #appsMenu .dashboard-app-item:hover {
+                color: #111827 !important;
+                background: #f8fafc;
+                border-color: #e2e8f0;
+                transform: translateY(-2px);
+            }
+
+        #appsMenu .dashboard-app-icon {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex: 0 0 48px !important;
+            width: 48px !important;
+            height: 48px !important;
+            min-width: 48px !important;
+            max-width: 48px !important;
+            margin-bottom: 9px;
+            color: #ffffff !important;
+            border-radius: 15px;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.20);
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        #appsMenu .dashboard-app-item:hover .dashboard-app-icon {
+            transform: translateY(-2px);
+            box-shadow: 0 9px 20px rgba(15, 23, 42, 0.25);
+        }
+
+        #appsMenu .dashboard-app-icon .material-symbols-outlined {
+            color: #ffffff !important;
+            font-size: 25px !important;
+            line-height: 1 !important;
+        }
+
+        #appsMenu .dashboard-app-name {
+            display: block;
+            color: #374151 !important;
+            line-height: 18px;
+        }
+
+    @@media (max-width: 500px) {
+        #appsMenu {
+            position: fixed;
+            top: 68px;
+            right: 12px;
+            left: 12px;
+            width: auto;
+            max-width: none;
+        }
+
+            #appsMenu .dashboard-app-grid {
+                gap: 6px;
+                padding: 12px;
+            }
+
+            #appsMenu .dashboard-app-item {
+                height: 92px;
+            }
+
+        .apps-menu-arrow {
+            display: none;
+        }
+    }
+</style>
+
+<nav class="glass-card fixed top-0 left-0 z-50
+    flex items-center justify-between
+    w-full h-16 px-6
+    rounded-none
+    border-t-0 border-l-0 border-r-0">
+
+    <!-- Logo -->
     <div class="flex items-center gap-4 w-sidebar-width">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-glacier-accent to-glacier-chart-4 flex items-center justify-center shadow-glacier-glow">
-            <span class="material-symbols-outlined text-glacier-bg font-bold text-lg">ac_unit</span>
+
+        <div class="w-8 h-8 rounded-lg
+            bg-gradient-to-br
+            from-glacier-accent to-glacier-chart-4
+            flex items-center justify-center
+            shadow-glacier-glow">
+
+            <span class="material-symbols-outlined
+                text-glacier-bg font-bold text-lg">
+                ac_unit
+            </span>
         </div>
-        <span class="font-bold text-xl tracking-tight text-white"> Notika </span>
+
+        <span class="font-bold text-xl tracking-tight text-white">
+            Notika
+        </span>
     </div>
 
-   
-    <div class="flex items-center gap-3">
+    <!-- Sağ üst alan -->
+    <div class="ml-auto flex items-center justify-end gap-3">
+
+        <!-- AI Destek -->
         <a asp-controller="AISupport"
                asp-action="Index"
                title="AI Destek"
-               class="p-2 rounded-lg text-on-surface-variant
-            hover:bg-surface-variant/50 hover:text-on-surface
-            transition-all flex items-center justify-center"
+               class="w-10 h-10 rounded-full glass-button
+            flex items-center justify-center
+            text-glacier-text-muted
+            hover:text-white transition-colors"
                style="text-decoration:none;">
 
             <span class="material-symbols-outlined">
                 support_agent
             </span>
-
         </a>
-        <!-- Mail -->
+
+        <!-- Notika Mail -->
         <a asp-controller="Message"
                asp-action="Inbox"
                title="Notika Mail"
-               class="p-2 rounded-lg text-on-surface-variant
-            hover:bg-surface-variant/50 hover:text-on-surface
-            transition-all flex items-center justify-center"
+               class="w-10 h-10 rounded-full glass-button
+            flex items-center justify-center
+            text-glacier-text-muted
+            hover:text-white transition-colors"
                style="text-decoration:none;">
 
             <span class="material-symbols-outlined">
                 mail
             </span>
-
         </a>
+
         <!-- Uygulamalar -->
         <div id="appsMenuWrapper" class="relative">
 
-            <!-- Uygulamalar Butonu -->
             <button type="button"
                     id="appsMenuButton"
                     title="Notika Uygulamaları"
                     aria-expanded="false"
                     aria-controls="appsMenu"
-                    class="p-2 rounded-lg text-on-surface-variant
-                hover:bg-surface-variant/50
-                hover:text-on-surface transition-all
-                flex items-center justify-center">
+                    class="w-10 h-10 rounded-full glass-button
+                flex items-center justify-center
+                text-glacier-text-muted
+                hover:text-white transition-colors">
 
                 <span class="material-symbols-outlined">
                     apps
                 </span>
-
             </button>
 
-            <!-- Uygulamalar Menüsü -->
+            <!-- Açılır menü -->
             <div id="appsMenu"
-                 class="hidden absolute right-0 top-full mt-3
-                w-[350px] max-w-[calc(100vw-24px)]
+                 class="hidden absolute right-0 top-full mt-4
+                w-[390px] max-w-[calc(100vw-24px)]
                 bg-white rounded-2xl
                 border border-gray-200
-                shadow-[0_18px_50px_rgba(31,41,55,0.18)]
-                z-[100]">
+                shadow-[0_20px_60px_rgba(0,0,0,0.35)]
+                z-[200]">
 
-                <!-- Menü oku -->
+                <!-- Ok -->
                 <div class="apps-menu-arrow absolute -top-2 right-3
-                    w-4 h-4 bg-white
-                    border-l border-t border-gray-200
-                    rotate-45">
+                    w-4 h-4 rotate-45
+                    bg-white
+                    border-l border-t border-gray-200">
                 </div>
 
                 <!-- Menü başlığı -->
                 <div class="relative flex items-center gap-3
-                    px-5 py-4 bg-gradient-to-r
-                    from-blue-50 to-white
+                    px-5 py-4
+                    bg-gradient-to-r from-blue-50 to-white
                     border-b border-gray-100
                     rounded-t-2xl">
 
-                    <div class="flex items-center justify-center
-                        w-10 h-10 rounded-xl
-                        bg-blue-600 text-white shadow-sm">
+                    <div class="w-11 h-11 rounded-xl
+                        bg-blue-600 text-white
+                        flex items-center justify-center
+                        shadow-md">
 
                         <span class="material-symbols-outlined">
                             apps
                         </span>
-
                     </div>
 
                     <div>
@@ -102,124 +219,145 @@
                             Kullanmak istediğiniz servisi seçin
                         </p>
                     </div>
-
                 </div>
 
                 <!-- Uygulama listesi -->
-                <div class="grid grid-cols-3 gap-1 p-4">
+                <div class="dashboard-app-grid">
 
                     <!-- Mail -->
                     <a asp-controller="Message"
                            asp-action="Inbox"
-                           class="task-app-item hover:bg-blue-50">
+                           class="dashboard-app-item">
 
-                        <div class="task-app-icon bg-blue-600">
+                        <div class="dashboard-app-icon bg-blue-600">
                             <span class="material-symbols-outlined">
                                 mail
                             </span>
                         </div>
 
-                        <span>Mail</span>
+                        <span class="dashboard-app-name">Mail</span>
                     </a>
 
                     <!-- Haberler -->
                     <a asp-controller="News"
                            asp-action="Index"
                            asp-route-category="latest"
-                           class="task-app-item hover:bg-sky-50">
+                           class="dashboard-app-item">
 
-                        <div class="task-app-icon bg-sky-500">
+                        <div class="dashboard-app-icon bg-sky-500">
                             <span class="material-symbols-outlined">
                                 newspaper
                             </span>
                         </div>
 
-                        <span>Haberler</span>
+                        <span class="dashboard-app-name">Haberler</span>
                     </a>
 
                     <!-- Finans -->
                     <a asp-controller="Finance"
                            asp-action="Index"
-                           class="task-app-item hover:bg-purple-50">
+                           class="dashboard-app-item">
 
-                        <div class="task-app-icon bg-purple-500">
+                        <div class="dashboard-app-icon bg-purple-500">
                             <span class="material-symbols-outlined">
                                 monitoring
                             </span>
                         </div>
 
-                        <span>Finans</span>
+                        <span class="dashboard-app-name">Finans</span>
                     </a>
 
                     <!-- Görevler -->
                     <a asp-controller="Task"
                            asp-action="Index"
-                           class="task-app-item hover:bg-orange-50">
+                           class="dashboard-app-item">
 
-                        <div class="task-app-icon bg-orange-500">
+                        <div class="dashboard-app-icon bg-orange-500">
                             <span class="material-symbols-outlined">
                                 task_alt
                             </span>
                         </div>
 
-                        <span>Görevler</span>
+                        <span class="dashboard-app-name">Görevler</span>
                     </a>
 
                     <!-- Translate -->
                     <a asp-controller="Translate"
                            asp-action="Index"
-                           class="task-app-item hover:bg-teal-50">
+                           class="dashboard-app-item">
 
-                        <div class="task-app-icon bg-teal-500">
+                        <div class="dashboard-app-icon bg-teal-500">
                             <span class="material-symbols-outlined">
                                 translate
                             </span>
                         </div>
 
-                        <span>Translate</span>
+                        <span class="dashboard-app-name">Translate</span>
                     </a>
 
                     <!-- Panel -->
                     <a asp-controller="Dashboard"
                            asp-action="Index"
-                           class="task-app-item hover:bg-emerald-50">
+                           class="dashboard-app-item">
 
-                        <div class="task-app-icon bg-emerald-500">
+                        <div class="dashboard-app-icon bg-emerald-500">
                             <span class="material-symbols-outlined">
                                 bar_chart
                             </span>
                         </div>
 
-                        <span>Panel</span>
+                        <span class="dashboard-app-name">Panel</span>
                     </a>
 
                     <!-- Ayarlar -->
                     <a asp-controller="Settings"
                            asp-action="Index"
-                           class="task-app-item hover:bg-slate-50">
+                           class="dashboard-app-item">
 
-                        <div class="task-app-icon bg-slate-500">
+                        <div class="dashboard-app-icon bg-slate-500">
                             <span class="material-symbols-outlined">
                                 settings
                             </span>
                         </div>
 
-                        <span>Ayarlar</span>
+                        <span class="dashboard-app-name">Ayarlar</span>
                     </a>
 
                 </div>
-
             </div>
+        </div>
 
+        <!-- Profil: tıklanamaz -->
+        <div title="@ViewBag.FullName"
+             class="ml-2 w-10 h-10 rounded-full p-0.5
+            bg-gradient-to-br
+            from-glacier-accent to-glacier-chart-4">
+
+            @if (!string.IsNullOrWhiteSpace(ViewBag.ImageUrl as string))
+            {
+                <img src="@ViewBag.ImageUrl"
+                     alt="@ViewBag.FullName"
+                     class="w-full h-full rounded-full
+                object-cover border-2 border-glacier-bg" />
+            }
+            else
+            {
+                <div class="w-full h-full rounded-full
+                    bg-[#102426]
+                    border-2 border-glacier-bg
+                    flex items-center justify-center">
+
+                    <span class="material-symbols-outlined
+                        text-glacier-accent">
+                        person
+                    </span>
+                </div>
+            }
         </div>
-        <div class="w-10 h-10 rounded-full p-0.5 bg-gradient-to-br from-glacier-accent to-glacier-chart-4 cursor-pointer ml-2">
-            <img alt="@ViewBag.FullName" class="w-full h-full rounded-full object-cover border-2 border-glacier-bg" data-alt="A professional headshot of a corporate user" src="@ViewBag.ImageUrl" />
-        </div>
+
     </div>
 </nav>
 
-
-                        
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
