@@ -1,88 +1,639 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "Notika Translate";
     Layout = "~/Views/Translate/Layout.cshtml";
 }
 
+@{
+    ViewData["Title"] = "Notika Translate";
+    Layout = "~/Views/Translate/Layout.cshtml";
+}
 
+<div class="w-full">
 
-    <div class="w-full mb-6 text-center md:text-left">
-        <h2 class="text-primary font-headline-lg text-headline-lg font-bold tracking-tight">
-           
+    <!-- Başlık -->
+    <div class="mb-7">
+        <h2 class="text-primary text-3xl font-bold tracking-tight">
+            Notika Translate
         </h2>
+
         <p class="text-on-surface-variant text-body-md mt-1 opacity-80">
-            Hızlı ve profesyonel çeviri aracı
+            Metinlerinizi hızlı ve kolay bir şekilde çevirin
         </p>
     </div>
 
+    <form id="translateForm" class="w-full">
+        @Html.AntiForgeryToken()
 
-    <!-- Glassmorphism Translation Card -->
-    <div class="glass-panel w-full rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col border border-white/40">
+        <!-- İki çeviri kutusu -->
+        <div class="relative grid grid-cols-1 md:grid-cols-2 gap-5">
 
-        <!-- Language Selector Header -->
-        <div class="bg-surface-container-highest/50 border-b border-white/20 p-4 flex items-center justify-between">
-            <!-- Source Language -->
-            <div class="flex-1">
-                <button class="flex items-center space-x-2 text-primary font-headline-md text-body-md hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors">
-                    <span class="">Turkish</span>
-                    <span class="material-symbols-outlined text-[18px]">expand_more</span>
+            <!-- Dilleri değiştir -->
+            <div class="flex justify-center
+                md:absolute md:left-1/2 md:top-6
+                md:-translate-x-1/2 md:z-20">
+
+                <button type="button"
+                        id="swapLanguagesButton"
+                        title="Dilleri değiştir"
+                        class="w-11 h-11 rounded-full
+                    bg-white border border-primary/15
+                    text-primary shadow-md
+                    flex items-center justify-center
+                    hover:bg-primary hover:text-white
+                    hover:rotate-180
+                    transition-all duration-300">
+
+                    <span class="material-symbols-outlined">
+                        sync_alt
+                    </span>
                 </button>
             </div>
 
-            <!-- Swap Action -->
-            <button class="w-10 h-10 rounded-full bg-white/50 flex items-center justify-center text-primary hover:bg-white/80 transition-all hover:rotate-180 duration-300 mx-4 border border-white/40 shadow-sm">
-                <span class="material-symbols-outlined" data-icon="sync_alt">sync_alt</span>
-            </button>
-            <!-- Target Language -->
-            <div class="flex-1 flex justify-end">
-                <button class="flex items-center space-x-2 text-primary font-headline-md text-body-md hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors">
-                    <span class="">English</span>
-                    <span class="material-symbols-outlined text-[18px]">expand_more</span>
-                </button>
-            </div>
-        </div>
+            <!-- Kaynak metin kartı -->
+            <div class="rounded-2xl bg-white/65
+                border border-white/80
+                shadow-[0_10px_35px_rgba(44,77,160,0.08)]
+                overflow-hidden flex flex-col
+                min-h-[340px]">
 
-        <!-- Text Areas Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/20 min-h-[400px]">
-            <!-- Source Column -->
-            <div class="flex flex-col p-6 bg-transparent hover:bg-white/10 transition-colors duration-300 group">
-                <textarea class="flex-1 w-full bg-transparent border-0 resize-none font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 p-0 textarea-focus outline-none" placeholder="Enter text to translate..."></textarea>
-                <!-- Actions Footer -->
-                <div class="flex justify-between items-center mt-4 opacity-70 group-hover:opacity-100 transition-opacity">
-                    <div class="flex space-x-2">
-                        <button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-white/40 rounded-full transition-colors" title="Clear">
-                            <span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+                <!-- Kaynak dil -->
+                <div class="h-[72px] px-6
+                    flex items-center
+                    border-b border-primary/10
+                    bg-white/30">
+
+                    <select id="sourceLanguage"
+                            name="sourceLanguage"
+                            class="bg-transparent border-0
+                        outline-none focus:ring-0
+                        text-primary font-semibold
+                        text-base cursor-pointer
+                        rounded-lg px-2 py-2">
+
+                        <option value="auto" selected>Dili Algıla</option>
+                        <option value="tr">Türkçe</option>
+                        <option value="en">İngilizce</option>
+                        <option value="de">Almanca</option>
+                        <option value="fr">Fransızca</option>
+                        <option value="es">İspanyolca</option>
+                        <option value="it">İtalyanca</option>
+                        <option value="ru">Rusça</option>
+                        <option value="ar">Arapça</option>
+                    </select>
+                </div>
+
+                <!-- Yazılacak metin -->
+                <div class="flex-1 flex flex-col p-6">
+
+                    <textarea id="sourceText"
+                              name="text"
+                              maxlength="5000"
+                              class="flex-1 min-h-[190px]
+                    w-full bg-transparent
+                    border-0 resize-none
+                    text-xl text-on-surface
+                    placeholder:text-on-surface-variant/45
+                    focus:ring-0 outline-none p-0"
+                              placeholder="Çevrilecek metni yazınız..."></textarea>
+
+                    <!-- Kaynak işlemleri -->
+                    <div class="flex justify-between
+                        items-center mt-5">
+
+                        <div class="flex items-center gap-2">
+
+                            <button type="button"
+                                    id="clearTextButton"
+                                    title="Temizle"
+                                    class="w-9 h-9 rounded-full
+                                flex items-center justify-center
+                                text-on-surface-variant
+                                hover:text-primary
+                                hover:bg-primary/10
+                                transition-colors">
+
+                                <span class="material-symbols-outlined text-[21px]">
+                                    close
+                                </span>
+                            </button>
+
+                            <button type="button"
+                                    id="voiceInputButton"
+                                    title="Sesli giriş"
+                                    class="w-9 h-9 rounded-full
+                                flex items-center justify-center
+                                text-on-surface-variant
+                                hover:text-primary
+                                hover:bg-primary/10
+                                transition-colors">
+
+                                <span class="material-symbols-outlined text-[21px]">
+                                    mic
+                                </span>
+                            </button>
+                        </div>
+
+                        <span id="characterCount"
+                              class="text-xs text-on-surface-variant/60">
+                            0/5000
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Çeviri sonucu kartı -->
+            <div class="rounded-2xl
+                bg-primary/[0.035]
+                border border-primary/10
+                shadow-[0_10px_35px_rgba(44,77,160,0.08)]
+                overflow-hidden flex flex-col
+                min-h-[340px]">
+
+                <!-- Hedef dil -->
+                <div class="h-[72px] px-6
+                    flex items-center justify-end
+                    border-b border-primary/10
+                    bg-primary/[0.025]">
+
+                    <select id="targetLanguage"
+                            name="targetLanguage"
+                            class="bg-transparent border-0
+                        outline-none focus:ring-0
+                        text-primary font-semibold
+                        text-base cursor-pointer
+                        rounded-lg px-2 py-2">
+
+                        <option value="tr" selected>Türkçe</option>
+                        <option value="en">İngilizce</option>
+                        <option value="de">Almanca</option>
+                        <option value="fr">Fransızca</option>
+                        <option value="es">İspanyolca</option>
+                        <option value="it">İtalyanca</option>
+                        <option value="ru">Rusça</option>
+                        <option value="ar">Arapça</option>
+                    </select>
+                </div>
+
+                <!-- Çeviri sonucu -->
+                <div class="flex-1 flex flex-col p-6">
+
+                    <div id="translatedText"
+                         class="flex-1 min-h-[190px]
+                        max-h-[240px] overflow-y-auto
+                        text-xl text-on-surface/75
+                        whitespace-pre-wrap break-words">
+                        Çeviri burada görüntülenecek...
+                    </div>
+
+                    <!-- Sonuç işlemleri -->
+                    <div class="flex items-center gap-2 mt-5">
+
+                        <button type="button"
+                                id="copyTranslationButton"
+                                title="Kopyala"
+                                class="w-9 h-9 rounded-full
+                            flex items-center justify-center
+                            text-on-surface-variant
+                            hover:text-primary
+                            hover:bg-primary/10
+                            transition-colors">
+
+                            <span class="material-symbols-outlined text-[21px]">
+                                content_copy
+                            </span>
                         </button>
-                        <button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-white/40 rounded-full transition-colors" title="Voice Input">
-                            <span class="material-symbols-outlined text-[20px]" data-icon="mic">mic</span>
+
+                        <button type="button"
+                                id="listenTranslationButton"
+                                title="Dinle"
+                                class="w-9 h-9 rounded-full
+                            flex items-center justify-center
+                            text-on-surface-variant
+                            hover:text-primary
+                            hover:bg-primary/10
+                            transition-colors">
+
+                            <span class="material-symbols-outlined text-[21px]">
+                                volume_up
+                            </span>
                         </button>
                     </div>
-                    <span class="text-label-sm text-on-surface-variant/50 font-label-sm">0/5000</span>
-                </div>
-            </div>
-            <!-- Target Column -->
-            <div class="flex flex-col p-6 bg-surface-container-lowest/20">
-                <div class="flex-1 w-full bg-transparent font-body-lg text-body-lg text-on-surface/70">
-                    Translation will appear here...
-                </div>
-                <!-- Actions Footer -->
-                <div class="flex justify-start items-center mt-4 space-x-2 opacity-70 hover:opacity-100 transition-opacity">
-                    <button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-white/40 rounded-full transition-colors" title="Copy">
-                        <span class="material-symbols-outlined text-[20px]" data-icon="content_copy">content_copy</span>
-                    </button>
-                    <button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-white/40 rounded-full transition-colors" title="Listen">
-                        <span class="material-symbols-outlined text-[20px]" data-icon="volume_up">volume_up</span>
-                    </button>
                 </div>
             </div>
         </div>
-        <!-- Optional Bottom Bar for secondary tools -->
-        <div class="bg-white/20 px-6 py-3 border-t border-white/20 flex justify-end items-center">
-            <button class="bg-primary text-on-primary px-6 py-2 rounded-lg font-headline-md text-body-md hover:bg-primary-container/90 transition-colors shadow-sm">
-                Translate
+
+        <!-- Sabit mesaj alanı -->
+        <div id="translateMessage"
+             class="invisible min-h-[46px]
+            mt-4 px-4 py-3 rounded-xl
+            text-sm border border-transparent">
+        </div>
+
+        <!-- Çevir butonu -->
+        <div class="flex justify-center">
+
+            <button type="submit"
+                    id="translateButton"
+                    class="w-[170px] h-12
+                bg-primary text-on-primary
+                rounded-xl shadow-md
+                font-semibold
+                flex items-center justify-center gap-2
+                hover:shadow-lg hover:-translate-y-0.5
+                disabled:hover:translate-y-0
+                transition-all">
+
+                <span id="translateButtonIcon"
+                      class="material-symbols-outlined text-[20px]">
+                    translate
+                </span>
+
+                <span id="translateButtonText">
+                    Çevir
+                </span>
             </button>
         </div>
+    </form>
+
+    <!-- Geçmiş ve kaydedilenler -->
+    <div class="flex items-center justify-center
+        gap-14 mt-12 pb-8">
+
+        <!-- Geçmiş -->
+        <a asp-controller="Translate"
+               asp-action="TranslationHistory"
+               class="group flex flex-col items-center gap-3
+            text-on-surface-variant hover:text-primary
+            transition-colors"
+               style="text-decoration:none;">
+
+            <div class="w-16 h-16 rounded-full
+                border border-primary/20
+                bg-white/40
+                flex items-center justify-center
+                group-hover:bg-primary
+                group-hover:text-white
+                group-hover:shadow-lg
+                transition-all">
+
+                <span class="material-symbols-outlined text-[30px]">
+                    history
+                </span>
+            </div>
+
+            <span class="text-sm font-medium">
+                Geçmiş
+            </span>
+        </a>
+
+        <!-- Kaydedilenler -->
+        <a asp-controller="Translate"
+               asp-action="IsSaved"
+               class="group flex flex-col items-center gap-3
+            text-on-surface-variant hover:text-primary
+            transition-colors"
+               style="text-decoration:none;">
+
+            <div class="w-16 h-16 rounded-full
+                border border-primary/20
+                bg-white/40
+                flex items-center justify-center
+                group-hover:bg-primary
+                group-hover:text-white
+                group-hover:shadow-lg
+                transition-all">
+
+                <span class="material-symbols-outlined text-[30px]">
+                    star
+                </span>
+            </div>
+
+            <span class="text-sm font-medium">
+                Kaydedilenler
+            </span>
+        </a>
     </div>
+</div>
 
+<script>
+   
 
+    document.addEventListener("DOMContentLoaded", function () {
 
+        const form =
+    document.getElementById("translateForm");
+
+    const sourceText =
+    document.getElementById("sourceText");
+
+    const translatedText =
+    document.getElementById("translatedText");
+
+    const sourceLanguage =
+    document.getElementById("sourceLanguage");
+
+    const targetLanguage =
+    document.getElementById("targetLanguage");
+
+    const characterCount =
+    document.getElementById("characterCount");
+
+    const translateButton =
+    document.getElementById("translateButton");
+
+    const translateButtonIcon =
+    document.getElementById("translateButtonIcon");
+
+    const translateButtonText =
+    document.getElementById("translateButtonText");
+
+    const messageArea =
+    document.getElementById("translateMessage");
+
+    const emptyTranslationText =
+    "Çeviri burada görüntülenecek...";
+
+    let currentTranslatedText = "";
+
+    // Karakter sayacı
+    sourceText.addEventListener("input", function () {
+        characterCount.textContent =
+        `${sourceText.value.length}/5000`;
+        });
+
+    // Mesaj gösterme
+    function showMessage(message, type) {
+        messageArea.textContent = message;
+
+    messageArea.classList.remove(
+    "invisible",
+    "bg-red-500/10",
+    "text-red-500",
+    "border-red-500/20",
+    "bg-green-500/10",
+    "text-green-600",
+    "border-green-500/20"
+    );
+
+    if (type === "success") {
+        messageArea.classList.add(
+            "bg-green-500/10",
+            "text-green-600",
+            "border-green-500/20"
+        );
+        }
+    else {
+        messageArea.classList.add(
+            "bg-red-500/10",
+            "text-red-500",
+            "border-red-500/20"
+        );
+        }
+    }
+    function hideMessage() {
+        messageArea.classList.add("invisible");
+    messageArea.textContent = "";
+    }
+
+    // Çeviri işlemi
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+    hideMessage();
+
+    if (!sourceText.value.trim()) {
+        showMessage(
+            "Lütfen çevrilecek metni giriniz.",
+            "error"
+        );
+
+    sourceText.focus();
+    return;
+            }
+
+    translateButton.disabled = true;
+    translateButton.classList.add(
+    "opacity-60",
+    "cursor-not-allowed"
+    );
+
+    translateButtonIcon.textContent = "progress_activity";
+    translateButtonIcon.classList.add("animate-spin");
+    translateButtonText.textContent = "Çevriliyor...";
+
+    try {
+                const formData = new FormData(form);
+
+    const response = await fetch(
+    '@Url.Action("Translate", "Translate")',
+    {
+        method: "POST",
+    body: formData
+                    }
+    );
+
+    const result = await response.json();
+
+    if (!result.success) {
+        showMessage(result.message, "error");
+    return;
+                }
+
+    currentTranslatedText =
+    result.translatedText ?? "";
+
+    translatedText.textContent =
+    currentTranslatedText;
+
+    showMessage(
+    "Çeviri başarıyla tamamlandı.",
+    "success"
+    );
+            }
+    catch (error) {
+        showMessage(
+            "Çeviri isteği sırasında bir bağlantı hatası oluştu.",
+            "error"
+        );
+            }
+    finally {
+        translateButton.disabled = false;
+
+    translateButton.classList.remove(
+    "opacity-60",
+    "cursor-not-allowed"
+    );
+
+    translateButtonIcon.textContent = "translate";
+    translateButtonIcon.classList.remove("animate-spin");
+    translateButtonText.textContent = "Çevir";
+            }
+        });
+
+    // Kaynak metni temizle
+    document
+    .getElementById("clearTextButton")
+    .addEventListener("click", function () {
+
+        sourceText.value = "";
+    currentTranslatedText = "";
+
+    translatedText.textContent =
+    emptyTranslationText;
+
+    characterCount.textContent = "0/5000";
+
+    hideMessage();
+    sourceText.focus();
+            });
+
+    // Dilleri değiştir
+    document
+    .getElementById("swapLanguagesButton")
+    .addEventListener("click", function () {
+
+                if (sourceLanguage.value === "auto") {
+        showMessage(
+            "Dilleri değiştirmek için kaynak dili seçiniz.",
+            "error"
+        );
+
+    return;
+                }
+
+    const oldSourceLanguage =
+    sourceLanguage.value;
+
+    const oldTargetLanguage =
+    targetLanguage.value;
+
+    sourceLanguage.value =
+    oldTargetLanguage;
+
+    targetLanguage.value =
+    oldSourceLanguage;
+
+    if (currentTranslatedText) {
+                    const oldSourceText =
+    sourceText.value;
+
+    sourceText.value =
+    currentTranslatedText;
+
+    currentTranslatedText =
+    oldSourceText;
+
+    translatedText.textContent =
+    currentTranslatedText;
+
+    characterCount.textContent =
+    `${sourceText.value.length}/5000`;
+                }
+
+    hideMessage();
+            });
+
+    // Çeviriyi kopyala
+    document
+    .getElementById("copyTranslationButton")
+    .addEventListener("click", async function () {
+
+                if (!currentTranslatedText) {
+        showMessage(
+            "Kopyalanacak bir çeviri bulunmuyor.",
+            "error"
+        );
+
+    return;
+                }
+
+    try {
+        await navigator.clipboard.writeText(
+            currentTranslatedText
+        );
+
+    showMessage(
+    "Çeviri panoya kopyalandı.",
+    "success"
+    );
+                }
+    catch {
+        showMessage(
+            "Çeviri kopyalanamadı.",
+            "error"
+        );
+                }
+            });
+
+    // Çeviriyi sesli oku
+    document
+    .getElementById("listenTranslationButton")
+    .addEventListener("click", function () {
+
+                if (!currentTranslatedText) {
+        showMessage(
+            "Dinlenecek bir çeviri bulunmuyor.",
+            "error"
+        );
+
+    return;
+                }
+
+    window.speechSynthesis.cancel();
+
+    const speech =
+    new SpeechSynthesisUtterance(
+    currentTranslatedText
+    );
+
+    speech.lang = targetLanguage.value;
+    window.speechSynthesis.speak(speech);
+            });
+
+    // Sesli metin girişi
+    document
+    .getElementById("voiceInputButton")
+    .addEventListener("click", function () {
+
+                const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        showMessage(
+            "Tarayıcınız sesli girişi desteklemiyor.",
+            "error"
+        );
+
+    return;
+                }
+
+    const recognition =
+    new SpeechRecognition();
+
+    recognition.lang =
+    sourceLanguage.value === "auto"
+    ? "tr-TR"
+    : sourceLanguage.value;
+
+    recognition.onresult = function (event) {
+        sourceText.value =
+        event.results[0][0].transcript;
+
+    characterCount.textContent =
+    `${sourceText.value.length}/5000`;
+                };
+
+    recognition.onerror = function () {
+        showMessage(
+            "Ses algılanırken bir hata oluştu.",
+            "error"
+        );
+                };
+
+    recognition.start();
+            });
+
+    });
+
+</script>

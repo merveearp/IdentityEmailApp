@@ -17,11 +17,11 @@
     </div>
     <!-- Navigation Links -->
     <nav class="flex-1 space-y-2">
-        <a class="flex items-center space-x-3 px-3 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-white/10 rounded-lg hover:backdrop-blur-md transition-all duration-300 hover:translate-x-1 duration-200" href="#">
+        <a class="flex items-center space-x-3 px-3 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-white/10 rounded-lg hover:backdrop-blur-md transition-all duration-300 hover:translate-x-1 duration-200" asp-controller="Translate" asp-action="TranslationHistory">
             <span class="material-symbols-outlined" data-icon="history">history</span>
-            <span class="">Translation History</span>
+            <span class="">Çeviri Geçmişi</span>
         </a>
-        <a class="flex items-center space-x-3 px-3 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-white/10 rounded-lg hover:backdrop-blur-md transition-all duration-300 hover:translate-x-1 duration-200" href="#"><span class="material-symbols-outlined">star</span><span class="">Kaydedilenler</span></a>
+        <a class="flex items-center space-x-3 px-3 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-white/10 rounded-lg hover:backdrop-blur-md transition-all duration-300 hover:translate-x-1 duration-200" asp-controller="Translate" asp-action="SavedTranslations"><span class="material-symbols-outlined">star</span><span class="">Kaydedilenler</span></a>
     </nav>
     <!-- Footer Links -->
 </aside>

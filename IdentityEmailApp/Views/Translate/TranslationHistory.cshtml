@@ -1,8 +1,520 @@
-﻿
+﻿@using System.Globalization
+@model List<TranslationHistory>
+
 @{
-    ViewData["Title"] = "TranslationHistory";
+    ViewData["Title"] = "Çeviri Geçmişi";
     Layout = "~/Views/Translate/Layout.cshtml";
+
+    var culture = new CultureInfo("tr-TR");
+
+    var groupedTranslations = Model?
+        .GroupBy(x => x.CreatedDate.Date)
+        .OrderByDescending(x => x.Key)
+        .ToList();
+
+    string GetDateTitle(DateTime date)
+    {
+        if (date.Date == DateTime.Today)
+        {
+            return $"Bugün - {date.ToString("dd MMMM yyyy dddd", culture)}";
+        }
+
+        if (date.Date == DateTime.Today.AddDays(-1))
+        {
+            return $"Dün - {date.ToString("dd MMMM yyyy dddd", culture)}";
+        }
+
+        return date.ToString("dd MMMM yyyy dddd", culture);
+    }
+
+    string GetLanguageName(string code)
+    {
+        return code switch
+        {
+            "auto" => "Algılanan Dil",
+            "tr" => "Türkçe",
+            "en" => "İngilizce",
+            "de" => "Almanca",
+            "fr" => "Fransızca",
+            "es" => "İspanyolca",
+            "it" => "İtalyanca",
+            "ru" => "Rusça",
+            "ar" => "Arapça",
+            _ => code?.ToUpper() ?? "Bilinmiyor"
+        };
+    }
 }
 
-<h1>TranslationHistory</h1>
+<div class="w-full">
 
+    <div class="mb-7 flex items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-primary">
+                Çeviri Geçmişi
+            </h1>
+
+            <p class="text-on-surface-variant mt-1">
+                Daha önce yaptığınız çevirileri görüntüleyin
+            </p>
+        </div>
+
+        <a asp-controller="Translate"
+               asp-action="Index"
+               title="Çeviri ekranına dön"
+               class="w-12 h-12 shrink-0 rounded-xl
+            bg-primary/10 text-primary
+            flex items-center justify-center
+            hover:bg-primary hover:text-white
+            transition-all duration-200
+            shadow-sm"
+               style="text-decoration:none;">
+
+            <span class="material-symbols-outlined text-[25px]">
+                home
+            </span>
+        </a>
+    </div>
+
+    @if (groupedTranslations == null ||
+         !groupedTranslations.Any())
+    {
+        <div class="min-h-[350px] rounded-2xl
+            bg-white/50 border border-white/70
+            flex flex-col items-center justify-center
+            text-center shadow-sm">
+
+            <div class="w-16 h-16 rounded-full
+                bg-primary/10 text-primary
+                flex items-center justify-center mb-4">
+
+                <span class="material-symbols-outlined text-3xl">
+                    history
+                </span>
+            </div>
+
+            <h2 class="text-lg font-semibold text-on-surface">
+                Çeviri geçmişiniz boş
+            </h2>
+
+            <p class="text-sm text-on-surface-variant mt-1">
+                Yaptığınız çeviriler burada listelenecek.
+            </p>
+
+            <a asp-controller="Translate"
+               asp-action="Index"
+               class="mt-5 px-5 py-2 rounded-lg
+               bg-primary text-white"
+               style="text-decoration:none;">
+                Çeviri yap
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="space-y-6">
+
+            @foreach (var dayGroup in groupedTranslations)
+            {
+                <section class="rounded-2xl
+                    bg-white/55 border border-white/70
+                    shadow-[0_8px_30px_rgba(44,77,160,0.07)]
+                    overflow-hidden">
+
+                    <!-- Gün başlığı -->
+                    <div class="px-6 py-5
+                        border-b border-primary/10
+                        bg-white/30">
+
+                        <h2 class="font-semibold text-on-surface">
+                            @GetDateTitle(dayGroup.Key)
+                        </h2>
+                    </div>
+
+                    <!-- Günün kayıtları -->
+                    <div class="divide-y divide-primary/10">
+
+                        @foreach (var translation in dayGroup)
+                        {
+                            <div role="button"
+                                 tabindex="0"
+                                 data-translation-row
+                                 data-source-language="@GetLanguageName(translation.SourceLanguage)"
+                                 data-target-language="@GetLanguageName(translation.TargetLanguage)"
+                                 data-source-text="@translation.SourceText"
+                                 data-translated-text="@translation.TranslatedText"
+                                 data-created-date="@translation.CreatedDate.ToString("dd MMMM yyyy dddd HH:mm", culture)"
+                                 class="px-6 py-4
+                                grid grid-cols-1
+                                lg:grid-cols-[70px_120px_1fr_auto]
+                                gap-4 items-center
+                                hover:bg-white/50
+                                transition-colors cursor-pointer
+                                focus:outline-none focus:bg-white/50">
+
+                                <!-- Saat -->
+                                <span class="text-sm
+                                    text-on-surface-variant">
+                                    @translation.CreatedDate.ToString("HH:mm")
+                                </span>
+
+                                <!-- Diller -->
+                                <div class="inline-flex items-center gap-2
+                                    text-xs font-medium text-primary">
+
+                                    <span>
+                                        @GetLanguageName(
+                                            translation.SourceLanguage)
+                                    </span>
+
+                                    <span class="material-symbols-outlined
+                                        text-[16px]">
+                                        arrow_forward
+                                    </span>
+
+                                    <span>
+                                        @GetLanguageName(
+                                            translation.TargetLanguage)
+                                    </span>
+                                </div>
+
+                                <!-- Çeviri içeriği -->
+                                <div class="min-w-0">
+
+                                    <p class="text-sm font-medium
+                                        text-on-surface truncate">
+                                        @translation.SourceText
+                                    </p>
+
+                                    <p class="text-sm
+                                        text-on-surface-variant
+                                        truncate mt-1">
+                                        @translation.TranslatedText
+                                    </p>
+                                </div>
+
+                                <!-- İşlemler -->
+                                <div class="flex items-center
+                                    justify-end gap-2">
+
+                                    <!-- Yıldız -->
+                                    <form asp-controller="Translate"
+                                          asp-action="ToggleSaved"
+                                          method="post">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@translation.TranslationHistoryId" />
+
+                                        <button type="submit"
+                                                title="@(translation.IsSaved
+                                                    ? "Kaydedilenlerden çıkar"
+                                                    : "Kaydet")"
+                                                class="w-10 h-10 rounded-full
+                                                flex items-center justify-center
+                                                transition-colors
+                                                @(translation.IsSaved
+                                                    ? "bg-amber-100 text-amber-500"
+                                                    : "text-on-surface-variant hover:bg-amber-50 hover:text-amber-500")">
+
+                                            <span class="material-symbols-outlined">
+                                                @(translation.IsSaved
+                                                    ? "star"
+                                                    : "star_border")
+                                            </span>
+                                        </button>
+                                    </form>
+
+                                    <!-- Geçmişten kaldır -->
+                                    <form asp-controller="Translate"
+                                          asp-action="RemoveFromHistory"
+                                          method="post">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@translation.TranslationHistoryId" />
+
+                                        <button type="submit"
+                                                title="Geçmişten kaldır"
+                                                class="h-10 px-3 rounded-lg
+                                                flex items-center gap-2
+                                                text-sm text-red-500
+                                                hover:bg-red-50
+                                                transition-colors">
+
+                                            <span class="material-symbols-outlined
+                                                text-[20px]">
+                                                delete_sweep
+                                            </span>
+
+                                            <span class="hidden xl:inline">
+                                                Geçmişten kaldır
+                                            </span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+        </div>
+    }
+</div>
+
+<!-- Çeviri detay modalı -->
+<div id="translationDetailModal"
+     class="fixed inset-0 z-[9999] hidden
+    items-center justify-center
+    bg-slate-900/50 backdrop-blur-sm
+    px-4 py-6"
+     aria-hidden="true">
+
+    <div id="translationModalPanel"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="translationModalTitle"
+         class="w-full max-w-3xl max-h-[90vh]
+        bg-white rounded-2xl
+        shadow-2xl overflow-hidden
+        flex flex-col">
+
+        <!-- Modal başlığı -->
+        <div class="px-6 py-5 border-b border-primary/10
+            flex items-center justify-between gap-4
+            bg-white">
+
+            <div class="min-w-0">
+                <h2 id="translationModalTitle"
+                    class="text-xl font-bold text-on-surface">
+                    Çeviri Detayı
+                </h2>
+
+                <div class="flex flex-wrap items-center gap-2 mt-2
+                    text-sm font-medium text-primary">
+
+                    <span id="modalSourceLanguage"></span>
+
+                    <span class="material-symbols-outlined text-[18px]">
+                        arrow_forward
+                    </span>
+
+                    <span id="modalTargetLanguage"></span>
+                </div>
+            </div>
+
+            <button type="button"
+                    id="closeTranslationModal"
+                    title="Kapat"
+                    class="w-10 h-10 shrink-0 rounded-full
+                flex items-center justify-center
+                text-on-surface-variant
+                hover:bg-slate-100 hover:text-on-surface
+                transition-colors">
+
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+            </button>
+        </div>
+
+        <!-- Kaydırılabilir modal içeriği -->
+        <div class="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined
+                        text-primary text-[20px]">
+                        subject
+                    </span>
+
+                    <h3 class="text-sm font-semibold text-on-surface">
+                        Kaynak metin
+                    </h3>
+                </div>
+
+                <div id="modalSourceText"
+                     class="rounded-xl bg-slate-50
+                    border border-slate-200
+                    px-4 py-4
+                    text-sm leading-7 text-on-surface
+                    whitespace-pre-wrap break-words">
+                </div>
+            </div>
+
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined
+                        text-primary text-[20px]">
+                        translate
+                    </span>
+
+                    <h3 class="text-sm font-semibold text-on-surface">
+                        Çevrilen metin
+                    </h3>
+                </div>
+
+                <div id="modalTranslatedText"
+                     class="rounded-xl bg-primary/5
+                    border border-primary/15
+                    px-4 py-4
+                    text-sm leading-7 text-on-surface
+                    whitespace-pre-wrap break-words">
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal alt alanı -->
+        <div class="px-6 py-4 border-t border-primary/10
+            flex flex-wrap items-center justify-between gap-3
+            bg-slate-50/70">
+
+            <div class="flex items-center gap-2
+                text-sm text-on-surface-variant">
+
+                <span class="material-symbols-outlined text-[19px]">
+                    schedule
+                </span>
+
+                <span id="modalCreatedDate"></span>
+            </div>
+
+            <button type="button"
+                    id="closeTranslationModalButton"
+                    class="px-5 py-2 rounded-lg
+                bg-primary text-white
+                hover:opacity-90 transition-opacity">
+                Kapat
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const modal = document.getElementById("translationDetailModal");
+        const modalPanel = document.getElementById("translationModalPanel");
+
+        const sourceLanguage =
+            document.getElementById("modalSourceLanguage");
+
+        const targetLanguage =
+            document.getElementById("modalTargetLanguage");
+
+        const sourceText =
+            document.getElementById("modalSourceText");
+
+        const translatedText =
+            document.getElementById("modalTranslatedText");
+
+        const createdDate =
+            document.getElementById("modalCreatedDate");
+
+        const closeButton =
+            document.getElementById("closeTranslationModal");
+
+        const closeBottomButton =
+            document.getElementById("closeTranslationModalButton");
+
+        let lastFocusedElement = null;
+
+        function openModal(row) {
+            lastFocusedElement = document.activeElement;
+
+            sourceLanguage.textContent =
+                row.dataset.sourceLanguage || "Bilinmiyor";
+
+            targetLanguage.textContent =
+                row.dataset.targetLanguage || "Bilinmiyor";
+
+            sourceText.textContent =
+                row.dataset.sourceText || "Kaynak metin bulunamadı.";
+
+            translatedText.textContent =
+                row.dataset.translatedText || "Çeviri bulunamadı.";
+
+            createdDate.textContent =
+                row.dataset.createdDate || "";
+
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            modal.setAttribute("aria-hidden", "false");
+
+            document.body.style.overflow = "hidden";
+            closeButton.focus();
+        }
+
+        function closeModal() {
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+            modal.setAttribute("aria-hidden", "true");
+
+            document.body.style.overflow = "";
+
+            if (lastFocusedElement) {
+                lastFocusedElement.focus();
+            }
+        }
+
+        document
+            .querySelectorAll("[data-translation-row]")
+            .forEach(function (row) {
+
+                row.addEventListener("click", function (event) {
+
+                    // Form, yıldız ve silme butonlarında modal açılmaz
+                    if (event.target.closest(
+                        "button, form, a, input, select, textarea"
+                    )) {
+                        return;
+                    }
+
+                    openModal(row);
+                });
+
+                row.addEventListener("keydown", function (event) {
+
+                    if (event.key !== "Enter" && event.key !== " ") {
+                        return;
+                    }
+
+                    if (event.target.closest(
+                        "button, form, a, input, select, textarea"
+                    )) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    openModal(row);
+                });
+            });
+
+        closeButton.addEventListener("click", closeModal);
+        closeBottomButton.addEventListener("click", closeModal);
+
+        // Modalın karanlık dış alanına tıklanınca kapat
+        modal.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Modalın içine tıklanınca kapanmasını önle
+        modalPanel.addEventListener("click", function (event) {
+            event.stopPropagation();
+        });
+
+        // ESC tuşuyla kapat
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" &&
+                !modal.classList.contains("hidden")) {
+                closeModal();
+            }
+        });
+    });
+</script>
