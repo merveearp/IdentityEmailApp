@@ -42,22 +42,22 @@ namespace IdentityEmailApp.Services.Concrete
                 throw new Exception("Mesaj bulunamadı.");
             }
 
-            var prompt = $@"Aşağıdaki e-postayı spam olma ihtimaline göre analiz et.
+            var prompt = $$"""
+                Aşağıdaki e-postanın spam olma ihtimalini analiz et.
 
-            Gönderen: {message.SenderEmail}
-            Konu: {message.Subject}
-            Mesaj içeriği: {message.MessageDetail}
+                Gönderen: {{message.SenderEmail}}
+                Konu: {{message.Subject}}
+                Mesaj içeriği: {{message.MessageDetail}}
 
-            Sonucu yalnızca aşağıdaki JSON formatında döndür:
+                Sonucu yalnızca aşağıdaki JSON formatında döndür:
 
-            {{
-                ""isSpam"": true,
-                ""spamScore"": 85
-            }}
+                {
+                    "spamScore": 85
+                }
 
-            spamScore değerini 0 ile 100 arasında belirle.
-            70 ve üzerindeki sonuçlarda isSpam değerini true yap.
-            JSON dışında açıklama veya başka bir metin yazma.";
+                spamScore değerini 0 ile 100 arasında belirle.
+                JSON dışında açıklama veya başka bir metin yazma.
+                """;
 
             var requestBody = new
             {
@@ -91,7 +91,7 @@ namespace IdentityEmailApp.Services.Concrete
 
             var json = JsonSerializer.Serialize(requestBody);
 
-            var content = new StringContent(
+            using var content = new StringContent(
                 json,
                 Encoding.UTF8,
                 "application/json"
@@ -99,15 +99,68 @@ namespace IdentityEmailApp.Services.Concrete
 
             var response = await _httpClient.PostAsync(_url, content);
 
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+
+                throw new Exception(
+                    $"Spam analizi gerçekleştirilemedi. " +
+                    $"Durum kodu: {response.StatusCode}, Hata: {errorContent}"
+                );
+            }
+
             var jsonString = await response.Content.ReadAsStringAsync();
 
-            var openAIResult =
-                JsonSerializer.Deserialize<OpenAIResponseDto>(jsonString);
+            var openAIResult = JsonSerializer.Deserialize<OpenAIResponseDto>(
+                jsonString,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
 
-            var result =
-                JsonSerializer.Deserialize<SpamAnalysisDto>(
-                    openAIResult.choices[0].message.content
-                );
+            var aiContent = openAIResult?
+                .choices?
+                .FirstOrDefault()?
+                .message?
+                .content;
+
+            if (string.IsNullOrWhiteSpace(aiContent))
+            {
+                throw new Exception("Yapay zekâ geçerli bir analiz sonucu döndürmedi.");
+            }
+
+            var result = JsonSerializer.Deserialize<SpamAnalysisDto>(
+                aiContent,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+            if (result == null)
+            {
+                throw new Exception("Spam analiz sonucu okunamadı.");
+            }
+
+           
+            result.spamScore = Math.Clamp(result.spamScore, 0, 100);
+
+           
+            result.isSpam = result.spamScore >= 70;
+
+            var spamStatus = result.spamScore switch
+            {
+                >= 70 => "Spam",
+                >= 40 => "Şüpheli",
+                _ => "Güvenli"
+            };
+
+            
+            message.SpamScore = result.spamScore;
+            message.IsSpam = result.isSpam;
+            message.SpamStatus = spamStatus;
+            message.SpamAnalyzedDate = DateTime.Now;
+
+            await _context.SaveChangesAsync();
 
             return result;
         }

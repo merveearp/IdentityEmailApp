@@ -11,6 +11,7 @@ namespace IdentityEmailApp.Extensions
             services.AddHttpClient<IAIGenerateResponse, AIGenerateResponse>();
             services.AddHttpClient<INewsService, NewsService>();
             services.AddHttpClient<ITranslateService, TranslateService>();
+            services.AddHttpClient<IAISupportService, AISupportService>();
         }
     }
 }

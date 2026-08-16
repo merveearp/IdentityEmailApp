@@ -1,4 +1,6 @@
 ﻿using IdentityEmailApp.Context;
+using SpamAnalysisDto =
+    IdentityEmailApp.DTOs.AIDtos.SpamAnalysisDto;
 using IdentityEmailApp.Entities;
 using IdentityEmailApp.Models.MessageModels;
 using IdentityEmailApp.Services.Abstract;
@@ -6,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace IdentityEmailApp.Controllers
 {
@@ -225,16 +228,37 @@ namespace IdentityEmailApp.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            var spamResult = await _aIGenerateResponse.AnalyzeSpamAsync(id);
+            ViewBag.ShowSpamAnalysis = false;
+
+            if (message.ReceiverEmail == user.Email)
+            {
+                SpamAnalysisDto spamResult;
+
+                if (message.SpamAnalyzedDate.HasValue)
+                {
+                    spamResult = new SpamAnalysisDto
+                    {
+                        isSpam = message.IsSpam,
+                        spamScore = message.SpamScore ?? 0
+                    };
+                }
+                else
+                {
+                    spamResult = await _aIGenerateResponse.AnalyzeSpamAsync(id);
+                }
+
+                ViewBag.ShowSpamAnalysis = true;
+                ViewBag.IsAiSpam = spamResult.isSpam;
+                ViewBag.SpamScore = spamResult.spamScore;
+            }
 
             ViewBag.CurrentUserEmail = user.Email;
             ViewBag.ConversationId = conversationId;
-            ViewBag.IsAiSpam = spamResult.isSpam;
-            ViewBag.SpamScore = spamResult.spamScore;
 
             return View(conversationMessages);
         }
-
+ 
+        
         //----------MESAJ GÖNDER---------//
         [HttpGet]
         public async Task<IActionResult> ComposeMessage(int? id)

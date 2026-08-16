@@ -17,7 +17,6 @@
 <link href="~/notika-master/notika/green-horizotal/css/messagecss/messagedetail.css" rel="stylesheet" />
 
 
-@await Component.InvokeAsync("_LayoutBreadcombComponent")
 
 <div class="inbox-area">
     <div class="container">
@@ -26,37 +25,75 @@
             @await Component.InvokeAsync("_MessageSidebarComponent")
 
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                @if (ViewBag.IsAiSpam == true)
+                @if (ViewBag.ShowSpamAnalysis == true)
                 {
-                    <div class="ai-spam-card">
+                    var spamScore = ViewBag.SpamScore != null
+                        ? Convert.ToInt32(ViewBag.SpamScore)
+                        : 0;
+
+                    string analysisClass;
+                    string analysisTitle;
+                    string analysisStatus;
+                    string analysisDescription;
+                    string analysisIcon;
+
+                    if (spamScore >= 70)
+                    {
+                        analysisClass = "spam-high";
+                        analysisTitle = "Spam mesaj algılandı";
+                        analysisStatus = "Yüksek Risk";
+                        analysisDescription =
+                            "Bu mesaj spam veya yanıltıcı içerik barındırıyor olabilir. " +
+                            "İşlem yapmadan önce göndereni kontrol etmenizi öneririz.";
+                        analysisIcon = "fa fa-exclamation-triangle";
+                    }
+                    else if (spamScore >= 40)
+                    {
+                        analysisClass = "spam-medium";
+                        analysisTitle = "Şüpheli mesaj algılandı";
+                        analysisStatus = "Orta Risk";
+                        analysisDescription =
+                            "Bu mesaj bazı şüpheli ifadeler içeriyor. " +
+                            "Bağlantılara tıklamadan önce göndereni kontrol etmelisiniz.";
+                        analysisIcon = "fa fa-exclamation-circle";
+                    }
+                    else
+                    {
+                        analysisClass = "spam-low";
+                        analysisTitle = "Mesaj güvenli görünüyor";
+                        analysisStatus = "Düşük Risk";
+                        analysisDescription =
+                            "Yapay zekâ analizine göre bu mesajda belirgin bir spam işareti bulunamadı.";
+                        analysisIcon = "fa fa-shield";
+                    }
+
+                    <div class="ai-spam-card @analysisClass">
 
                         <div class="ai-spam-icon">
-                            <i class="fa fa-exclamation-triangle"></i>
+                            <i class="@analysisIcon"></i>
                         </div>
 
                         <div class="ai-spam-content">
+
                             <div class="ai-spam-title">
-                                Şüpheli mesaj algılandı
+                                @analysisTitle
 
                                 <span class="ai-spam-badge">
-                                    AI Analizi
+                                    @analysisStatus
                                 </span>
                             </div>
 
-                            <p>
-                                Bu mesaj spam veya yanıltıcı içerik barındırıyor olabilir.
-                                İşlem yapmadan önce göndereni kontrol etmenizi öneririz.
-                            </p>
+                            <p>@analysisDescription</p>
+
                         </div>
 
                         <div class="ai-spam-score">
                             <span>Risk oranı</span>
-                            <strong>@($"{ViewBag.SpamScore}%")</strong>
+                            <strong>@spamScore%</strong>
                         </div>
 
                     </div>
                 }
-
                 <div class="message-detail-card sm-res-mg-t-30">
 
                     @if (firstMessage == null)

@@ -19,5 +19,9 @@
 
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
+
+        public int? SpamScore { get; set; }
+        public string? SpamStatus { get; set; }
+        public DateTime? SpamAnalyzedDate { get; set; }
     }
 }
