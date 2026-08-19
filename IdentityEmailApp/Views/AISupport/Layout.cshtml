@@ -1,0 +1,255 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html><html class="light" lang="tr">
+    
+    
+    <head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Notika Yardım Merkezi</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffffff",
+                    "surface-tint": "#005bc0",
+                    "surface-container-highest": "#e0e3e6",
+                    "surface-container": "#ebeef2",
+                    "outline-variant": "#c1c6d6",
+                    "surface-bright": "#f7fafd",
+                    "on-secondary-fixed": "#141c26",
+                    "secondary": "#575f6b",
+                    "inverse-surface": "#2d3134",
+                    "inverse-primary": "#adc7ff",
+                    "on-surface": "#181c1f",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#1a73e8",
+                    "tertiary-container": "#747778",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed-variant": "#444748",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#dbe3f1",
+                    "tertiary-fixed-dim": "#c4c7c8",
+                    "on-primary-fixed-variant": "#004493",
+                    "outline": "#727785",
+                    "on-secondary-container": "#5d6571",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed": "#e1e3e4",
+                    "tertiary": "#5b5e5f",
+                    "surface-container-high": "#e5e8ec",
+                    "error-container": "#ffdad6",
+                    "inverse-on-surface": "#eef1f5",
+                    "surface-dim": "#d7dade",
+                    "secondary-fixed-dim": "#bfc7d4",
+                    "primary-fixed-dim": "#adc7ff",
+                    "on-background": "#181c1f",
+                    "primary": "#005bbf",
+                    "on-tertiary-fixed": "#191c1d",
+                    "background": "#f7fafd",
+                    "on-primary-container": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#dbe3f1",
+                    "on-secondary-fixed-variant": "#3f4752",
+                    "on-tertiary-container": "#ffffff",
+                    "surface": "#f7fafd",
+                    "on-surface-variant": "#414754",
+                    "on-primary-fixed": "#001a41",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-variant": "#e0e3e6",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f1f4f7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "section-padding": "64px",
+                    "stack-md": "16px",
+                    "stack-lg": "32px",
+                    "margin-desktop": "48px",
+                    "container-max-width": "1024px",
+                    "stack-sm": "8px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "display-lg": [
+                            "Inter"
+                    ],
+                    "display-lg-mobile": [
+                            "Inter"
+                    ],
+                    "label-md": [
+                            "Inter"
+                    ],
+                    "label-sm": [
+                            "Inter"
+                    ],
+                    "headline-sm": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Inter"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "44px",
+                            {
+                                    "lineHeight": "52px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "display-lg-mobile": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.01em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-sm": [
+                            "22px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-md": [
+                            "28px",
+                            {
+                                    "lineHeight": "36px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .chevron {
+            transition: transform 0.3s ease-out;
+        }
+        .accordion-button[aria-expanded="true"] .chevron {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+
+<!-- TopNavBar (Shared Component) -->
+
+@await Component.InvokeAsync("_AISupportTopNavBarComponent")
+
+<!-- Main Content Canvas -->
+
+<main class="flex-grow flex flex-col">
+
+@RenderBody()
+</main>
+
+<!-- Footer (Shared Component) -->
+
+@await Component.InvokeAsync("_AISupportFooterComponent")
+
+<script>
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            
+            // Close all others
+            document.querySelectorAll('.accordion-button').forEach(btn => {
+                if(btn !== button) {
+                    btn.setAttribute('aria-expanded', 'false');
+                    btn.nextElementSibling.classList.remove('open');
+                }
+            });
+
+            // Toggle current
+            if (isExpanded) {
+                button.setAttribute('aria-expanded', 'false');
+                content.classList.remove('open');
+            } else {
+                button.setAttribute('aria-expanded', 'true');
+                content.classList.add('open');
+            }
+        }
+    </script>
+
+
+</body></html>

@@ -49,7 +49,9 @@ namespace IdentityEmailApp.Controllers
                 ImageUrl = "/images/default.jfif",
                 ActivationCode = code,
                 IsProfileCompleted = false,
-                IsProfileSetupShown = false
+                IsProfileSetupShown = false,
+                
+                
             };
 
             var result = await _userManager.CreateAsync(appUser, model.Password);
@@ -64,6 +66,7 @@ namespace IdentityEmailApp.Controllers
 
                 return View(model);
             }
+            
 
             var mimeMessage = new MimeMessage();
 

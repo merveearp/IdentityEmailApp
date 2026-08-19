@@ -1,15 +1,437 @@
 ﻿
 @{
-    Layout = null;
+
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AISupport/Layout.cshtml";
 }
 
-<!DOCTYPE html>
+    <!-- Hero Section with Search -->
+    <section class="w-full bg-surface-lowest py-section-padding relative overflow-hidden flex flex-col items-center justify-center min-h-[500px]">
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
-</body>
-</html>
+        <!-- Arka plan görseli -->
+        <img alt="Notika AI Destek"
+             class="absolute inset-0 w-full h-full object-cover md:object-contain opacity-90"
+             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhq1H9HrlMrWB0YvKjrFNKvqp2DJJfE-QhSWU_EhawF52KLS8NwS3ZSaK-94zs4K_yns47HdX7z53Th9xNJPxefz_mO9mvLLPYCH0kMkswmB7noEn8L9g4NK4qNdq55thPyiCDwkPo4g3T4T032TFSf1DkfHWJCDcSV7NJC5CbHHgVG4e0AebyOa6AGVB7CGrmSY2_9b-7_0xMZ3rTVxdfoaHpxbWpRuSGsN5TNIIWZN5P-VvI6fDTFg">
+
+        <div class="w-full max-w-3xl mx-auto px-4 relative z-10 flex flex-col items-center">
+
+            <!-- Karşılama -->
+            <div class="text-center mb-8">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-primary text-white flex items-center justify-center shadow-md">
+                    <span class="material-symbols-outlined text-3xl">
+                        smart_toy
+                    </span>
+                </div>
+
+                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary font-normal">
+                    Buyurun @ViewBag.UserName, nasıl yardımcı olabilirim?
+                </h1>
+
+                <p class="mt-3 text-on-surface-variant">
+                    Sorularınızı yazabilir, metin oluşturabilir veya fikir alabilirsiniz.
+                </p>
+            </div>
+
+            <!-- Sohbet mesajları -->
+            <div id="chatContainer"
+                 class="hidden w-full bg-white/95 border border-outline-variant rounded-xl shadow-md mb-4 overflow-hidden">
+
+                <div id="chatMessages"
+                     class="flex flex-col gap-4 p-5 max-h-[420px] overflow-y-auto">
+                </div>
+            </div>
+
+            <!-- Mesaj formu -->
+            <form id="aiChatForm"
+                  class="w-full bg-surface rounded-xl border border-outline-variant shadow-md p-2">
+
+                @Html.AntiForgeryToken()
+
+                <div class="flex items-center gap-2">
+
+                    <span class="material-symbols-outlined ml-3 text-on-surface-variant">
+                        auto_awesome
+                    </span>
+
+                    <input id="questionInput"
+                           name="question"
+                           type="text"
+                           autocomplete="off"
+                           placeholder="Notika AI'a bir şey sorun..."
+                           class="flex-grow h-14 px-3 bg-transparent text-on-surface placeholder:text-on-surface-variant outline-none">
+
+                    <button id="sendButton"
+                            type="submit"
+                            class="w-12 h-12 rounded-lg bg-primary text-white flex items-center justify-center hover:opacity-90 transition-opacity">
+
+                        <span id="sendIcon"
+                              class="material-symbols-outlined">
+                            send
+                        </span>
+
+                        <span id="loadingIcon"
+                              class="material-symbols-outlined hidden animate-spin">
+                            progress_activity
+                        </span>
+                    </button>
+                </div>
+
+                <p id="chatError"
+                       class="hidden px-4 pb-2 text-sm text-red-600">
+                </p>
+            </form>
+
+        </div>
+    </section>
+    <!-- Help Topics Section -->
+    <section class="w-full bg-background py-section-padding flex-grow">
+        <div class="max-w-container-width mx-auto px-margin-desktop md:px-margin-desktop">
+            <h2 class="font-headline-md text-headline-md text-on-surface mb-gutter text-center md:text-left">
+                Yardım konularına göz at
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+            <!-- Category Card 1 -->
+            <div class="bg-surface rounded-xl border border-outline-variant
+                p-gutter hover:shadow-md transition-shadow
+                cursor-pointer group flex flex-col">
+
+                <div class="w-12 h-12 rounded-lg bg-primary-fixed
+                    text-primary-fixed-variant flex items-center justify-center
+                    mb-stack-md group-hover:bg-primary-container
+                    group-hover:text-on-primary-container transition-colors">
+
+                    <span class="material-symbols-outlined"
+                          style="font-variation-settings: 'FILL' 1;">
+                        edit_note
+                    </span>
+                </div>
+
+                <h3 class="font-headline-sm text-headline-sm
+                    text-on-surface mb-stack-sm">
+                    Metin ve E-posta Oluşturma
+                </h3>
+
+                <p class="font-body-md text-body-md text-secondary
+                    mb-stack-md flex-grow">
+                    Profesyonel e-postalar, başvuru metinleri, açıklamalar
+                    ve sosyal medya içerikleri hazırlayın.
+                </p>
+
+                <button type="button"
+                        class="example-question font-label-md text-label-md
+                    text-primary flex items-center gap-1
+                    group-hover:underline text-left"
+                        data-question="İş başvurusu için kısa ve profesyonel bir e-posta hazırlar mısın?">
+
+                    Örnek soru sor
+
+                    <span class="material-symbols-outlined text-sm">
+                        arrow_forward
+                    </span>
+                </button>
+            </div>
+
+            <!-- Category Card 2 -->
+            <div class="bg-surface rounded-xl border border-outline-variant
+                p-gutter hover:shadow-md transition-shadow
+                cursor-pointer group flex flex-col">
+
+                <div class="w-12 h-12 rounded-lg bg-secondary-fixed
+                    text-secondary-fixed-variant flex items-center justify-center
+                    mb-stack-md group-hover:bg-secondary-container
+                    group-hover:text-on-secondary-container transition-colors">
+
+                    <span class="material-symbols-outlined"
+                          style="font-variation-settings: 'FILL' 1;">
+                        code
+                    </span>
+                </div>
+
+                <h3 class="font-headline-sm text-headline-sm
+                    text-on-surface mb-stack-sm">
+                    Yazılım ve Kodlama Desteği
+                </h3>
+
+                <p class="font-body-md text-body-md text-secondary
+                    mb-stack-md flex-grow">
+                    Kodlama konularını öğrenin, hata mesajlarını inceleyin
+                    ve açıklamalı kod örnekleri alın.
+                </p>
+
+                <button type="button"
+                        class="example-question font-label-md text-label-md
+                    text-primary flex items-center gap-1
+                    group-hover:underline text-left"
+                        data-question="C# dilinde async ve await ne işe yarar? Basit bir örnekle açıklar mısın?">
+
+                    Örnek soru sor
+
+                    <span class="material-symbols-outlined text-sm">
+                        arrow_forward
+                    </span>
+                </button>
+            </div>
+
+            <!-- Category Card 3 -->
+            <div class="bg-surface rounded-xl border border-outline-variant
+                p-gutter hover:shadow-md transition-shadow
+                cursor-pointer group flex flex-col">
+
+                <div class="w-12 h-12 rounded-lg bg-tertiary-fixed
+                    text-tertiary-fixed-variant flex items-center justify-center
+                    mb-stack-md group-hover:bg-tertiary-container
+                    group-hover:text-on-tertiary-container transition-colors">
+
+                    <span class="material-symbols-outlined"
+                          style="font-variation-settings: 'FILL' 1;">
+                        lightbulb
+                    </span>
+                </div>
+
+                <h3 class="font-headline-sm text-headline-sm
+                    text-on-surface mb-stack-sm">
+                    Planlama ve Fikir Üretme
+                </h3>
+
+                <p class="font-body-md text-body-md text-secondary
+                    mb-stack-md flex-grow">
+                    Çalışma planları, proje fikirleri, görev listeleri
+                    ve yaratıcı öneriler oluşturun.
+                </p>
+
+                <button type="button"
+                        class="example-question font-label-md text-label-md
+                    text-primary flex items-center gap-1
+                    group-hover:underline text-left"
+                        data-question="Yazılım alanında gelişmek için bir haftalık çalışma planı hazırlar mısın?">
+
+                    Örnek soru sor
+
+                    <span class="material-symbols-outlined text-sm">
+                        arrow_forward
+                    </span>
+                </button>
+            </div>
+
+            <!-- Category Card 4 -->
+            <div class="bg-surface rounded-xl border border-outline-variant
+                p-gutter hover:shadow-md transition-shadow
+                cursor-pointer group flex flex-col">
+
+                <div class="w-12 h-12 rounded-lg bg-error-container
+                    text-on-error-container flex items-center justify-center
+                    mb-stack-md group-hover:bg-error
+                    group-hover:text-on-error transition-colors">
+
+                    <span class="material-symbols-outlined"
+                          style="font-variation-settings: 'FILL' 1;">
+                        translate
+                    </span>
+                </div>
+
+                <h3 class="font-headline-sm text-headline-sm
+                    text-on-surface mb-stack-sm">
+                    Çeviri ve Özetleme
+                </h3>
+
+                <p class="font-body-md text-body-md text-secondary
+                    mb-stack-md flex-grow">
+                    Metinleri farklı dillere çevirin, uzun içerikleri
+                    özetleyin ve daha anlaşılır hâle getirin.
+                </p>
+
+                <button type="button"
+                        class="example-question font-label-md text-label-md
+                    text-primary flex items-center gap-1
+                    group-hover:underline text-left"
+                        data-question="Toplantıya katıldığınız için teşekkür ederim cümlesini İngilizceye çevirir misin?">
+
+                    Örnek soru sor
+
+                    <span class="material-symbols-outlined text-sm">
+                        arrow_forward
+                    </span>
+                </button>
+            </div>
+            </div>
+
+
+
+            <!-- FAQ Accordion Alternative -->
+            <div class="mt-section-padding border-t border-outline-variant pt-section-padding max-w-3xl mx-auto">
+                <h3 class="font-headline-md text-headline-md text-on-surface mb-gutter text-center">Sık Sorulan Sorular</h3>
+                <div class="flex flex-col gap-unit">
+                    <!-- Accordion Item 1 -->
+                    <div class="border-b border-outline-variant last:border-0 py-stack-md">
+                        <button aria-expanded="false" class="accordion-button w-full flex justify-between items-center text-left focus:outline-none" onclick="toggleAccordion(this)">
+                            <span class="font-headline-sm text-headline-sm text-on-surface">Şifremi nasıl sıfırlayabilirim?</span>
+                            <span class="material-symbols-outlined text-on-surface-variant chevron">expand_more</span>
+                        </button>
+                        <div class="accordion-content mt-stack-sm">
+                            <p class="font-body-md text-body-md text-secondary">Giriş ekranında "Şifremi Unuttum" bağlantısına tıklayarak e-posta adresinize bir şifre sıfırlama bağlantısı gönderebilirsiniz. Bağlantıdaki adımları takip ederek yeni şifrenizi belirleyebilirsiniz.</p>
+                        </div>
+                    </div>
+                    <!-- Accordion Item 2 -->
+                    <div class="border-b border-outline-variant last:border-0 py-stack-md">
+                        <button aria-expanded="false" class="accordion-button w-full flex justify-between items-center text-left focus:outline-none" onclick="toggleAccordion(this)">
+                            <span class="font-headline-sm text-headline-sm text-on-surface">Silinen bir görevi kurtarabilir miyim?</span>
+                            <span class="material-symbols-outlined text-on-surface-variant chevron">expand_more</span>
+                        </button>
+                        <div class="accordion-content mt-stack-sm">
+                            <p class="font-body-md text-body-md text-secondary">Evet, silinen görevler "Çöp Kutusu" klasöründe 30 gün boyunca saklanır. Bu süre zarfında çöp kutusuna giderek görevleri geri yükleyebilirsiniz.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+ <script>
+
+        const chatForm = document.getElementById("aiChatForm");
+        const questionInput = document.getElementById("questionInput");
+        const chatContainer = document.getElementById("chatContainer");
+        const chatMessages = document.getElementById("chatMessages");
+        const chatError = document.getElementById("chatError");
+        const sendButton = document.getElementById("sendButton");
+        const sendIcon = document.getElementById("sendIcon");
+        const loadingIcon = document.getElementById("loadingIcon");
+
+        chatForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+        const question = questionInput.value.trim();
+
+        if (question === "") {
+            showError("Lütfen bir mesaj yazın.");
+        return;
+            }
+
+        hideError();
+        chatContainer.classList.remove("hidden");
+
+        addUserMessage(question);
+
+        questionInput.value = "";
+        setLoading(true);
+
+        const formData = new FormData(chatForm);
+        formData.set("question", question);
+
+        try {
+                const response = await fetch(
+        '@Url.Action("SendMessage", "AISupport")',
+        {
+            method: "POST",
+        body: formData
+                    }
+        );
+
+        if (!response.ok) {
+                    throw new Error("Sunucuya bağlanırken bir hata oluştu.");
+                }
+
+        const result = await response.json();
+
+        if (result.success) {
+            addAssistantMessage(result.answer);
+                }
+        else {
+            showError(result.message);
+                }
+            }
+        catch (error) {
+            showError("Yanıt alınırken bir hata oluştu. Lütfen tekrar deneyin.");
+            }
+        finally {
+            setLoading(false);
+        questionInput.focus();
+            }
+        });
+
+        function addUserMessage(message) {
+            const messageRow = document.createElement("div");
+        messageRow.className = "flex justify-end";
+
+        const messageBubble = document.createElement("div");
+        messageBubble.className =
+        "max-w-[80%] bg-primary text-white px-4 py-3 rounded-2xl rounded-br-sm shadow-sm whitespace-pre-wrap";
+
+        messageBubble.textContent = message;
+
+        messageRow.appendChild(messageBubble);
+        chatMessages.appendChild(messageRow);
+
+        scrollToBottom();
+        }
+
+        function addAssistantMessage(message) {
+            const messageRow = document.createElement("div");
+        messageRow.className = "flex items-start gap-3";
+
+        const icon = document.createElement("div");
+        icon.className =
+        "w-9 h-9 flex-shrink-0 rounded-full bg-primary-fixed text-primary flex items-center justify-center";
+
+        const iconSpan = document.createElement("span");
+        iconSpan.className = "material-symbols-outlined text-xl";
+        iconSpan.textContent = "smart_toy";
+
+        const messageBubble = document.createElement("div");
+        messageBubble.className =
+        "max-w-[80%] bg-surface-low border border-outline-variant text-on-surface px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm whitespace-pre-wrap";
+
+        messageBubble.textContent = message;
+
+        icon.appendChild(iconSpan);
+        messageRow.appendChild(icon);
+        messageRow.appendChild(messageBubble);
+        chatMessages.appendChild(messageRow);
+
+        scrollToBottom();
+        }
+
+        function setLoading(isLoading) {
+            sendButton.disabled = isLoading;
+        questionInput.disabled = isLoading;
+
+        sendIcon.classList.toggle("hidden", isLoading);
+        loadingIcon.classList.toggle("hidden", !isLoading);
+
+        sendButton.classList.toggle("opacity-60", isLoading);
+        sendButton.classList.toggle("cursor-not-allowed", isLoading);
+        }
+
+        function showError(message) {
+            chatError.textContent = message;
+        chatError.classList.remove("hidden");
+        }
+
+        function hideError() {
+            chatError.textContent = "";
+        chatError.classList.add("hidden");
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+
+    document.querySelectorAll(".example-question")
+        .forEach(function (button) {
+            button.addEventListener("click", function () {
+                questionInput.value = button.dataset.question;
+
+                questionInput.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+                setTimeout(function () {
+                    questionInput.focus();
+                }, 400);
+            });
+        });
+</script>

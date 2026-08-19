@@ -15,17 +15,12 @@ namespace IdentityEmailApp.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly ISystemEventService _systemEventService;
 
-        public RoleController(ISystemEventService systemEventService)
-        {
-            _systemEventService = systemEventService;
-        }
-
-        public RoleController(RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager)
+        public RoleController(RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager, ISystemEventService systemEventService)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _systemEventService = systemEventService;
         }
-
 
         [HttpGet]
         public IActionResult CreateRole()

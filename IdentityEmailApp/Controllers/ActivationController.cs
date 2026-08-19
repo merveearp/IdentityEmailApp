@@ -1,7 +1,9 @@
 ﻿using IdentityEmailApp.Context;
+using IdentityEmailApp.Entities;
 using IdentityEmailApp.Enums;
 using IdentityEmailApp.Models.UserModels;
 using IdentityEmailApp.Services.Abstract;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +13,13 @@ namespace IdentityEmailApp.Controllers
     {
         private readonly EmailContext _emailContext;
         private readonly ISystemEventService _systemEventService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ActivationController(EmailContext emailContext, ISystemEventService systemEventService)
+        public ActivationController(EmailContext emailContext, ISystemEventService systemEventService, UserManager<AppUser> userManager)
         {
             _emailContext = emailContext;
             _systemEventService = systemEventService;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -84,6 +88,25 @@ namespace IdentityEmailApp.Controllers
             user.ActivationCode = 0;
 
             await _emailContext.SaveChangesAsync();
+
+            var isMember = await _userManager.IsInRoleAsync(user, "Member");
+
+            if (!isMember)
+            {
+                var roleResult = await _userManager.AddToRoleAsync(user, "Member");
+
+                if (!roleResult.Succeeded)
+                {
+                    foreach (var error in roleResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+
+                    TempData.Keep("EmailMove");
+                    return View(model);
+                }
+            }
+
 
             TempData["SuccessMessage"] =
                 "Hesabınız başarıyla doğrulandı. Giriş yapabilirsiniz.";

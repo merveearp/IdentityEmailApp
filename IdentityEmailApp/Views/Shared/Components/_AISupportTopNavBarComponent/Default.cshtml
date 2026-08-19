@@ -1,0 +1,255 @@
+﻿@*
+   _AISupportTopNavBarComponent
+*@
+<nav class="bg-surface dark:bg-surface-dim font-body-md text-body-md
+    w-full sticky top-0 z-50 border-b border-outline-variant">
+
+    <div class="w-full px-4 md:px-margin-desktop flex justify-between items-center h-16">
+
+        <!-- Sol alan -->
+        <div class="flex items-center gap-4">
+
+          
+            <a asp-controller="AISupport"
+                   asp-action="Index"
+                   class="font-headline-md text-headline-md text-on-surface
+                flex items-center gap-2">
+
+                <span class="material-symbols-outlined text-primary">
+                    smart_toy
+                </span>
+
+                Notika AI Destek
+            </a>
+        </div>
+
+        <!-- Sağ alan -->
+        <div class="flex items-center gap-2 md:gap-4">
+
+            <!-- AI Destek -->
+            <a asp-controller="AISupport"
+                   asp-action="Index"
+                   class="p-2 text-on-surface-variant
+                hover:bg-surface-container rounded-full
+                flex items-center justify-center transition-colors"
+                   title="AI Destek">
+
+                <span class="material-symbols-outlined">
+                    help
+                </span>
+            </a>
+
+            <!-- Mail -->
+            <a asp-controller="Message"
+                   asp-action="Inbox"
+                   class="p-2 text-on-surface-variant
+                hover:bg-surface-container rounded-full
+                flex items-center justify-center transition-colors"
+                   title="Notika Mail">
+
+                <span class="material-symbols-outlined">
+                    mail
+                </span>
+            </a>
+
+            <!-- Uygulamalar -->
+            <div class="relative group">
+
+                <button type="button"
+                        class="p-2 text-on-surface-variant
+                    hover:bg-surface-container rounded-full
+                    flex items-center justify-center
+                    transition-colors"
+                        title="Notika uygulamaları">
+
+                    <span class="material-symbols-outlined">
+                        apps
+                    </span>
+                </button>
+
+                <div class="absolute right-0 mt-2 w-[320px]
+                    bg-surface-lowest rounded-xl shadow-md
+                    border border-outline-variant overflow-hidden
+                    z-50 hidden group-focus-within:block">
+
+                    <div class="p-gutter bg-surface-container-low">
+
+                        <div class="flex items-center gap-stack-md">
+
+                            <div class="w-12 h-12 rounded-lg
+                                bg-primary-container
+                                text-on-primary-container
+                                flex items-center justify-center">
+
+                                <span class="material-symbols-outlined">
+                                    apps
+                                </span>
+                            </div>
+
+                            <div>
+                                <h4 class="font-headline-sm text-on-surface">
+                                    Notika Uygulamaları
+                                </h4>
+
+                                <p class="text-label-sm text-on-surface-variant">
+                                    Kullanmak istediğiniz servisi seçin
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-gutter grid grid-cols-3 gap-gutter">
+
+                        <!-- Mail -->
+                        <a asp-controller="Message"
+                               asp-action="Inbox"
+                               class="flex flex-col items-center gap-stack-sm
+                            cursor-pointer hover:opacity-80">
+
+                            <div class="w-12 h-12 rounded-xl
+                                bg-primary-container
+                                text-on-primary-container
+                                flex items-center justify-center shadow-md">
+
+                                <span class="material-symbols-outlined">
+                                    mail
+                                </span>
+                            </div>
+
+                            <span class="text-label-md">Mail</span>
+                        </a>
+
+                        <!-- Haberler -->
+                        <a asp-controller="News"
+                               asp-action="Index"
+                               class="flex flex-col items-center gap-stack-sm
+                            cursor-pointer hover:opacity-80">
+
+                            <div class="w-12 h-12 rounded-xl
+                                bg-primary-fixed
+                                text-primary-fixed-variant
+                                flex items-center justify-center shadow-md">
+
+                                <span class="material-symbols-outlined">
+                                    newspaper
+                                </span>
+                            </div>
+
+                            <span class="text-label-md">Haberler</span>
+                        </a>
+
+                        <!-- Finans -->
+                        <a asp-controller="Finance"
+                               asp-action="Index"
+                               class="flex flex-col items-center gap-stack-sm
+                            cursor-pointer hover:opacity-80">
+
+                            <div class="w-12 h-12 rounded-xl
+                                bg-tertiary-fixed
+                                text-tertiary-fixed-variant
+                                flex items-center justify-center shadow-md">
+
+                                <span class="material-symbols-outlined">
+                                    trending_up
+                                </span>
+                            </div>
+
+                            <span class="text-label-md">Finans</span>
+                        </a>
+
+                        <!-- Görevler -->
+                        <a asp-controller="Task"
+                               asp-action="Index"
+                               class="flex flex-col items-center gap-stack-sm
+                            cursor-pointer hover:opacity-80">
+
+                            <div class="w-12 h-12 rounded-xl
+                                bg-error-container
+                                text-on-error-container
+                                flex items-center justify-center shadow-md">
+
+                                <span class="material-symbols-outlined">
+                                    check_circle
+                                </span>
+                            </div>
+
+                            <span class="text-label-md">Görevler</span>
+                        </a>
+
+                        <!-- Translate -->
+                        <a asp-controller="Translate"
+                               asp-action="Index"
+                               class="flex flex-col items-center gap-stack-sm
+                            cursor-pointer hover:opacity-80">
+
+                            <div class="w-12 h-12 rounded-xl
+                                bg-secondary-fixed
+                                text-secondary-fixed-variant
+                                flex items-center justify-center shadow-md">
+
+                                <span class="material-symbols-outlined">
+                                    translate
+                                </span>
+                            </div>
+
+                            <span class="text-label-md">Translate</span>
+                        </a>
+
+                        <!-- Panel -->
+                        <a asp-controller="Dashboard"
+                               asp-action="Index"
+                               class="flex flex-col items-center gap-stack-sm
+                            cursor-pointer hover:opacity-80">
+
+                            <div class="w-12 h-12 rounded-xl
+                                bg-primary-container
+                                text-on-primary-container
+                                flex items-center justify-center shadow-md">
+
+                                <span class="material-symbols-outlined">
+                                    bar_chart
+                                </span>
+                            </div>
+
+                            <span class="text-label-md">Panel</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kullanıcı -->
+            <div class="flex items-center gap-3 pl-2
+                border-l border-outline-variant">
+
+                <div class="hidden md:block text-right">
+                    <p class="text-label-md text-on-surface leading-tight">
+                        @ViewBag.FullName
+                    </p>
+
+                    <p class="text-label-sm text-on-surface-variant">
+                        Kullanıcı
+                    </p>
+                </div>
+
+                <div class="w-9 h-9 rounded-full bg-primary-container
+                    text-on-primary-container flex items-center
+                    justify-center overflow-hidden
+                    border border-outline-variant">
+
+                    @if (!string.IsNullOrWhiteSpace(ViewBag.ImageUrl as string))
+                    {
+                        <img src="@ViewBag.ImageUrl"
+                             alt="@ViewBag.FullName"
+                             class="w-full h-full object-cover" />
+                    }
+                    else
+                    {
+                        <span class="material-symbols-outlined text-lg">
+                            person
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

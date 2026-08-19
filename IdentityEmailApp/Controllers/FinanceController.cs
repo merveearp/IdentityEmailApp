@@ -2,7 +2,7 @@
 
 namespace IdentityEmailApp.Controllers
 {
-    public class AccountController : Controller
+    public class FinanceController : Controller
     {
         public IActionResult Index()
         {

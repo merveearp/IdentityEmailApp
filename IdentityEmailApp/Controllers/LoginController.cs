@@ -108,7 +108,7 @@ namespace IdentityEmailApp.Controllers
                 "Kullanıcı adı, e-posta adresi veya şifre hatalı."
             );
 
-            return View(model);
+            return RedirectToAction("Inbox", "Message");
         }
 
         [HttpPost]

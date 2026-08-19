@@ -28,6 +28,7 @@
   <ItemGroup>
     <Folder Include="DTOs\TranslateDtos\" />
     <Folder Include="Models\" />
+    <Folder Include="Hubs\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\images\profile\" />

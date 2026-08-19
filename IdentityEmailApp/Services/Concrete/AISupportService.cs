@@ -15,6 +15,7 @@ namespace IdentityEmailApp.Services.Concrete
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        
 
         public AISupportService(
             HttpClient httpClient,
