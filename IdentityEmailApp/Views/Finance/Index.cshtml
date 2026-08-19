@@ -1,0 +1,428 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html class="dark" lang="tr">
+  
+@await Component.InvokeAsync("_FinanceHeadComponent")
+
+
+<body class="min-h-screen bg-dark-bg text-dark-text">
+
+<!-- Top Navigation -->
+@await Component.InvokeAsync("_FinanceHeaderComponent")
+
+
+<!-- Main Content Container -->
+<main class="pt-24 pb-12 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto space-y-stack-xl">
+<!-- Market Summary Section -->
+
+
+<section>
+<h2 class="font-headline-sm text-headline-sm text-dark-text mb-stack-md">Piyasa Özeti</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-gutter">
+
+<!-- Card 1 -->
+<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col justify-between border-opacity-100 ring-1 ring-white/5">
+<div class="flex justify-between items-start mb-stack-sm">
+<span class="font-label-md text-label-md text-dark-text-muted">Dolar/TL</span>
+<span class="material-symbols-outlined text-dark-primary text-sm">currency_exchange</span>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<div class="font-numeric-data text-numeric-data text-dark-text">32.45</div>
+<div class="text-xs text-[#22c55e] flex items-center font-medium mt-1">
+<span class="material-symbols-outlined text-[10px] mr-0.5">arrow_upward</span> %0.12
+                            </div>
+</div>
+<div class="w-12 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
+</div>
+</div>
+
+
+<!-- Card 2 -->
+<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col justify-between border-opacity-100 ring-1 ring-white/5">
+<div class="flex justify-between items-start mb-stack-sm">
+<span class="font-label-md text-label-md text-dark-text-muted">Euro/TL</span>
+<span class="material-symbols-outlined text-dark-primary text-sm">euro</span>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<div class="font-numeric-data text-numeric-data text-dark-text">35.20</div>
+<div class="text-xs text-[#ef4444] flex items-center font-medium mt-1">
+<span class="material-symbols-outlined text-[10px] mr-0.5">arrow_downward</span> -%0.05
+                            </div>
+</div>
+<div class="w-12 h-6 border-t-2 border-[#ef4444] rounded-tl-full opacity-60"></div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col justify-between border-opacity-100 ring-1 ring-white/5">
+<div class="flex justify-between items-start mb-stack-sm">
+<span class="font-label-md text-label-md text-dark-text-muted">Gram Altın</span>
+<span class="material-symbols-outlined text-dark-primary text-sm">diamond</span>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<div class="font-numeric-data text-numeric-data text-dark-text">2,450</div>
+<div class="text-xs text-[#22c55e] flex items-center font-medium mt-1">
+<span class="material-symbols-outlined text-[10px] mr-0.5">arrow_upward</span> %0.85
+                            </div>
+</div>
+<div class="w-12 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col justify-between border-opacity-100 ring-1 ring-white/5">
+<div class="flex justify-between items-start mb-stack-sm">
+<span class="font-label-md text-label-md text-dark-text-muted">BIST 100</span>
+<span class="material-symbols-outlined text-dark-primary text-sm">show_chart</span>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<div class="font-numeric-data text-numeric-data text-dark-text">9,850</div>
+<div class="text-xs text-[#22c55e] flex items-center font-medium mt-1">
+<span class="material-symbols-outlined text-[10px] mr-0.5">arrow_upward</span> %1.20
+                            </div>
+</div>
+<div class="w-12 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col justify-between border-opacity-100 ring-1 ring-white/5">
+<div class="flex justify-between items-start mb-stack-sm">
+<span class="font-label-md text-label-md text-dark-text-muted">Bitcoin</span>
+<span class="material-symbols-outlined text-dark-primary text-sm">currency_bitcoin</span>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<div class="font-numeric-data text-numeric-data text-dark-text">$64,200</div>
+<div class="text-xs text-[#ef4444] flex items-center font-medium mt-1">
+<span class="material-symbols-outlined text-[10px] mr-0.5">arrow_downward</span> -%2.10
+                            </div>
+</div>
+<div class="w-12 h-6 border-t-2 border-[#ef4444] rounded-tl-full opacity-60"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Content (2 Columns) -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Left (Wide): Piyasa Grafiği -->
+<div class="lg:col-span-2 bg-dark-surface rounded-lg p-stack-lg card-shadow border border-dark-border flex flex-col border-opacity-100 ring-1 ring-white/5">
+<div class="flex justify-between items-start mb-stack-md">
+<div>
+<h3 class="font-label-md text-label-md text-dark-text-muted mb-1 uppercase tracking-wider">Piyasa Grafiği</h3>
+<div class="flex items-end gap-3 mt-2">
+<span class="font-headline-md text-headline-md text-dark-text">BIST 100</span>
+<span class="font-numeric-data text-numeric-data text-dark-text mb-1">9,850</span>
+<span class="text-sm text-[#22c55e] font-medium mb-1">%1.20</span>
+</div>
+</div>
+<div class="flex bg-dark-surface-elevated rounded-lg p-1 border border-dark-border">
+<button class="px-3 py-1 text-xs font-medium rounded-md text-dark-text-muted hover:bg-dark-surface transition-colors">1G</button>
+<button class="px-3 py-1 text-xs font-medium rounded-md text-dark-text-muted hover:bg-dark-surface transition-colors">1H</button>
+<button class="px-3 py-1 text-xs font-medium rounded-md bg-dark-surface text-dark-primary shadow-sm border border-dark-border transition-colors border-opacity-100 ring-1 ring-white/5">1A</button>
+<button class="px-3 py-1 text-xs font-medium rounded-md text-dark-text-muted hover:bg-dark-surface transition-colors">3A</button>
+<button class="px-3 py-1 text-xs font-medium rounded-md text-dark-text-muted hover:bg-dark-surface transition-colors">1Y</button>
+</div>
+</div>
+<div class="flex-grow w-full min-h-[300px] relative rounded-lg overflow-hidden border border-dark-border bg-dark-bg flex items-end p-4">
+<!-- Abstract Line Chart Representation -->
+<div class="absolute bottom-0 w-full h-full opacity-20 bg-gradient-to-t from-dark-primary to-transparent"></div>
+<svg class="absolute bottom-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,100 L0,70 Q10,60 20,80 T40,50 T60,60 T80,30 T100,20 L100,100 Z" fill="url(#grad1)" opacity="0.2"></path>
+<path class="text-dark-primary" d="M0,70 Q10,60 20,80 T40,50 T60,60 T80,30 T100,20" fill="none" stroke="currentColor" stroke-width="0.3"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:theme('colors.dark-primary');stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:theme('colors.dark-primary');stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<!-- Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none p-4">
+<div class="border-b border-dark-border w-full h-0"></div>
+<div class="border-b border-dark-border w-full h-0"></div>
+<div class="border-b border-dark-border w-full h-0"></div>
+<div class="border-b border-dark-border w-full h-0"></div>
+</div>
+</div>
+</div>
+<!-- Right: Takip Listem -->
+<div class="bg-dark-surface rounded-lg p-stack-lg card-shadow border border-dark-border border-opacity-100 ring-1 ring-white/5">
+<h3 class="font-label-md text-label-md text-dark-text-muted mb-stack-md uppercase tracking-wider">Takip Listem</h3>
+<div class="space-y-4">
+<!-- Item 1 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors cursor-pointer px-2 -mx-2 rounded py-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-dark-primary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<div>
+<div class="font-body-sm font-medium text-dark-text">THYAO</div>
+<div class="text-xs text-dark-text-muted">Türk Hava Yolları</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-numeric-data text-sm text-dark-text">315.50</div>
+<div class="text-xs text-[#22c55e]">%2.40</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors cursor-pointer px-2 -mx-2 rounded py-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-dark-primary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<div>
+<div class="font-body-sm font-medium text-dark-text">ASELS</div>
+<div class="text-xs text-dark-text-muted">Aselsan</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-numeric-data text-sm text-dark-text">62.80</div>
+<div class="text-xs text-[#22c55e]">%1.15</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors cursor-pointer px-2 -mx-2 rounded py-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-dark-primary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<div>
+<div class="font-body-sm font-medium text-dark-text">AKBNK</div>
+<div class="text-xs text-dark-text-muted">Akbank</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-numeric-data text-sm text-dark-text">60.10</div>
+<div class="text-xs text-[#ef4444]">-%0.50</div>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors cursor-pointer px-2 -mx-2 rounded py-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-dark-text-muted text-sm" style="font-variation-settings: 'FILL' 0;">star</span>
+<div>
+<div class="font-body-sm font-medium text-dark-text">GARAN</div>
+<div class="text-xs text-dark-text-muted">Garanti BBVA</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-numeric-data text-sm text-dark-text">112.40</div>
+<div class="text-xs text-[#22c55e]">%0.80</div>
+</div>
+</div>
+<!-- Item 5 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors cursor-pointer px-2 -mx-2 rounded py-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-dark-primary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<div>
+<div class="font-body-sm font-medium text-dark-text">TUPRS</div>
+<div class="text-xs text-dark-text-muted">Tüpraş</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-numeric-data text-sm text-dark-text">184.20</div>
+<div class="text-xs text-[#ef4444]">-%1.20</div>
+</div>
+</div>
+</div>
+<button class="w-full mt-4 py-2 border border-dark-border rounded text-xs font-medium text-dark-primary hover:bg-dark-surface-elevated transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">add</span> Tümünü Gör
+                 </button>
+</div>
+</section>
+<!-- Additional Assets Sections -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Hisse Senetleri -->
+<div class="bg-dark-surface rounded-lg p-stack-lg card-shadow border border-dark-border border-opacity-100 ring-1 ring-white/5">
+<h3 class="font-headline-sm text-headline-sm text-dark-text mb-stack-md">Hisse Senetleri</h3>
+<div class="space-y-4">
+<!-- Item 1 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors px-2 -mx-2 rounded cursor-pointer py-3">
+<div class="flex items-center gap-4 w-1/3">
+<div>
+<div class="font-body-sm font-medium text-dark-text">THYAO</div>
+<div class="text-xs text-dark-text-muted">Türk Hava Yolları</div>
+</div>
+</div>
+<div class="w-1/4 text-right">
+<div class="font-numeric-data text-sm text-dark-text">315.50</div>
+<div class="text-xs text-[#22c55e]">%2.40</div>
+</div>
+<div class="w-1/4 flex justify-end">
+<div class="w-16 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors px-2 -mx-2 rounded cursor-pointer py-3">
+<div class="flex items-center gap-4 w-1/3">
+<div>
+<div class="font-body-sm font-medium text-dark-text">ASELS</div>
+<div class="text-xs text-dark-text-muted">Aselsan</div>
+</div>
+</div>
+<div class="w-1/4 text-right">
+<div class="font-numeric-data text-sm text-dark-text">62.80</div>
+<div class="text-xs text-[#22c55e]">%1.15</div>
+</div>
+<div class="w-1/4 flex justify-end">
+<div class="w-16 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors px-2 -mx-2 rounded cursor-pointer py-3">
+<div class="flex items-center gap-4 w-1/3">
+<div>
+<div class="font-body-sm font-medium text-dark-text">AKBNK</div>
+<div class="text-xs text-dark-text-muted">Akbank</div>
+</div>
+</div>
+<div class="w-1/4 text-right">
+<div class="font-numeric-data text-sm text-dark-text">60.10</div>
+<div class="text-xs text-[#ef4444]">-%0.50</div>
+</div>
+<div class="w-1/4 flex justify-end">
+<div class="w-16 h-6 border-t-2 border-[#ef4444] rounded-tl-full opacity-60"></div>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors px-2 -mx-2 rounded cursor-pointer py-3">
+<div class="flex items-center gap-4 w-1/3">
+<div>
+<div class="font-body-sm font-medium text-dark-text">GARAN</div>
+<div class="text-xs text-dark-text-muted">Garanti BBVA</div>
+</div>
+</div>
+<div class="w-1/4 text-right">
+<div class="font-numeric-data text-sm text-dark-text">112.40</div>
+<div class="text-xs text-[#22c55e]">%0.80</div>
+</div>
+<div class="w-1/4 flex justify-end">
+<div class="w-16 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
+</div>
+</div>
+<!-- Item 5 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors px-2 -mx-2 rounded cursor-pointer py-3">
+<div class="flex items-center gap-4 w-1/3">
+<div>
+<div class="font-body-sm font-medium text-dark-text">TUPRS</div>
+<div class="text-xs text-dark-text-muted">Tüpraş</div>
+</div>
+</div>
+<div class="w-1/4 text-right">
+<div class="font-numeric-data text-sm text-dark-text">184.20</div>
+<div class="text-xs text-[#ef4444]">-%1.20</div>
+</div>
+<div class="w-1/4 flex justify-end">
+<div class="w-16 h-6 border-t-2 border-[#ef4444] rounded-tl-full opacity-60"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Vadeli İşlemler -->
+<div class="bg-dark-surface rounded-lg p-stack-lg card-shadow border border-dark-border border-opacity-100 ring-1 ring-white/5">
+<h3 class="font-headline-sm text-headline-sm text-dark-text mb-stack-md">Vadeli İşlemler</h3>
+<div class="space-y-4">
+<!-- Item 1 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors px-2 -mx-2 rounded cursor-pointer py-3">
+<div class="flex items-center gap-4 w-1/3">
+<div>
+<div class="font-body-sm font-medium text-dark-text">F_XU030</div>
+<div class="text-xs text-dark-text-muted">BIST 30 Vadeli</div>
+</div>
+</div>
+<div class="w-1/4 text-right">
+<div class="font-numeric-data text-sm text-dark-text">10,850</div>
+<div class="text-xs text-[#22c55e]">%1.45</div>
+</div>
+<div class="w-1/4 flex justify-end">
+<div class="w-16 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors px-2 -mx-2 rounded cursor-pointer py-3">
+<div class="flex items-center gap-4 w-1/3">
+<div>
+<div class="font-body-sm font-medium text-dark-text">F_USDTRY</div>
+<div class="text-xs text-dark-text-muted">Dolar/TL Vadeli</div>
+</div>
+</div>
+<div class="w-1/4 text-right">
+<div class="font-numeric-data text-sm text-dark-text">33.15</div>
+<div class="text-xs text-[#22c55e]">%0.25</div>
+</div>
+<div class="w-1/4 flex justify-end">
+<div class="w-16 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors px-2 -mx-2 rounded cursor-pointer py-3">
+<div class="flex items-center gap-4 w-1/3">
+<div>
+<div class="font-body-sm font-medium text-dark-text">F_EURTRY</div>
+<div class="text-xs text-dark-text-muted">Euro/TL Vadeli</div>
+</div>
+</div>
+<div class="w-1/4 text-right">
+<div class="font-numeric-data text-sm text-dark-text">36.05</div>
+<div class="text-xs text-[#ef4444]">-%0.15</div>
+</div>
+<div class="w-1/4 flex justify-end">
+<div class="w-16 h-6 border-t-2 border-[#ef4444] rounded-tl-full opacity-60"></div>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors px-2 -mx-2 rounded cursor-pointer py-3">
+<div class="flex items-center gap-4 w-1/3">
+<div>
+<div class="font-body-sm font-medium text-dark-text">F_XAUUSD</div>
+<div class="text-xs text-dark-text-muted">Altın Vadeli</div>
+</div>
+</div>
+<div class="w-1/4 text-right">
+<div class="font-numeric-data text-sm text-dark-text">2,380</div>
+<div class="text-xs text-[#22c55e]">%1.10</div>
+</div>
+<div class="w-1/4 flex justify-end">
+<div class="w-16 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- News Section -->
+<section>
+<h2 class="font-headline-sm text-headline-sm text-dark-text mb-stack-md">Piyasa Haberleri</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- News Card 1 -->
+<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col cursor-pointer hover:bg-dark-surface-elevated transition-colors border-opacity-100 ring-1 ring-white/5">
+<div class="flex justify-between items-start mb-2">
+<span class="text-xs font-semibold text-dark-primary px-2 py-1 bg-dark-bg rounded">Ekonomi</span>
+<span class="text-xs text-dark-text-muted">10 dk önce</span>
+</div>
+<h4 class="font-body-lg text-body-lg font-semibold text-dark-text mb-2 line-clamp-2">Merkez Bankası faiz kararını açıkladı</h4>
+<p class="text-sm text-dark-text-muted line-clamp-3 leading-relaxed text-dark-text/80">Türkiye Cumhuriyet Merkez Bankası (TCMB) Para Politikası Kurulu, politika faizini beklentilere paralel olarak sabit bıraktığını duyurdu.</p>
+</div>
+<!-- News Card 2 -->
+<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col cursor-pointer hover:bg-dark-surface-elevated transition-colors border-opacity-100 ring-1 ring-white/5">
+<div class="flex justify-between items-start mb-2">
+<span class="text-xs font-semibold text-[#22c55e] px-2 py-1 bg-dark-bg rounded">Şirketler</span>
+<span class="text-xs text-dark-text-muted">45 dk önce</span>
+</div>
+<h4 class="font-body-lg text-body-lg font-semibold text-dark-text mb-2 line-clamp-2">BIST 100 güne yükselişle başladı</h4>
+<p class="text-sm text-dark-text-muted line-clamp-3 leading-relaxed text-dark-text/80">Borsa İstanbul'da BIST 100 endeksi, güne yüzde 0,55 artışla 9.904,40 puandan başladı. Analistler pozitif havanın sürebileceğini belirtiyor.</p>
+</div>
+<!-- News Card 3 -->
+<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col cursor-pointer hover:bg-dark-surface-elevated transition-colors border-opacity-100 ring-1 ring-white/5">
+<div class="flex justify-between items-start mb-2">
+<span class="text-xs font-semibold text-[#ef4444] px-2 py-1 bg-dark-bg rounded">Küresel</span>
+<span class="text-xs text-dark-text-muted">2 saat önce</span>
+</div>
+<h4 class="font-body-lg text-body-lg font-semibold text-dark-text mb-2 line-clamp-2">Avrupa piyasalarında dalgalı seyir</h4>
+<p class="text-sm text-dark-text-muted line-clamp-3 leading-relaxed text-dark-text/80">Avrupa borsaları, yoğunlaşan bilanço sezonu ve makroekonomik veriler eşliğinde güne karışık bir seyirle başladı.</p>
+</div>
+</div>
+</section>
+</main>
+</body>
+</html>
