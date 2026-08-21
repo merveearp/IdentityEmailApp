@@ -12,6 +12,7 @@ namespace IdentityEmailApp.Extensions
             services.AddHttpClient<INewsService, NewsService>();
             services.AddHttpClient<ITranslateService, TranslateService>();
             services.AddHttpClient<IAISupportService, AISupportService>();
+            services.AddHttpClient<IFinanceService, FinanceService>();
         }
     }
 }

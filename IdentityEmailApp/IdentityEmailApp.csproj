@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\TranslateDtos\" />
     <Folder Include="Models\" />
     <Folder Include="Hubs\" />
     <Folder Include="wwwroot\css\" />

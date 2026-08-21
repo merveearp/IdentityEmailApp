@@ -18,96 +18,9 @@
 <!-- Main Content Container -->
 <main class="pt-24 pb-12 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto space-y-stack-xl">
 <!-- Market Summary Section -->
+     
+    @await Component.InvokeAsync("_FinanceCurrencyAllComponent")
 
-
-<section>
-<h2 class="font-headline-sm text-headline-sm text-dark-text mb-stack-md">Piyasa Özeti</h2>
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-gutter">
-
-<!-- Card 1 -->
-<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col justify-between border-opacity-100 ring-1 ring-white/5">
-<div class="flex justify-between items-start mb-stack-sm">
-<span class="font-label-md text-label-md text-dark-text-muted">Dolar/TL</span>
-<span class="material-symbols-outlined text-dark-primary text-sm">currency_exchange</span>
-</div>
-<div class="flex items-end justify-between">
-<div>
-<div class="font-numeric-data text-numeric-data text-dark-text">32.45</div>
-<div class="text-xs text-[#22c55e] flex items-center font-medium mt-1">
-<span class="material-symbols-outlined text-[10px] mr-0.5">arrow_upward</span> %0.12
-                            </div>
-</div>
-<div class="w-12 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
-</div>
-</div>
-
-
-<!-- Card 2 -->
-<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col justify-between border-opacity-100 ring-1 ring-white/5">
-<div class="flex justify-between items-start mb-stack-sm">
-<span class="font-label-md text-label-md text-dark-text-muted">Euro/TL</span>
-<span class="material-symbols-outlined text-dark-primary text-sm">euro</span>
-</div>
-<div class="flex items-end justify-between">
-<div>
-<div class="font-numeric-data text-numeric-data text-dark-text">35.20</div>
-<div class="text-xs text-[#ef4444] flex items-center font-medium mt-1">
-<span class="material-symbols-outlined text-[10px] mr-0.5">arrow_downward</span> -%0.05
-                            </div>
-</div>
-<div class="w-12 h-6 border-t-2 border-[#ef4444] rounded-tl-full opacity-60"></div>
-</div>
-</div>
-<!-- Card 3 -->
-<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col justify-between border-opacity-100 ring-1 ring-white/5">
-<div class="flex justify-between items-start mb-stack-sm">
-<span class="font-label-md text-label-md text-dark-text-muted">Gram Altın</span>
-<span class="material-symbols-outlined text-dark-primary text-sm">diamond</span>
-</div>
-<div class="flex items-end justify-between">
-<div>
-<div class="font-numeric-data text-numeric-data text-dark-text">2,450</div>
-<div class="text-xs text-[#22c55e] flex items-center font-medium mt-1">
-<span class="material-symbols-outlined text-[10px] mr-0.5">arrow_upward</span> %0.85
-                            </div>
-</div>
-<div class="w-12 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
-</div>
-</div>
-<!-- Card 4 -->
-<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col justify-between border-opacity-100 ring-1 ring-white/5">
-<div class="flex justify-between items-start mb-stack-sm">
-<span class="font-label-md text-label-md text-dark-text-muted">BIST 100</span>
-<span class="material-symbols-outlined text-dark-primary text-sm">show_chart</span>
-</div>
-<div class="flex items-end justify-between">
-<div>
-<div class="font-numeric-data text-numeric-data text-dark-text">9,850</div>
-<div class="text-xs text-[#22c55e] flex items-center font-medium mt-1">
-<span class="material-symbols-outlined text-[10px] mr-0.5">arrow_upward</span> %1.20
-                            </div>
-</div>
-<div class="w-12 h-6 border-b-2 border-[#22c55e] rounded-bl-full opacity-60"></div>
-</div>
-</div>
-<!-- Card 5 -->
-<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col justify-between border-opacity-100 ring-1 ring-white/5">
-<div class="flex justify-between items-start mb-stack-sm">
-<span class="font-label-md text-label-md text-dark-text-muted">Bitcoin</span>
-<span class="material-symbols-outlined text-dark-primary text-sm">currency_bitcoin</span>
-</div>
-<div class="flex items-end justify-between">
-<div>
-<div class="font-numeric-data text-numeric-data text-dark-text">$64,200</div>
-<div class="text-xs text-[#ef4444] flex items-center font-medium mt-1">
-<span class="material-symbols-outlined text-[10px] mr-0.5">arrow_downward</span> -%2.10
-                            </div>
-</div>
-<div class="w-12 h-6 border-t-2 border-[#ef4444] rounded-tl-full opacity-60"></div>
-</div>
-</div>
-</div>
-</section>
 <!-- Main Content (2 Columns) -->
 <section class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
 <!-- Left (Wide): Piyasa Grafiği -->
@@ -151,86 +64,16 @@
 </div>
 </div>
 </div>
+
+
 <!-- Right: Takip Listem -->
-<div class="bg-dark-surface rounded-lg p-stack-lg card-shadow border border-dark-border border-opacity-100 ring-1 ring-white/5">
-<h3 class="font-label-md text-label-md text-dark-text-muted mb-stack-md uppercase tracking-wider">Takip Listem</h3>
-<div class="space-y-4">
-<!-- Item 1 -->
-<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors cursor-pointer px-2 -mx-2 rounded py-3">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-dark-primary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-<div>
-<div class="font-body-sm font-medium text-dark-text">THYAO</div>
-<div class="text-xs text-dark-text-muted">Türk Hava Yolları</div>
-</div>
-</div>
-<div class="text-right">
-<div class="font-numeric-data text-sm text-dark-text">315.50</div>
-<div class="text-xs text-[#22c55e]">%2.40</div>
-</div>
-</div>
-<!-- Item 2 -->
-<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors cursor-pointer px-2 -mx-2 rounded py-3">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-dark-primary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-<div>
-<div class="font-body-sm font-medium text-dark-text">ASELS</div>
-<div class="text-xs text-dark-text-muted">Aselsan</div>
-</div>
-</div>
-<div class="text-right">
-<div class="font-numeric-data text-sm text-dark-text">62.80</div>
-<div class="text-xs text-[#22c55e]">%1.15</div>
-</div>
-</div>
-<!-- Item 3 -->
-<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors cursor-pointer px-2 -mx-2 rounded py-3">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-dark-primary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-<div>
-<div class="font-body-sm font-medium text-dark-text">AKBNK</div>
-<div class="text-xs text-dark-text-muted">Akbank</div>
-</div>
-</div>
-<div class="text-right">
-<div class="font-numeric-data text-sm text-dark-text">60.10</div>
-<div class="text-xs text-[#ef4444]">-%0.50</div>
-</div>
-</div>
-<!-- Item 4 -->
-<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors cursor-pointer px-2 -mx-2 rounded py-3">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-dark-text-muted text-sm" style="font-variation-settings: 'FILL' 0;">star</span>
-<div>
-<div class="font-body-sm font-medium text-dark-text">GARAN</div>
-<div class="text-xs text-dark-text-muted">Garanti BBVA</div>
-</div>
-</div>
-<div class="text-right">
-<div class="font-numeric-data text-sm text-dark-text">112.40</div>
-<div class="text-xs text-[#22c55e]">%0.80</div>
-</div>
-</div>
-<!-- Item 5 -->
-<div class="flex justify-between items-center py-2 border-b border-dark-border last:border-0 hover:bg-dark-surface-elevated transition-colors cursor-pointer px-2 -mx-2 rounded py-3">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-dark-primary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-<div>
-<div class="font-body-sm font-medium text-dark-text">TUPRS</div>
-<div class="text-xs text-dark-text-muted">Tüpraş</div>
-</div>
-</div>
-<div class="text-right">
-<div class="font-numeric-data text-sm text-dark-text">184.20</div>
-<div class="text-xs text-[#ef4444]">-%1.20</div>
-</div>
-</div>
-</div>
-<button class="w-full mt-4 py-2 border border-dark-border rounded text-xs font-medium text-dark-primary hover:bg-dark-surface-elevated transition-colors flex items-center justify-center gap-1">
-<span class="material-symbols-outlined text-sm">add</span> Tümünü Gör
-                 </button>
-</div>
+      @await Component.InvokeAsync("_FinanceStockRadarComponent")
+
 </section>
+
+  
+        @await Component.InvokeAsync("_FinanceFeaturedStocksComponent")
+
 <!-- Additional Assets Sections -->
 <section class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
 <!-- Hisse Senetleri -->
