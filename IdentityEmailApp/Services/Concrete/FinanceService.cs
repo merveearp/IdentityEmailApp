@@ -45,45 +45,117 @@ namespace IdentityEmailApp.Services.Concrete
             var apiKey = _configuration["CurrencyApi:ApiKey"];
 
             _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Add("authorization", $"apikey {apiKey}");
+
+            _httpClient.DefaultRequestHeaders.Add(
+                "authorization",
+                $"apikey {apiKey}");
 
             var response = await _httpClient.GetAsync(
-          "https://api.collectapi.com/economy/hisseSenedi");
+                "https://api.collectapi.com/economy/hisseSenedi");
+
             var json = await response.Content.ReadAsStringAsync();
 
-            var result = JsonConvert.DeserializeObject<FinanceStockAllDto>(json);
-
-            return result;
-
-        }
-        public async Task<List<FinanceStockResultDto>> GetFeaturedStocksAsync()
-        {
-            var stockData = await GetAllStocksAsync();
-
-            return stockData.Result
-               .Where(x =>
-            x.Code == "THYAO" ||
-            x.Code == "ASELS" ||
-            x.Code == "AKBNK" ||
-            x.Code == "GARAN" ||
-            x.Code == "TUPRS")
-                 .ToList();
-        }
-
-        public async Task<FinanceStockRadarDto> GetStockRadarAsync()
-        {
-            var stockData = await GetAllStocksAsync();
-
-            return new FinanceStockRadarDto
-
+            if (!response.IsSuccessStatusCode)
             {
-                TopGainer=stockData.Result.OrderByDescending(x=>x.Rate).FirstOrDefault(),
+                throw new Exception(
+                    $"Borsa API hatası: {json}");
+            }
 
-                TopLoser = stockData.Result.OrderBy(x => x.Rate).FirstOrDefault(),
+            var result =
+                JsonConvert.DeserializeObject<FinanceStockAllDto>(
+                    json
+                );
 
-                HighestVolume = stockData.Result.OrderByDescending(x => x.Hacim).FirstOrDefault()
+            return result ?? new FinanceStockAllDto();
+        }
+      
+
+        public async Task<List<FinanceLiveStockResultDto>> GetLiveStocksAsync()
+        {
+            var apiKey = _configuration["CurrencyApi:ApiKey"];
+            _httpClient.DefaultRequestHeaders.Clear();
+
+            _httpClient.DefaultRequestHeaders.Add("authorization", $"apikey {apiKey}");
+            
+            var repsonse = await _httpClient.GetAsync("https://api.collectapi.com/economy/liveBorsa");
+            var json = await repsonse.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<FinanceLiveStockDto>(json);
+
+            return result?.Result
+                .OrderByDescending(x => Math.Abs(x.Rate))
+                .Take(5)
+                .ToList()
+                ?? new List<FinanceLiveStockResultDto>();
+                
+
+        }
+
+        public async Task<List<FinanceGoldResultDto>> GetGoldPricesAsync()
+        {
+            var apiKey =
+                _configuration["CurrencyApi:ApiKey"];
+
+            _httpClient.DefaultRequestHeaders.Clear();
+
+            _httpClient.DefaultRequestHeaders.Add(
+                "authorization",
+                $"apikey {apiKey}");
+
+
+            var response = await _httpClient.GetAsync(
+                "https://api.collectapi.com/economy/goldPrice");
+
+            var json =
+                await response.Content.ReadAsStringAsync();
+
+            var result =
+                JsonConvert.DeserializeObject<FinanceGoldAllDto>(
+                    json);
+
+            return result.Result
+              .Where(x =>
+                  !string.IsNullOrWhiteSpace(x.Buy) &&
+                  !string.IsNullOrWhiteSpace(x.Sell) &&
+                  x.Buy != "-" &&
+                  x.Sell != "-")
+              .Take(5)
+              .ToList();
+        }
+
+        public async Task<FinanceStockOverviewDto> GetStockOverviewAsync()
+        {
+           
+            var stockData = await GetAllStocksAsync();
+
+            var featuredStocks = stockData.Result
+                .Where(x =>
+                    x.Code == "THYAO" ||
+                    x.Code == "ASELS" ||
+                    x.Code == "AKBNK" ||
+                    x.Code == "GARAN" ||
+                    x.Code == "TUPRS")
+                .ToList();
+
+            var radar = new FinanceStockRadarDto
+            {
+                TopGainer = stockData.Result
+                    .OrderByDescending(x => x.Rate)
+                    .FirstOrDefault(),
+
+                TopLoser = stockData.Result
+                    .OrderBy(x => x.Rate)
+                    .FirstOrDefault(),
+
+                HighestVolume = stockData.Result
+                    .OrderByDescending(x => x.Hacim)
+                    .FirstOrDefault()
             };
-        
+
+            return new FinanceStockOverviewDto
+            {
+                FeaturedStocks = featuredStocks,
+                Radar = radar
+            };
         }
     }
 }

@@ -1,0 +1,229 @@
+﻿@using System.Globalization
+@using IdentityEmailApp.DTOs.FinanceDtos
+@model List<FinanceGoldResultDto>
+
+@{
+    var trCulture = new CultureInfo("tr-TR");
+
+    string FormatPrice(string value)
+    {
+        if (decimal.TryParse(
+            value,
+            NumberStyles.Any,
+            CultureInfo.InvariantCulture,
+            out var price))
+        {
+            return price.ToString("N2", trCulture);
+        }
+
+        return value;
+    }
+}
+
+<div class="bg-dark-surface rounded-lg p-stack-lg
+    card-shadow border border-dark-border
+    border-opacity-100 ring-1 ring-white/5">
+
+    <!-- Başlık -->
+    <div class="flex items-center justify-between
+        mb-stack-md">
+
+        <div>
+            <div class="flex items-center gap-2">
+
+                <div class="w-9 h-9 rounded-lg
+                    bg-[#f59e0b]/10
+                    border border-[#f59e0b]/20
+                    flex items-center justify-center">
+
+                    <span class="material-symbols-outlined
+                        text-[#f59e0b]">
+                        diamond
+                    </span>
+                </div>
+
+                <div>
+                    <h3 class="font-headline-sm text-headline-sm
+                        text-dark-text">
+                        Altın Fiyatları
+                    </h3>
+
+                    <p class="text-xs text-dark-text-muted mt-1">
+                        Güncel alış ve satış değerleri
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2
+            px-2.5 py-1 rounded-full
+            bg-[#22c55e]/10
+            border border-[#22c55e]/20">
+
+            <span class="w-1.5 h-1.5 rounded-full
+                bg-[#22c55e] animate-pulse">
+            </span>
+
+            <span class="text-[10px] font-semibold
+                text-[#22c55e] uppercase">
+                Güncel
+            </span>
+        </div>
+    </div>
+
+    <!-- Sütun başlıkları -->
+    <div class="grid grid-cols-12 gap-3
+        px-3 pb-2 border-b border-dark-border
+        text-[10px] uppercase tracking-wider
+        text-dark-text-muted">
+
+        <div class="col-span-6">
+            Altın Türü
+        </div>
+
+        <div class="col-span-3 text-right">
+            Alış
+        </div>
+
+        <div class="col-span-3 text-right">
+            Satış
+        </div>
+    </div>
+
+    <!-- Altın listesi -->
+    <div class="divide-y divide-dark-border">
+
+        @foreach (var gold in Model)
+        {
+            var goldIcon = gold.Name switch
+            {
+                var name when name.Contains(
+                    "Gram",
+                    StringComparison.OrdinalIgnoreCase)
+                    => "diamond",
+
+                var name when name.Contains(
+                    "Çeyrek",
+                    StringComparison.OrdinalIgnoreCase)
+                    => "monetization_on",
+
+                var name when name.Contains(
+                    "Yarım",
+                    StringComparison.OrdinalIgnoreCase)
+                    => "toll",
+
+                var name when name.Contains(
+                    "Tam",
+                    StringComparison.OrdinalIgnoreCase)
+                    => "workspace_premium",
+
+                var name when name.Contains(
+                    "Cumhuriyet",
+                    StringComparison.OrdinalIgnoreCase)
+                    => "military_tech",
+
+                _ => "savings"
+            };
+
+            <div class="grid grid-cols-12 gap-3
+                items-center px-3 py-4
+                hover:bg-dark-surface-elevated
+                transition-colors rounded-lg">
+
+                <!-- Altın adı -->
+                <div class="col-span-6 flex items-center gap-3">
+
+                    <div class="w-10 h-10 rounded-xl
+                        bg-gradient-to-br
+                        from-[#fbbf24]/20
+                        to-[#f59e0b]/5
+                        border border-[#f59e0b]/20
+                        flex items-center justify-center
+                        shrink-0">
+
+                        <span class="material-symbols-outlined
+                            text-[#fbbf24] text-xl">
+                            @goldIcon
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="font-body-sm font-semibold
+                            text-dark-text">
+                            @gold.Name
+                        </div>
+
+                        <div class="flex items-center gap-1
+                            text-xs text-dark-text-muted
+                            mt-1">
+
+                            <span class="material-symbols-outlined
+                                text-[13px]">
+                                currency_lira
+                            </span>
+
+                            Türk Lirası
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alış -->
+                <div class="col-span-3 text-right">
+
+                    <div class="font-numeric-data text-sm
+                        font-semibold text-[#22c55e]">
+                        @FormatPrice(gold.Buy) ₺
+                    </div>
+
+                    <div class="text-[10px]
+                        text-dark-text-muted mt-1">
+                        ALIŞ
+                    </div>
+                </div>
+
+                <!-- Satış -->
+                <div class="col-span-3 text-right">
+
+                    <div class="font-numeric-data text-sm
+                        font-semibold text-dark-text">
+                        @FormatPrice(gold.Sell) ₺
+                    </div>
+
+                    <div class="text-[10px]
+                        text-dark-text-muted mt-1">
+                        SATIŞ
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="flex flex-col items-center
+                justify-center py-12
+                text-dark-text-muted">
+
+                <span class="material-symbols-outlined
+                    text-4xl text-[#f59e0b] mb-2">
+                    diamond
+                </span>
+
+                <p class="text-sm">
+                    Altın fiyatları alınamadı.
+                </p>
+            </div>
+        }
+    </div>
+
+    <!-- Alt bilgi -->
+    <div class="flex items-center gap-2
+        border-t border-dark-border
+        pt-3 mt-2 text-xs text-dark-text-muted">
+
+        <span class="material-symbols-outlined text-sm">
+            info
+        </span>
+
+        Fiyatlar piyasa koşullarına göre değişebilir.
+    </div>
+</div>

@@ -14,9 +14,9 @@ namespace IdentityEmailApp.ViewComponents.FinanceViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var result = await _financeService.GetFeaturedStocksAsync();
+            var result = await _financeService.GetStockOverviewAsync();
 
-            return View(result);
+            return View(result.FeaturedStocks);
         }
     }
 }

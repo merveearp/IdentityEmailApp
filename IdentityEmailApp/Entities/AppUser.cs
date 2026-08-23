@@ -22,6 +22,7 @@ namespace IdentityEmailApp.Entities
     = new List<Notification>();
         public ICollection<UserTask>? UserTasks { get; set; }
         public ICollection<TaskList>? TaskLists { get; set; }
+       
         public ICollection<TranslationHistory> TranslationHistories { get; set; }
     = new List<TranslationHistory>();
 

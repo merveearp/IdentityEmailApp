@@ -5,11 +5,16 @@ namespace IdentityEmailApp.Services.Abstract
     public interface IFinanceService
     {
         //currency
-        Task<List<FinanceCurrencyResultDto>> GetCurrenciesAsync(); 
+        Task<List<FinanceCurrencyResultDto>> GetCurrenciesAsync();
 
 
         //Hisse senetleri
-        Task<FinanceStockRadarDto> GetStockRadarAsync();
-        Task<List<FinanceStockResultDto>> GetFeaturedStocksAsync();
+        Task<FinanceStockOverviewDto> GetStockOverviewAsync();
+
+        //live borsa
+        Task<List<FinanceLiveStockResultDto>> GetLiveStocksAsync();
+
+        //GoldPrice
+        Task<List<FinanceGoldResultDto>> GetGoldPricesAsync();
     }
 }
