@@ -37,7 +37,7 @@ namespace IdentityEmailApp.ViewComponents.DashboardViewComponents
                     !x.IsSpam &&
                     !x.IsDraft)
                 .OrderByDescending(x => x.SendDate)
-                .Take(10)
+                .Take(5)
                 .ToListAsync();
 
             return View(lastMessages);
