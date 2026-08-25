@@ -26,8 +26,8 @@
 
       @await Component.InvokeAsync("_FinanceLiveBorsaComponent")
 
-<!-- Right: Takip Listem -->
-        @await Component.InvokeAsync("_FinanceStockRadarComponent")  
+
+      @await Component.InvokeAsync("_FinanceExhangeComponent")
 
 </section>
   
@@ -38,7 +38,7 @@
 
         @await Component.InvokeAsync("_FinanceGoldComponent")
 
-        @await Component.InvokeAsync("_FinanceCurrencyConverterComponent")
+        @await Component.InvokeAsync("_FinanceCreditRatesComponent")
 
 
 
@@ -46,41 +46,6 @@
 </section>
 
 
-<!-- News Section -->
-<section>
-
-<h2 class="font-headline-sm text-headline-sm text-dark-text mb-stack-md">Piyasa Haberleri</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-<!-- News Card 1 -->
-<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col cursor-pointer hover:bg-dark-surface-elevated transition-colors border-opacity-100 ring-1 ring-white/5">
-<div class="flex justify-between items-start mb-2">
-<span class="text-xs font-semibold text-dark-primary px-2 py-1 bg-dark-bg rounded">Ekonomi</span>
-<span class="text-xs text-dark-text-muted">10 dk önce</span>
-</div>
-<h4 class="font-body-lg text-body-lg font-semibold text-dark-text mb-2 line-clamp-2">Merkez Bankası faiz kararını açıkladı</h4>
-<p class="text-sm text-dark-text-muted line-clamp-3 leading-relaxed text-dark-text/80">Türkiye Cumhuriyet Merkez Bankası (TCMB) Para Politikası Kurulu, politika faizini beklentilere paralel olarak sabit bıraktığını duyurdu.</p>
-</div>
-<!-- News Card 2 -->
-<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col cursor-pointer hover:bg-dark-surface-elevated transition-colors border-opacity-100 ring-1 ring-white/5">
-<div class="flex justify-between items-start mb-2">
-<span class="text-xs font-semibold text-[#22c55e] px-2 py-1 bg-dark-bg rounded">Şirketler</span>
-<span class="text-xs text-dark-text-muted">45 dk önce</span>
-</div>
-<h4 class="font-body-lg text-body-lg font-semibold text-dark-text mb-2 line-clamp-2">BIST 100 güne yükselişle başladı</h4>
-<p class="text-sm text-dark-text-muted line-clamp-3 leading-relaxed text-dark-text/80">Borsa İstanbul'da BIST 100 endeksi, güne yüzde 0,55 artışla 9.904,40 puandan başladı. Analistler pozitif havanın sürebileceğini belirtiyor.</p>
-</div>
-<!-- News Card 3 -->
-<div class="bg-dark-surface rounded-lg p-stack-md card-shadow border border-dark-border flex flex-col cursor-pointer hover:bg-dark-surface-elevated transition-colors border-opacity-100 ring-1 ring-white/5">
-<div class="flex justify-between items-start mb-2">
-<span class="text-xs font-semibold text-[#ef4444] px-2 py-1 bg-dark-bg rounded">Küresel</span>
-<span class="text-xs text-dark-text-muted">2 saat önce</span>
-</div>
-<h4 class="font-body-lg text-body-lg font-semibold text-dark-text mb-2 line-clamp-2">Avrupa piyasalarında dalgalı seyir</h4>
-<p class="text-sm text-dark-text-muted line-clamp-3 leading-relaxed text-dark-text/80">Avrupa borsaları, yoğunlaşan bilanço sezonu ve makroekonomik veriler eşliğinde güne karışık bir seyirle başladı.</p>
-</div>
-</div>
-
-</section>
 </main>
 </body>
 </html>

@@ -7,20 +7,32 @@ namespace IdentityEmailApp.DTOs.FinanceDtos
         [JsonProperty("success")]
         public bool Success { get; set; }
 
-        [JsonProperty("result")]
-        public List<FinanceGoldResultDto> Result { get; set; }
+        [JsonProperty("message")]
+        public string Message { get; set; }
+
+        [JsonProperty("data")]
+        public List<FinanceGoldResultDto> Data { get; set; }
             = new();
     }
 
     public class FinanceGoldResultDto
     {
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonProperty("key")]
+        public string Key { get; set; }
 
         [JsonProperty("buy")]
         public string Buy { get; set; }
 
         [JsonProperty("sell")]
         public string Sell { get; set; }
+
+        [JsonProperty("percent")]
+        public string Percent { get; set; }
+
+        [JsonProperty("arrow")]
+        public string Arrow { get; set; }
+
+        [JsonProperty("last_update")]
+        public string LastUpdate { get; set; }
     }
 }

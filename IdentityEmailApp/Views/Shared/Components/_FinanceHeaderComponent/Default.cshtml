@@ -1,30 +1,443 @@
-﻿
-@*
-   _FinanceHeaderComponent
+﻿@*
+    _FinanceHeaderComponent
 *@
 
-<header class="fixed top-0 left-0 w-full z-50 h-16 flex justify-between items-center px-margin-desktop max-w-container-max mx-auto bg-dark-surface border-b border-dark-border border-opacity-100 ring-1 ring-white/5">
-    <div class="flex items-center gap-4">
-        <span class="font-headline-sm text-headline-sm font-bold text-dark-primary">Notika Finans</span>
-    </div>
-    <div class="flex items-center gap-6">
-        <div class="relative hidden md:block w-64 md:w-80">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-dark-text-muted text-sm">search</span>
-            <input class="w-full pl-9 pr-4 py-2 bg-dark-surface-elevated border border-dark-border rounded-lg text-body-sm font-body-sm text-dark-text focus:outline-none focus:border-dark-primary focus:ring-1 focus:ring-dark-primary/20 transition-all placeholder:text-dark-text-muted" placeholder="Hisse, Döviz ara..." type="text" />
-        </div>
-        <div class="flex items-center gap-4 text-dark-text-muted">
-            <button class="hover:bg-dark-surface-elevated p-2 rounded-full transition-colors text-dark-text">
-                <span class="material-symbols-outlined text-lg">mail</span>
-            </button>
-            <button class="hover:bg-dark-surface-elevated p-2 rounded-full transition-colors text-dark-text">
-                <span class="material-symbols-outlined text-lg">apps</span>
-            </button>
-            <button class="hover:bg-dark-surface-elevated p-2 rounded-full transition-colors text-dark-text">
-                <span class="material-symbols-outlined text-lg">notifications</span>
-            </button>
-            <div class="w-8 h-8 rounded-full overflow-hidden ml-2 cursor-pointer border border-dark-border">
-                <img class="w-full h-full object-cover" data-alt="A professional headshot of a business person against a clean, light grey background. Soft, even studio lighting. High resolution, corporate aesthetic. The person is wearing smart casual business attire, subtly conveying trust and competence suitable for a financial dashboard profile image." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHNjAdw-VbmZ-TnIfOtqxHAcPyhCbQ9KSsUqs9klqgW93xRyie-59pZUu1Of7vOj8Bk-WZ4BBgcinTPYvDpVPUOPaQP574UgSyaAwG2iBCKLiYFYuoqxQQdRj2aAwto85yrlzhxOJ9G75fkpqckAxYvNEDw7uCcRUPKVTHr1e3mjcM1kH4Pv0qfeJy-ojsCkmFlQm87CQCh3fpY1MJhNaS9gPbM2HnAcjn-VJiuBVghnMZRs8i-vFo" />
+<style>
+    .finance-app-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 94px;
+        color: #cbd5e1;
+        border: 1px solid transparent;
+        border-radius: 13px;
+        text-decoration: none !important;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+        .finance-app-item:hover {
+            color: white;
+            border-color: #334155;
+            background: #1e293b;
+            transform: translateY(-2px);
+        }
+
+    .finance-app-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 47px;
+        height: 47px;
+        margin-bottom: 8px;
+        color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 13px rgba(0, 0, 0, 0.25);
+        transition: all 0.2s ease;
+    }
+
+    .finance-app-item:hover .finance-app-icon {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+    }
+
+    .finance-app-icon .material-symbols-outlined {
+        font-size: 25px;
+    }
+
+    @@media (max-width: 600px) {
+        #financeAppsMenu {
+            position: fixed;
+            top: 72px;
+            right: 12px;
+            left: 12px;
+            width: auto;
+        }
+
+        .finance-apps-arrow {
+            display: none;
+        }
+    }
+</style>
+
+<header class="fixed top-0 left-0 w-full z-50
+    h-16 bg-dark-surface
+    border-b border-dark-border
+    ring-1 ring-white/5">
+
+    <div class="w-full h-full max-w-container-max
+        mx-auto px-4 md:px-margin-desktop
+        flex items-center justify-between">
+
+        <!-- Logo -->
+        <a asp-controller="Finance"
+               asp-action="Index"
+               class="flex items-center gap-3"
+               style="text-decoration:none;">
+
+            <div class="w-9 h-9 rounded-xl
+                bg-dark-primary/15
+                border border-dark-primary/20
+                text-dark-primary
+                flex items-center justify-center">
+
+                <span class="material-symbols-outlined"
+                      style="font-variation-settings:'FILL' 1;">
+                    monitoring
+                </span>
             </div>
+
+            <div>
+                <span class="block font-headline-sm
+                    text-headline-sm font-bold
+                    text-dark-primary">
+                    Notika Finans
+                </span>
+
+                <span class="hidden sm:block text-[10px]
+                    text-dark-text-muted">
+                    Piyasa ve finans merkezi
+                </span>
+            </div>
+        </a>
+
+        <!-- Arama -->
+        <div class="relative hidden lg:block
+            w-64 xl:w-80">
+
+            <span class="material-symbols-outlined
+                absolute left-3 top-1/2
+                -translate-y-1/2
+                text-dark-text-muted text-sm">
+                search
+            </span>
+
+            <input id="financeSearchInput"
+                   type="text"
+                   placeholder="Hisse, döviz veya altın ara..."
+                   class="w-full pl-9 pr-4 py-2
+            bg-dark-surface-elevated
+            border border-dark-border
+            rounded-lg text-body-sm
+            text-dark-text
+            placeholder:text-dark-text-muted
+            focus:outline-none
+            focus:border-dark-primary
+            focus:ring-1
+            focus:ring-dark-primary/20
+            transition-all" />
+        </div>
+
+        <!-- Sağ Menü -->
+        <div class="flex items-center gap-1">
+
+            <!-- AI Destek -->
+            <a asp-controller="AISupport"
+                   asp-action="Index"
+                   title="AI Destek"
+                   class="p-2 rounded-lg text-dark-text-muted
+                hover:bg-dark-surface-elevated
+                hover:text-dark-text transition-all
+                flex items-center justify-center"
+                   style="text-decoration:none;">
+
+                <span class="material-symbols-outlined">
+                    support_agent
+                </span>
+            </a>
+
+            <!-- Mail -->
+            <a asp-controller="Message"
+                   asp-action="Inbox"
+                   title="Notika Mail"
+                   class="p-2 rounded-lg text-dark-text-muted
+                hover:bg-dark-surface-elevated
+                hover:text-dark-text transition-all
+                flex items-center justify-center"
+                   style="text-decoration:none;">
+
+                <span class="material-symbols-outlined">
+                    mail
+                </span>
+            </a>
+
+            <!-- Uygulamalar -->
+            <div id="financeAppsWrapper"
+                 class="relative">
+
+                <button type="button"
+                        id="financeAppsButton"
+                        title="Notika Uygulamaları"
+                        aria-expanded="false"
+                        aria-controls="financeAppsMenu"
+                        class="p-2 rounded-lg
+                    text-dark-text-muted
+                    hover:bg-dark-surface-elevated
+                    hover:text-dark-text
+                    transition-all
+                    flex items-center justify-center">
+
+                    <span class="material-symbols-outlined">
+                        apps
+                    </span>
+                </button>
+
+                <!-- Uygulamalar menüsü -->
+                <div id="financeAppsMenu"
+                     class="hidden absolute right-0 top-full
+                    mt-3 w-[350px]
+                    max-w-[calc(100vw-24px)]
+                    bg-[#172033] rounded-2xl
+                    border border-dark-border
+                    shadow-[0_20px_55px_rgba(0,0,0,0.45)]
+                    z-[100]">
+
+                    <div class="finance-apps-arrow
+                        absolute -top-2 right-3
+                        w-4 h-4 bg-[#172033]
+                        border-l border-t
+                        border-dark-border rotate-45">
+                    </div>
+
+                    <!-- Menü başlığı -->
+                    <div class="relative flex items-center gap-3
+                        px-5 py-4
+                        bg-gradient-to-r
+                        from-dark-primary/10
+                        to-transparent
+                        border-b border-dark-border
+                        rounded-t-2xl">
+
+                        <div class="w-10 h-10 rounded-xl
+                            bg-dark-primary text-white
+                            flex items-center justify-center">
+
+                            <span class="material-symbols-outlined">
+                                apps
+                            </span>
+                        </div>
+
+                        <div>
+                            <h3 class="m-0 text-base font-bold
+                                text-dark-text">
+                                Notika Uygulamaları
+                            </h3>
+
+                            <p class="mt-0.5 mb-0 text-xs
+                                text-dark-text-muted">
+                                Kullanmak istediğiniz servisi seçin
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Uygulamalar -->
+                    <div class="grid grid-cols-3 gap-3 p-4">
+
+                        <a asp-controller="Message"
+                               asp-action="Inbox"
+                               class="finance-app-item">
+
+                            <div class="finance-app-icon bg-blue-600">
+                                <span class="material-symbols-outlined">
+                                    mail
+                                </span>
+                            </div>
+
+                            <span>Mail</span>
+                        </a>
+
+                        <a asp-controller="News"
+                               asp-action="Index"
+                               asp-route-category="latest"
+                               class="finance-app-item">
+
+                            <div class="finance-app-icon bg-sky-500">
+                                <span class="material-symbols-outlined">
+                                    newspaper
+                                </span>
+                            </div>
+
+                            <span>Haberler</span>
+                        </a>
+
+                        <a asp-controller="Finance"
+                               asp-action="Index"
+                               class="finance-app-item">
+
+                            <div class="finance-app-icon bg-purple-500">
+                                <span class="material-symbols-outlined">
+                                    monitoring
+                                </span>
+                            </div>
+
+                            <span>Finans</span>
+                        </a>
+
+                        <a asp-controller="Task"
+                               asp-action="Index"
+                               class="finance-app-item">
+
+                            <div class="finance-app-icon bg-orange-500">
+                                <span class="material-symbols-outlined">
+                                    task_alt
+                                </span>
+                            </div>
+
+                            <span>Görevler</span>
+                        </a>
+
+                        <a asp-controller="Translate"
+                               asp-action="Index"
+                               class="finance-app-item">
+
+                            <div class="finance-app-icon bg-teal-500">
+                                <span class="material-symbols-outlined">
+                                    translate
+                                </span>
+                            </div>
+
+                            <span>Translate</span>
+                        </a>
+
+                        <a asp-controller="Dashboard"
+                               asp-action="Index"
+                               class="finance-app-item">
+
+                            <div class="finance-app-icon bg-emerald-500">
+                                <span class="material-symbols-outlined">
+                                    bar_chart
+                                </span>
+                            </div>
+
+                            <span>Panel</span>
+                        </a>
+
+                       
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profil -->
+    
+
+                <div class="hidden xl:block text-right">
+
+                    <span class="block text-xs font-medium
+                        text-dark-text">
+                        @ViewBag.FullName
+                    </span>
+
+                    <span class="block text-[10px]
+                        text-dark-text-muted">
+                        Profilim
+                    </span>
+                </div>
+
+                <div class="w-9 h-9 rounded-full
+                    overflow-hidden
+                    border border-dark-border
+                    hover:ring-2
+                    hover:ring-dark-primary/40
+                    transition-all">
+
+                    @if (!string.IsNullOrWhiteSpace(
+                                            ViewBag.ImageUrl))
+                    {
+                        <img src="@ViewBag.ImageUrl"
+                             alt="@ViewBag.FullName"
+                             class="w-full h-full object-cover" />
+                    }
+                    else
+                    {
+                        <div class="w-full h-full
+                            bg-dark-primary/15
+                            text-dark-primary
+                            flex items-center
+                            justify-center">
+
+                            <span class="material-symbols-outlined">
+                                person
+                            </span>
+                        </div>
+                    }
+                </div>
+            </a>
         </div>
     </div>
 </header>
+
+<script>
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const wrapper =
+                document.getElementById(
+                    "financeAppsWrapper"
+                );
+
+            const button =
+                document.getElementById(
+                    "financeAppsButton"
+                );
+
+            const menu =
+                document.getElementById(
+                    "financeAppsMenu"
+                );
+
+            if (!wrapper || !button || !menu) {
+                return;
+            }
+
+            function closeAppsMenu() {
+                menu.classList.add("hidden");
+
+                button.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+            }
+
+            button.addEventListener(
+                "click",
+                function (event) {
+                    event.stopPropagation();
+
+                    const willOpen =
+                        menu.classList.contains("hidden");
+
+                    menu.classList.toggle("hidden");
+
+                    button.setAttribute(
+                        "aria-expanded",
+                        willOpen ? "true" : "false"
+                    );
+                }
+            );
+
+            menu.addEventListener(
+                "click",
+                function (event) {
+                    event.stopPropagation();
+                }
+            );
+
+            document.addEventListener(
+                "click",
+                closeAppsMenu
+            );
+
+            document.addEventListener(
+                "keydown",
+                function (event) {
+                    if (event.key === "Escape") {
+                        closeAppsMenu();
+                    }
+                }
+            );
+        }
+    );
+</script>

@@ -24,5 +24,33 @@ namespace IdentityEmailApp.Controllers
 
             return Json(values);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ConvertCurrency(decimal amount,string fromCurrency, string toCurrency)
+        {
+            if (amount <= 0)
+            {
+                return BadRequest("Miktar sıfırdan büyük olmalıdır.");
+            }
+
+            var result =
+                await _financeService.ExchangeCurrencyAsync(
+                    amount,
+                    fromCurrency,
+                    toCurrency);
+
+            var exchangeData = result.Data.FirstOrDefault();
+
+            if (exchangeData == null)
+            {
+                return BadRequest("Dönüşüm sonucu alınamadı.");
+            }
+
+            return Json(new
+            {
+                calculated = exchangeData.Calculated,
+                rate = exchangeData.Rate
+            });
+        }
     }
 }

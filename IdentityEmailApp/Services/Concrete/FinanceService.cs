@@ -1,6 +1,8 @@
-﻿using IdentityEmailApp.DTOs.FinanceDtos;
+﻿using IdentityEmailApp.Dtos.FinanceDtos;
+using IdentityEmailApp.DTOs.FinanceDtos;
 using IdentityEmailApp.Services.Abstract;
 using Newtonsoft.Json;
+using System.Globalization;
 using System.Security.AccessControl;
 
 namespace IdentityEmailApp.Services.Concrete
@@ -62,9 +64,7 @@ namespace IdentityEmailApp.Services.Concrete
             }
 
             var result =
-                JsonConvert.DeserializeObject<FinanceStockAllDto>(
-                    json
-                );
+                JsonConvert.DeserializeObject<FinanceStockAllDto>(json );
 
             return result ?? new FinanceStockAllDto();
         }
@@ -92,34 +92,50 @@ namespace IdentityEmailApp.Services.Concrete
 
         public async Task<List<FinanceGoldResultDto>> GetGoldPricesAsync()
         {
-            var apiKey =
-                _configuration["CurrencyApi:ApiKey"];
+            var apiKey = _configuration["RapidApi:ApiKey"];
 
-            _httpClient.DefaultRequestHeaders.Clear();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
 
-            _httpClient.DefaultRequestHeaders.Add(
-                "authorization",
-                $"apikey {apiKey}");
+                RequestUri = new Uri(
+                    "https://harem-altin-live-gold-price-data.p.rapidapi.com/" +
+                    "harem_altin/prices/23b4c2fb31a242d1eebc0df9b9b65e5e"),
 
+                Headers =
+        {
+            {
+                "x-rapidapi-key",
+                apiKey
+            },
+            {
+                "x-rapidapi-host",
+                "harem-altin-live-gold-price-data.p.rapidapi.com"
+            }
+        }
+            };
 
-            var response = await _httpClient.GetAsync(
-                "https://api.collectapi.com/economy/goldPrice");
+            var response =await _httpClient.SendAsync(request);
 
-            var json =
-                await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();
 
-            var result =
-                JsonConvert.DeserializeObject<FinanceGoldAllDto>(
-                    json);
+            var body = await response.Content.ReadAsStringAsync();
 
-            return result.Result
-              .Where(x =>
-                  !string.IsNullOrWhiteSpace(x.Buy) &&
-                  !string.IsNullOrWhiteSpace(x.Sell) &&
-                  x.Buy != "-" &&
-                  x.Sell != "-")
-              .Take(5)
-              .ToList();
+            var result = JsonConvert.DeserializeObject<FinanceGoldAllDto>(body);
+
+            if (result == null)
+            {
+                return new List<FinanceGoldResultDto>();
+            }
+
+            return result.Data
+                .Where(x =>
+                    x.Key == "GRAM ALTIN" ||
+                    x.Key == "YENİ ÇEYREK" ||
+                    x.Key == "YENİ YARIM" ||
+                    x.Key == "YENİ TAM" ||
+                    x.Key == "YENİ ATA")
+                .ToList();
         }
 
         public async Task<FinanceStockOverviewDto> GetStockOverviewAsync()
@@ -136,26 +152,98 @@ namespace IdentityEmailApp.Services.Concrete
                     x.Code == "TUPRS")
                 .ToList();
 
-            var radar = new FinanceStockRadarDto
-            {
-                TopGainer = stockData.Result
-                    .OrderByDescending(x => x.Rate)
-                    .FirstOrDefault(),
-
-                TopLoser = stockData.Result
-                    .OrderBy(x => x.Rate)
-                    .FirstOrDefault(),
-
-                HighestVolume = stockData.Result
-                    .OrderByDescending(x => x.Hacim)
-                    .FirstOrDefault()
-            };
 
             return new FinanceStockOverviewDto
             {
-                FeaturedStocks = featuredStocks,
-                Radar = radar
+                FeaturedStocks = featuredStocks
+
             };
+        }
+
+        public async Task<List<FinanceCreditRateResultDto>> GetCreditRatesAsync(int price = 1000, int month = 12, string query = "ihtiyac")
+        {
+            var apiKey =  _configuration["CurrencyApi:ApiKey"];
+
+            _httpClient.DefaultRequestHeaders.Clear();
+
+            _httpClient.DefaultRequestHeaders.Add(
+                "authorization",
+                $"apikey {apiKey}");
+
+            if (price <= 0)
+            {
+                price = 1000;
+            }
+
+            if (month <= 0)
+            {
+                month = 12;
+            }
+
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                query = "ihtiyac";
+            }
+
+            var url =
+               $"https://api.collectapi.com/credit/creditBid" +
+               $"?data.price={price}" +
+               $"&data.month={month}" +
+               $"&data.query={query}";
+
+            var response = await _httpClient.GetAsync(url);
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    $"Kredi API hatası: {json}");
+            }
+
+            var result =
+                JsonConvert.DeserializeObject<
+                    FinanceCreditRateAllDto>(json);
+
+            return result?.Result
+                .Take(5)
+                .ToList()
+                ?? new List<FinanceCreditRateResultDto>();
+        }
+
+
+            public async Task<FinanceExchangeResultDto> ExchangeCurrencyAsync(decimal amount, string fromCurrency,string toCurrency)
+        {
+            var apiKey = _configuration["CurrencyApi:ApiKey"];
+
+            var formattedAmount = amount.ToString(
+                CultureInfo.InvariantCulture);
+
+            var url =
+                $"https://api.collectapi.com/economy/exchange" +
+                $"?int={formattedAmount}" +
+                $"&to={toCurrency}" +
+                $"&base={fromCurrency}";
+
+            _httpClient.DefaultRequestHeaders.Clear();
+
+            _httpClient.DefaultRequestHeaders.Add(
+                "authorization",
+                $"apikey {apiKey}");
+
+            var response = await _httpClient.GetAsync(url);
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    $"Dönüştürücü API hatası: {json}");
+            }
+
+            var exchangeResponse = JsonConvert.DeserializeObject<FinanceExchangeDto>(json);
+
+            return exchangeResponse?.Result?.FirstOrDefault() ?? new FinanceExchangeResultDto();
         }
     }
 }

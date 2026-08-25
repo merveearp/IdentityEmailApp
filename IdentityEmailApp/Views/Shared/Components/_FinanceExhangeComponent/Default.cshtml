@@ -1,0 +1,297 @@
+﻿
+@using IdentityEmailApp.Dtos.FinanceDtos
+@model FinanceExchangeResultDto
+
+@{
+    var exchangeData = Model?.Data?.FirstOrDefault();
+}
+
+<div class="bg-dark-surface rounded-lg p-stack-lg
+    card-shadow border border-dark-border
+    ring-1 ring-white/5">
+
+    <!-- Başlık -->
+    <div class="flex items-center justify-between mb-stack-md">
+
+        <div>
+            <h3 class="font-label-md text-label-md
+                text-dark-text-muted uppercase tracking-wider">
+                Döviz Dönüştürücü
+            </h3>
+
+            <p class="text-xs text-dark-text-muted mt-1">
+                Para birimleri arasında hızlı dönüşüm
+            </p>
+        </div>
+
+        <div class="w-10 h-10 rounded-lg bg-dark-primary/10
+            text-dark-primary flex items-center justify-center">
+
+            <span class="material-symbols-outlined">
+                currency_exchange
+            </span>
+        </div>
+    </div>
+
+    <form id="exchangeForm" class="space-y-4">
+
+        <!-- Miktar -->
+        <div>
+            <label for="exchangeAmount"
+                   class="block text-xs text-dark-text-muted mb-2">
+                Dönüştürülecek miktar
+            </label>
+
+            <div class="relative">
+                <input id="exchangeAmount"
+                       name="amount"
+                       type="number"
+                       value="1"
+                       min="0.01"
+                       step="0.01"
+                       required
+                       class="w-full bg-dark-bg border border-dark-border
+                rounded-xl px-4 py-3 pr-16
+                text-lg font-semibold text-dark-text
+                focus:outline-none focus:border-dark-primary
+                transition-colors" />
+
+                <span id="amountCurrency"
+                      class="absolute right-4 top-1/2 -translate-y-1/2
+                    text-sm font-semibold text-dark-primary">
+                    EUR
+                </span>
+            </div>
+        </div>
+
+        <!-- Para birimleri -->
+        <div class="grid grid-cols-[1fr_auto_1fr] gap-3 items-end">
+
+            <div>
+                <label for="fromCurrency"
+                       class="block text-xs text-dark-text-muted mb-2">
+                    Kaynak
+                </label>
+
+                <select id="fromCurrency"
+                        name="fromCurrency"
+                        class="w-full bg-dark-bg border border-dark-border
+                    rounded-xl px-4 py-3 text-dark-text
+                    focus:outline-none focus:border-dark-primary">
+
+                    <option value="TRY">TRY</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR" selected>EUR</option>
+                    <option value="GBP">GBP</option>
+                </select>
+            </div>
+
+            <button id="swapCurrencies"
+                    type="button"
+                    title="Para birimlerini değiştir"
+                    class="w-11 h-11 mb-[1px] rounded-xl
+                border border-dark-border
+                bg-dark-bg text-dark-primary
+                hover:bg-dark-surface-elevated
+                transition-colors flex items-center
+                justify-center">
+
+                <span class="material-symbols-outlined">
+                    swap_horiz
+                </span>
+            </button>
+
+            <div>
+                <label for="toCurrency"
+                       class="block text-xs text-dark-text-muted mb-2">
+                    Hedef
+                </label>
+
+                <select id="toCurrency"
+                        name="toCurrency"
+                        class="w-full bg-dark-bg border border-dark-border
+                    rounded-xl px-4 py-3 text-dark-text
+                    focus:outline-none focus:border-dark-primary">
+
+                    <option value="TRY" selected>TRY</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="exchangeButton"
+                type="submit"
+                class="w-full py-3 rounded-xl bg-dark-primary
+            text-white text-sm font-semibold
+            hover:opacity-90 transition-opacity
+            flex items-center justify-center gap-2">
+
+            <span class="material-symbols-outlined text-lg">
+                calculate
+            </span>
+
+            <span>Dönüştür</span>
+        </button>
+    </form>
+
+    <!-- Sonuç -->
+    <div id="exchangeResult"
+         class="relative overflow-hidden mt-4 rounded-xl
+        border border-dark-primary/30
+        bg-gradient-to-br
+        from-dark-primary/15 to-transparent p-5">
+
+        <div class="absolute -right-8 -top-8 w-28 h-28
+            rounded-full bg-dark-primary/10">
+        </div>
+
+        <div class="relative">
+            <p class="text-[10px] uppercase tracking-wider
+                text-dark-primary font-semibold">
+                Dönüşüm sonucu
+            </p>
+
+            <div class="flex items-end justify-between gap-4 mt-3">
+
+                <div>
+                    <p id="sourceResult"
+                           class="text-sm text-dark-text-muted">
+                        1 EUR
+                    </p>
+
+                    <p id="calculatedResult"
+                           class="font-numeric-data text-2xl
+                        font-bold text-dark-text mt-1">
+
+                        @if (exchangeData != null)
+                        {
+                            @exchangeData.Rate
+                        }
+                        else
+                        {
+                            @:Sonuç alınamadı
+                        }
+                    </p>
+                </div>
+
+                <div class="w-10 h-10 rounded-full
+                    bg-dark-primary/15 text-dark-primary
+                    flex items-center justify-center">
+
+                    <span class="material-symbols-outlined">
+                        arrow_forward
+                    </span>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-dark-primary/20
+                flex items-center justify-between">
+
+                <span class="text-xs text-dark-text-muted">
+                    Güncel kur
+                </span>
+
+                <span id="exchangeRate"
+                      class="text-xs font-medium text-dark-text">
+
+                    @if (exchangeData != null)
+                    {
+                        @($"1 EUR = {exchangeData.Rate}")
+                    }
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <p id="exchangeError"
+           class="hidden text-xs text-[#ef4444] mt-3">
+    </p>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const form = document.getElementById("exchangeForm");
+        const amountInput = document.getElementById("exchangeAmount");
+        const fromSelect = document.getElementById("fromCurrency");
+        const toSelect = document.getElementById("toCurrency");
+        const swapButton = document.getElementById("swapCurrencies");
+        const exchangeButton = document.getElementById("exchangeButton");
+        const amountCurrency = document.getElementById("amountCurrency");
+        const sourceResult = document.getElementById("sourceResult");
+        const calculatedResult =
+            document.getElementById("calculatedResult");
+        const exchangeRate = document.getElementById("exchangeRate");
+        const errorElement = document.getElementById("exchangeError");
+
+        fromSelect.addEventListener("change", function () {
+            amountCurrency.textContent = fromSelect.value;
+        });
+
+        swapButton.addEventListener("click", function () {
+            const oldFrom = fromSelect.value;
+
+            fromSelect.value = toSelect.value;
+            toSelect.value = oldFrom;
+
+            amountCurrency.textContent = fromSelect.value;
+        });
+
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const amount = amountInput.value;
+            const fromCurrency = fromSelect.value;
+            const toCurrency = toSelect.value;
+
+            errorElement.classList.add("hidden");
+            exchangeButton.disabled = true;
+            exchangeButton.querySelector("span:last-child")
+                .textContent = "Hesaplanıyor...";
+
+            try {
+                const url =
+                    '@Url.Action("ConvertCurrency", "Finance")' +
+                    `?amount=${encodeURIComponent(amount)}` +
+                    `&fromCurrency=${encodeURIComponent(fromCurrency)}` +
+                    `&toCurrency=${encodeURIComponent(toCurrency)}`;
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error("Dönüştürme işlemi başarısız oldu.");
+                }
+
+                const result = await response.json();
+
+                sourceResult.textContent =
+                    `${amount} ${fromCurrency}`;
+
+                   calculatedResult.textContent =
+        `${Number(result.convertedAmount)
+            .toLocaleString("tr-TR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })} ${toCurrency}`;
+
+    exchangeRate.textContent =
+        `1 ${fromCurrency} = ${Number(result.unitRate)
+            .toLocaleString("tr-TR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 4
+            })} ${toCurrency}`;
+            }
+            catch (error) {
+                errorElement.textContent = error.message;
+                errorElement.classList.remove("hidden");
+            }
+            finally {
+                exchangeButton.disabled = false;
+                exchangeButton.querySelector("span:last-child")
+                    .textContent = "Dönüştür";
+            }
+        });
+    });
+</script>

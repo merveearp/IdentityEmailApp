@@ -9,24 +9,6 @@
 
 <style>
 
-    .mail-restore {
-        color: #777;
-    }
-
-        .mail-restore:hover,
-        .mail-restore:focus {
-            color: #00c292;
-        }
-
-    .mail-permanent-delete {
-        color: #777;
-    }
-
-        .mail-permanent-delete:hover,
-        .mail-permanent-delete:focus {
-            color: #d9534f;
-        }
-
     .mail-actions {
         display: flex;
         align-items: center;
@@ -94,7 +76,7 @@
 
 <style>
 
-    .mail-page-header {
+    .spam-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -106,19 +88,19 @@
     border-radius: 6px;
 }
 
-.mail-page-header h3 {
+.spam-header h3 {
     margin: 0 0 6px 0;
     color: #333333;
     font-size: 21px;
     font-weight: 600;
 }
 
-.mail-page-header h3 i {
+.spam-header h3 i {
     margin-right: 8px;
     color: #d9534f;
 }
 
-.mail-page-header p {
+.spam-header p {
     margin: 0;
     color: #777777;
     font-size: 13px;
@@ -181,7 +163,6 @@
 
 @await Component.InvokeAsync("_LayoutBreadcombComponent")
 
-
 <div class="inbox-area">
     <div class="container">
         <div class="row">
@@ -191,46 +172,35 @@
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                 <div class="inbox-text-list sm-res-mg-t-30">
 
-                    <!-- Arama Alanı -->
                     <div class="form-group">
                         <div class="nk-int-st search-input search-overt">
-
                             <input type="text"
-                                   id="notificationSearchInput"
                                    class="form-control"
-                                   placeholder="Mesajlarda ara..." />
+                                   placeholder="Aranacak kelimeyi giriniz..." />
 
-                            <button type="button"
-                                    id="notificationSearchButton"
-                                    class="btn search-ib">
+                            <button type="button" class="btn search-ib">
                                 Ara
                             </button>
-
                         </div>
                     </div>
-                      
-                    
-                    <form asp-controller="Message"
+
+                       <form asp-controller="Message"
                               method="post"
                               id="notificationForm">
 
                             @Html.AntiForgeryToken()
 
                     <div class="inbox-btn-st-ls btn-toolbar">
-                      
-                            <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
+                        <div class="btn-group ib-btn-gp active-hook nk-email-inbox">
 
-                                <a asp-controller="Message"
-                                       asp-action="DeletedMessages"
-                                       class="btn btn-default btn-sm"
-                                       title="Yenile">
+                            <a asp-controller="Message"
+                                   asp-action="DeletedMessages"
+                                   class="btn btn-default btn-sm">
+                                <i class="notika-icon notika-refresh"></i>
+                                Yenile
+                            </a>
 
-                                    <i class="notika-icon notika-refresh"></i>
-                                    Yenile
-
-                                </a>
-
-                                <button type="button"
+                             <button type="button"
                                         id="selectAllButton"
                                         class="btn btn-default btn-sm"
                                         title="Tümünü Seç">
@@ -266,7 +236,8 @@
                             <i class="notika-icon notika-trash"></i>
                         </button>
 
-                            </div>
+
+                        </div>
 
                         <div class="btn-group ib-btn-gp active-hook nk-act nk-email-inbox">
 
@@ -297,7 +268,7 @@
                     
                     <div class="table-responsive">
                        
-                       
+                   
                         <table class="table table-hover">
 
                             <thead>
@@ -340,10 +311,10 @@
                                             <td class="mail-actions">
 
                                                 <label class="mail-checkbox">
-                                                   <input type="checkbox"
-                                                   class="i-checks message-checkbox"
-                                                   name="ids"
-                                                   value="@item.MessageId" />
+                                                    <input type="checkbox"
+                                                           class="i-checks"
+                                                           name="selectedIds"
+                                                           value="@item.MessageId" />
                                                 </label>
 
                                                 <!-- Yıldızlama -->
@@ -455,6 +426,10 @@
                                                        asp-route-id="@item.MessageId"
                                                        class="message-link">
 
+                                                    <span class="spam-indicator">
+                                                        <i class="fa fa-exclamation-triangle"></i>
+                                                        Spam
+                                                    </span>
 
                                                     <strong>
                                                         @item.Subject
@@ -503,14 +478,15 @@
                                                 </button>
 
                                                 <!-- Kalıcı sil -->
-                                              <button type="button"
-                                                    class="mail-permanent-delete"
-                                                    data-url="@Url.Action("DeleteMessage", "Message")"
-                                                    data-id="@item.MessageId"
-                                                    title="Kalıcı olarak sil">
+                                                <button type="button"
+                                                        class="mail-permanent-delete"
+                                                        data-url="@Url.Action("DeleteMessage", "Message")"
+                                                        data-id="@item.MessageId"
+                                                        title="Kalıcı olarak sil">
 
-                                                <i class="fa fa-trash"></i>
-                                            </button>
+                                                    <i class="fa fa-trash"></i>
+
+                                                </button>
 
                                             </td>
 
@@ -533,8 +509,9 @@
 
                         </table>
                     </div>
-              
                    </form>
+             
+                
                 </div>
             </div>
 
