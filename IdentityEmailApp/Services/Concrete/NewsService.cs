@@ -7,19 +7,20 @@ namespace IdentityEmailApp.Services.Concrete
 {
     public class NewsService : INewsService
     {
-        private readonly string rapidapi_key = "c578002d39mshcbd1ef108c18afep1f3e64jsn64cd0b132a82";
+        private readonly IConfiguration _configuration;
         private readonly string rapidapi_host_latest = "google-news13.p.rapidapi.com";
 
         private readonly IMemoryCache _memoryCache;
 
-        public NewsService(IMemoryCache cache)
+        public NewsService(IMemoryCache cache, IConfiguration configuration)
         {
             _memoryCache = cache;
+            _configuration = configuration;
         }
 
         public async Task<List<ResultLatestOfNewDto.Item>> GetCurrentNewsAsync()
         {
-
+            var rapidapi_key = _configuration["RapidApi:ApiKey"];
             const string cacheKey = "CurrentNews";
 
             if (_memoryCache.TryGetValue(cacheKey, out List<ResultLatestOfNewDto.Item>? cachedNews))
@@ -58,6 +59,7 @@ namespace IdentityEmailApp.Services.Concrete
 
         public async Task<List<ResultLatestOfNewDto.Item>> GetLocalNewsAsync()
         {
+            var rapidapi_key = _configuration["RapidApi:ApiKey"];
             const string cacheKey = "LocalNews";
 
             if (_memoryCache.TryGetValue(cacheKey, out List<ResultLatestOfNewDto.Item>? cachedNews))
@@ -97,6 +99,7 @@ namespace IdentityEmailApp.Services.Concrete
 
         public async Task<List<ResultLatestOfNewDto.Subnew>> GetNewsAsync()
         {
+            var rapidapi_key = _configuration["RapidApi:ApiKey"];
             const string cacheKey = "entertainment-subnews";
 
             if (_memoryCache.TryGetValue(
@@ -153,6 +156,7 @@ namespace IdentityEmailApp.Services.Concrete
 
         public async Task<List<ResultLatestOfNewDto.Item>> GetCategoryByNewsAsync(string category)
         {
+            var rapidapi_key = _configuration["RapidApi:ApiKey"];
             var searchCategory = string.IsNullOrWhiteSpace(category)
                 ? "latest"
                 : category.ToLower();

@@ -17,7 +17,7 @@ namespace IdentityEmailApp.ViewComponents.NewViewComponents
             var news = await _newsService.GetNewsAsync();
 
             var values = news
-                .Take(4)
+                .Take(6)
                 .ToList();
 
             return View(values);

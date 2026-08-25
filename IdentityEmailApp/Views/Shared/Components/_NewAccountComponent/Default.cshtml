@@ -50,72 +50,107 @@
             <span class="material-symbols-outlined">
                 apps
             </span>
-
         </button>
 
         <!-- Uygulamalar Menüsü -->
         <div id="appsMenu"
              class="hidden absolute right-0 top-full mt-3
             w-[360px] sm:w-[390px]
-            bg-surface-container
+            bg-[#182236]
             rounded-2xl overflow-hidden
-            border border-white/10
+            border border-[#344158]
             shadow-2xl z-[100]">
 
-            <!-- Başlık -->
-            <div class="px-lg py-md border-b border-white/10">
+            <!-- Başlık Alanı -->
+            <div class="flex items-center gap-4 px-5 py-5
+                border-b border-[#344158]">
 
-                <h3 class="font-headline-sm text-headline-sm text-on-surface">
-                    Notika Uygulamaları
-                </h3>
+                <!-- Başlık İkonu -->
+                <div class="w-12 h-12 shrink-0 rounded-xl
+                    bg-gradient-to-br from-indigo-400 to-violet-500
+                    flex items-center justify-center
+                    shadow-lg shadow-indigo-500/20">
 
-                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
-                    Diğer servislere geçiş yapın
-                </p>
+                    <span class="material-symbols-outlined text-white text-[28px]">
+                        apps
+                    </span>
+                </div>
+
+                <!-- Başlık Metni -->
+                <div>
+                    <h3 class="text-[18px] leading-tight font-semibold text-white">
+                        Notika Uygulamaları
+                    </h3>
+
+                    <p class="mt-1 text-[13px] text-slate-400">
+                        Kullanmak istediğiniz servisi seçin
+                    </p>
+                </div>
 
             </div>
 
             <!-- Uygulama Kartları -->
-            <div class="grid grid-cols-3 gap-sm p-lg">
+            <div class="grid grid-cols-3 gap-x-2 gap-y-4 px-5 py-6">
 
-                <!-- Notika News -->
+                <!-- Mail -->
+                <a asp-controller="Message"
+                       asp-action="Inbox"
+                       class="group flex flex-col items-center justify-center
+                    min-h-[105px] rounded-xl p-2
+                    hover:bg-white/5
+                    transition-all duration-200"
+                       style="text-decoration: none;">
+
+                    <div class="w-[52px] h-[52px] rounded-2xl
+                        bg-blue-600 flex items-center justify-center
+                        shadow-md transition-transform duration-200
+                        group-hover:-translate-y-1">
+
+                        <span class="material-symbols-outlined text-white text-[27px]">
+                            mail
+                        </span>
+                    </div>
+
+                    <span class="mt-3 text-[14px] font-semibold text-slate-300 text-center">
+                        Mail
+                    </span>
+                </a>
+
+                <!-- Haberler -->
                 <a asp-controller="News"
                        asp-action="Index"
                        asp-route-category="latest"
                        class="group flex flex-col items-center justify-center
-                    min-h-[112px] rounded-xl p-sm
-                    hover:bg-surface-variant/40
+                    min-h-[105px] rounded-xl p-2
+                    hover:bg-white/5
                     transition-all duration-200"
-                       style="text-decoration:none;">
+                       style="text-decoration: none;">
 
-                    <div class="w-12 h-12 rounded-xl
-                        bg-blue-500 flex items-center justify-center
+                    <div class="w-[52px] h-[52px] rounded-2xl
+                        bg-sky-500 flex items-center justify-center
                         shadow-md transition-transform duration-200
                         group-hover:-translate-y-1">
 
                         <span class="material-symbols-outlined text-white text-[27px]">
                             newspaper
                         </span>
-
                     </div>
 
-                    <span class="font-label-md text-label-md
-                        text-on-surface mt-sm text-center">
+                    <span class="mt-3 text-[14px] font-semibold text-slate-300 text-center">
                         Haberler
                     </span>
-
                 </a>
 
-                <!-- Notika Finans -->
+                <!-- Finans -->
                 <a asp-controller="Finance"
                        asp-action="Index"
                        class="group flex flex-col items-center justify-center
-                    min-h-[112px] rounded-xl p-sm
-                    hover:bg-surface-variant/40
+                    min-h-[105px] rounded-xl p-2
+                    hover:bg-white/5
                     transition-all duration-200"
-                       style="text-decoration:none;">
+                       style="text-decoration: none;">
 
-                    <div class="w-12 h-12 rounded-xl
+                    <div class="w-[52px] h-[52px] rounded-2xl
                         bg-purple-500 flex items-center justify-center
                         shadow-md transition-transform duration-200
                         group-hover:-translate-y-1">
@@ -123,53 +158,47 @@
                         <span class="material-symbols-outlined text-white text-[27px]">
                             monitoring
                         </span>
-
                     </div>
 
-                    <span class="font-label-md text-label-md
-                        text-on-surface mt-sm text-center">
+                    <span class="mt-3 text-[14px] font-semibold text-slate-300 text-center">
                         Finans
                     </span>
-
                 </a>
 
-                <!-- Takvim -->
+                <!-- Görevler -->
                 <a asp-controller="Task"
                        asp-action="Index"
                        class="group flex flex-col items-center justify-center
-                    min-h-[112px] rounded-xl p-sm
-                    hover:bg-surface-variant/40
+                    min-h-[105px] rounded-xl p-2
+                    hover:bg-white/5
                     transition-all duration-200"
-                       style="text-decoration:none;">
+                       style="text-decoration: none;">
 
-                    <div class="w-12 h-12 rounded-xl
+                    <div class="w-[52px] h-[52px] rounded-2xl
                         bg-orange-500 flex items-center justify-center
                         shadow-md transition-transform duration-200
                         group-hover:-translate-y-1">
 
                         <span class="material-symbols-outlined text-white text-[27px]">
-                            calendar_month
+                            task_alt
                         </span>
-
                     </div>
 
-                    <span class="font-label-md text-label-md
-                        text-on-surface mt-sm text-center">
-                        Takvim
+                    <span class="mt-3 text-[14px] font-semibold text-slate-300 text-center">
+                        Görevler
                     </span>
-
                 </a>
 
                 <!-- Translate -->
                 <a asp-controller="Translate"
                        asp-action="Index"
                        class="group flex flex-col items-center justify-center
-                    min-h-[112px] rounded-xl p-sm
-                    hover:bg-surface-variant/40
+                    min-h-[105px] rounded-xl p-2
+                    hover:bg-white/5
                     transition-all duration-200"
-                       style="text-decoration:none;">
+                       style="text-decoration: none;">
 
-                    <div class="w-12 h-12 rounded-xl
+                    <div class="w-[52px] h-[52px] rounded-2xl
                         bg-teal-500 flex items-center justify-center
                         shadow-md transition-transform duration-200
                         group-hover:-translate-y-1">
@@ -177,48 +206,39 @@
                         <span class="material-symbols-outlined text-white text-[27px]">
                             translate
                         </span>
-
                     </div>
 
-                    <span class="font-label-md text-label-md
-                        text-on-surface mt-sm text-center">
+                    <span class="mt-3 text-[14px] font-semibold text-slate-300 text-center">
                         Translate
                     </span>
-
                 </a>
 
-
-                <!-- Ayarlar -->
-                <a asp-controller="Settings"
+                <!-- Panel -->
+                <a asp-controller="Dashboard"
                        asp-action="Index"
                        class="group flex flex-col items-center justify-center
-                    min-h-[112px] rounded-xl p-sm
-                    hover:bg-surface-variant/40
+                    min-h-[105px] rounded-xl p-2
+                    hover:bg-white/5
                     transition-all duration-200"
-                       style="text-decoration:none;">
+                       style="text-decoration: none;">
 
-                    <div class="w-12 h-12 rounded-xl
-                        bg-slate-500 flex items-center justify-center
+                    <div class="w-[52px] h-[52px] rounded-2xl
+                        bg-emerald-500 flex items-center justify-center
                         shadow-md transition-transform duration-200
                         group-hover:-translate-y-1">
 
                         <span class="material-symbols-outlined text-white text-[27px]">
-                            settings
+                            bar_chart
                         </span>
-
                     </div>
 
-                    <span class="font-label-md text-label-md
-                        text-on-surface mt-sm text-center">
-                        Ayarlar
+                    <span class="mt-3 text-[14px] font-semibold text-slate-300 text-center">
+                        Panel
                     </span>
-
                 </a>
 
             </div>
-
         </div>
-
     </div>
 
     <!-- Profil Resmi -->

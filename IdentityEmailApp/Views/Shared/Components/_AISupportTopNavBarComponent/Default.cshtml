@@ -55,164 +55,219 @@
             <!-- Uygulamalar -->
             <div class="relative group">
 
+                <!-- Uygulamalar Butonu -->
                 <button type="button"
                         class="p-2 text-on-surface-variant
                     hover:bg-surface-container rounded-full
                     flex items-center justify-center
                     transition-colors"
-                        title="Notika uygulamaları">
+                        title="Notika Uygulamaları">
 
                     <span class="material-symbols-outlined">
                         apps
                     </span>
                 </button>
 
-                <div class="absolute right-0 mt-2 w-[320px]
-                    bg-surface-lowest rounded-xl shadow-md
-                    border border-outline-variant overflow-hidden
-                    z-50 hidden group-focus-within:block">
+                <!-- Uygulamalar Menüsü -->
+                <div class="hidden group-focus-within:block
+                    absolute right-0 top-full mt-3
+                    w-[360px] sm:w-[390px]
+                    max-w-[calc(100vw-24px)]
+                    bg-[#182236]
+                    rounded-2xl overflow-hidden
+                    border border-[#344158]
+                    shadow-[0_20px_55px_rgba(0,0,0,0.45)]
+                    z-[100]">
 
-                    <div class="p-gutter bg-surface-container-low">
+                    <!-- Başlık -->
+                    <div class="flex items-center gap-4
+                        px-5 py-5
+                        border-b border-[#344158]">
 
-                        <div class="flex items-center gap-stack-md">
+                        <div class="w-12 h-12 shrink-0 rounded-xl
+                            bg-gradient-to-br
+                            from-indigo-400 to-violet-500
+                            text-white
+                            flex items-center justify-center
+                            shadow-lg shadow-indigo-500/20">
 
-                            <div class="w-12 h-12 rounded-lg
-                                bg-primary-container
-                                text-on-primary-container
-                                flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[28px]">
+                                apps
+                            </span>
+                        </div>
 
-                                <span class="material-symbols-outlined">
-                                    apps
-                                </span>
-                            </div>
+                        <div>
+                            <h4 class="m-0 text-[18px] leading-tight
+                                font-bold text-white">
+                                Notika Uygulamaları
+                            </h4>
 
-                            <div>
-                                <h4 class="font-headline-sm text-on-surface">
-                                    Notika Uygulamaları
-                                </h4>
-
-                                <p class="text-label-sm text-on-surface-variant">
-                                    Kullanmak istediğiniz servisi seçin
-                                </p>
-                            </div>
+                            <p class="mt-1 mb-0 text-[13px] text-slate-400">
+                                Kullanmak istediğiniz servisi seçin
+                            </p>
                         </div>
                     </div>
 
-                    <div class="p-gutter grid grid-cols-3 gap-gutter">
+                    <!-- Uygulama Kartları -->
+                    <div class="grid grid-cols-3 gap-x-2 gap-y-4 px-5 py-6">
 
                         <!-- Mail -->
                         <a asp-controller="Message"
                                asp-action="Inbox"
-                               class="flex flex-col items-center gap-stack-sm
-                            cursor-pointer hover:opacity-80">
+                               class="group/app min-h-[105px] rounded-xl p-2
+                            flex flex-col items-center justify-center gap-3
+                            text-slate-300 hover:text-white
+                            hover:bg-white/5
+                            transition-all duration-200"
+                               style="text-decoration: none;">
 
-                            <div class="w-12 h-12 rounded-xl
-                                bg-primary-container
-                                text-on-primary-container
-                                flex items-center justify-center shadow-md">
+                            <div class="w-[52px] h-[52px] rounded-2xl
+                                bg-blue-600 text-white
+                                flex items-center justify-center
+                                shadow-md transition-transform duration-200
+                                group-hover/app:-translate-y-1">
 
-                                <span class="material-symbols-outlined">
+                                <span class="material-symbols-outlined text-[27px]">
                                     mail
                                 </span>
                             </div>
 
-                            <span class="text-label-md">Mail</span>
+                            <span class="text-[14px] font-semibold">
+                                Mail
+                            </span>
                         </a>
 
                         <!-- Haberler -->
                         <a asp-controller="News"
                                asp-action="Index"
-                               class="flex flex-col items-center gap-stack-sm
-                            cursor-pointer hover:opacity-80">
+                               asp-route-category="latest"
+                               class="group/app min-h-[105px] rounded-xl p-2
+                            flex flex-col items-center justify-center gap-3
+                            text-slate-300 hover:text-white
+                            hover:bg-white/5
+                            transition-all duration-200"
+                               style="text-decoration: none;">
 
-                            <div class="w-12 h-12 rounded-xl
-                                bg-primary-fixed
-                                text-primary-fixed-variant
-                                flex items-center justify-center shadow-md">
+                            <div class="w-[52px] h-[52px] rounded-2xl
+                                bg-sky-500 text-white
+                                flex items-center justify-center
+                                shadow-md transition-transform duration-200
+                                group-hover/app:-translate-y-1">
 
-                                <span class="material-symbols-outlined">
+                                <span class="material-symbols-outlined text-[27px]">
                                     newspaper
                                 </span>
                             </div>
 
-                            <span class="text-label-md">Haberler</span>
+                            <span class="text-[14px] font-semibold">
+                                Haberler
+                            </span>
                         </a>
 
                         <!-- Finans -->
                         <a asp-controller="Finance"
                                asp-action="Index"
-                               class="flex flex-col items-center gap-stack-sm
-                            cursor-pointer hover:opacity-80">
+                               class="group/app min-h-[105px] rounded-xl p-2
+                            flex flex-col items-center justify-center gap-3
+                            text-slate-300 hover:text-white
+                            hover:bg-white/5
+                            transition-all duration-200"
+                               style="text-decoration: none;">
 
-                            <div class="w-12 h-12 rounded-xl
-                                bg-tertiary-fixed
-                                text-tertiary-fixed-variant
-                                flex items-center justify-center shadow-md">
+                            <div class="w-[52px] h-[52px] rounded-2xl
+                                bg-purple-500 text-white
+                                flex items-center justify-center
+                                shadow-md transition-transform duration-200
+                                group-hover/app:-translate-y-1">
 
-                                <span class="material-symbols-outlined">
-                                    trending_up
+                                <span class="material-symbols-outlined text-[27px]">
+                                    monitoring
                                 </span>
                             </div>
 
-                            <span class="text-label-md">Finans</span>
+                            <span class="text-[14px] font-semibold">
+                                Finans
+                            </span>
                         </a>
 
                         <!-- Görevler -->
                         <a asp-controller="Task"
                                asp-action="Index"
-                               class="flex flex-col items-center gap-stack-sm
-                            cursor-pointer hover:opacity-80">
+                               class="group/app min-h-[105px] rounded-xl p-2
+                            flex flex-col items-center justify-center gap-3
+                            text-slate-300 hover:text-white
+                            hover:bg-white/5
+                            transition-all duration-200"
+                               style="text-decoration: none;">
 
-                            <div class="w-12 h-12 rounded-xl
-                                bg-error-container
-                                text-on-error-container
-                                flex items-center justify-center shadow-md">
+                            <div class="w-[52px] h-[52px] rounded-2xl
+                                bg-orange-500 text-white
+                                flex items-center justify-center
+                                shadow-md transition-transform duration-200
+                                group-hover/app:-translate-y-1">
 
-                                <span class="material-symbols-outlined">
-                                    check_circle
+                                <span class="material-symbols-outlined text-[27px]">
+                                    task_alt
                                 </span>
                             </div>
 
-                            <span class="text-label-md">Görevler</span>
+                            <span class="text-[14px] font-semibold">
+                                Görevler
+                            </span>
                         </a>
 
                         <!-- Translate -->
                         <a asp-controller="Translate"
                                asp-action="Index"
-                               class="flex flex-col items-center gap-stack-sm
-                            cursor-pointer hover:opacity-80">
+                               class="group/app min-h-[105px] rounded-xl p-2
+                            flex flex-col items-center justify-center gap-3
+                            text-slate-300 hover:text-white
+                            hover:bg-white/5
+                            transition-all duration-200"
+                               style="text-decoration: none;">
 
-                            <div class="w-12 h-12 rounded-xl
-                                bg-secondary-fixed
-                                text-secondary-fixed-variant
-                                flex items-center justify-center shadow-md">
+                            <div class="w-[52px] h-[52px] rounded-2xl
+                                bg-teal-500 text-white
+                                flex items-center justify-center
+                                shadow-md transition-transform duration-200
+                                group-hover/app:-translate-y-1">
 
-                                <span class="material-symbols-outlined">
+                                <span class="material-symbols-outlined text-[27px]">
                                     translate
                                 </span>
                             </div>
 
-                            <span class="text-label-md">Translate</span>
+                            <span class="text-[14px] font-semibold">
+                                Translate
+                            </span>
                         </a>
 
                         <!-- Panel -->
                         <a asp-controller="Dashboard"
                                asp-action="Index"
-                               class="flex flex-col items-center gap-stack-sm
-                            cursor-pointer hover:opacity-80">
+                               class="group/app min-h-[105px] rounded-xl p-2
+                            flex flex-col items-center justify-center gap-3
+                            text-slate-300 hover:text-white
+                            hover:bg-white/5
+                            transition-all duration-200"
+                               style="text-decoration: none;">
 
-                            <div class="w-12 h-12 rounded-xl
-                                bg-primary-container
-                                text-on-primary-container
-                                flex items-center justify-center shadow-md">
+                            <div class="w-[52px] h-[52px] rounded-2xl
+                                bg-emerald-500 text-white
+                                flex items-center justify-center
+                                shadow-md transition-transform duration-200
+                                group-hover/app:-translate-y-1">
 
-                                <span class="material-symbols-outlined">
+                                <span class="material-symbols-outlined text-[27px]">
                                     bar_chart
                                 </span>
                             </div>
 
-                            <span class="text-label-md">Panel</span>
+                            <span class="text-[14px] font-semibold">
+                                Panel
+                            </span>
                         </a>
+
                     </div>
                 </div>
             </div>

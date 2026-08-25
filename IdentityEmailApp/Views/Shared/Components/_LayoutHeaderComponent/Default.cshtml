@@ -262,7 +262,7 @@
 .notika-top-nav > li {
     overflow: visible !important;
 }
-
+<style>
     /* =========================================
        NOTIKA UYGULAMALAR MENÜSÜ
     ========================================= */
@@ -272,146 +272,167 @@
     }
 
     .notika-apps-trigger {
-        width: 48px;
-        height: 48px;
         display: flex !important;
         align-items: center;
         justify-content: center;
-        padding: 0 !important;
+        width: 48px;
+        height: 48px;
         margin-right: 8px;
+        padding: 0 !important;
         border-radius: 50%;
         transition: background-color 0.2s ease;
     }
 
-        .notika-apps-trigger:hover,
-        .notika-apps-item.open .notika-apps-trigger {
-            background-color: rgba(255, 255, 255, 0.12);
-        }
+    .notika-apps-trigger:hover,
+    .notika-apps-item.open .notika-apps-trigger {
+        background-color: rgba(255, 255, 255, 0.12);
+    }
 
-    /* 9 noktalı ikon */
+    /* Dokuz noktalı uygulama ikonu */
     .notika-apps-grid {
-        width: 20px;
-        height: 20px;
         display: grid;
         grid-template-columns: repeat(3, 4px);
         grid-template-rows: repeat(3, 4px);
-        gap: 4px;
         justify-content: center;
         align-content: center;
+        width: 20px;
+        height: 20px;
+        gap: 3px;
     }
 
-        .notika-apps-grid span {
-            width: 4px;
-            height: 4px;
-            display: block;
-            background-color: #ffffff;
-            border-radius: 50%;
-        }
+    .notika-apps-grid span {
+        display: block;
+        width: 4px;
+        height: 4px;
+        background-color: #ffffff;
+        border-radius: 50%;
+    }
 
-    /* Açılan uygulama kutusu */
+    /* Açılır menü */
     .notika-apps-dropdown {
-        width: 330px;
-        padding: 0;
-        margin-top: 12px;
         right: 0;
         left: auto;
-        border: none;
-        border-radius: 16px;
-        background-color: #ffffff;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        width: 390px;
+        margin-top: 12px;
+        padding: 0;
         overflow: hidden;
+        background-color: #182236;
+        border: 1px solid #344158;
+        border-radius: 17px;
+        box-shadow: 0 18px 45px rgba(5, 12, 25, 0.38);
     }
 
+    /* Başlık alanı */
     .notika-apps-header {
-        padding: 18px 20px 14px;
-        border-bottom: 1px solid #eeeeee;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-height: 85px;
+        padding: 17px 20px;
+        border-bottom: 1px solid #344158;
     }
 
-        .notika-apps-header h4 {
-            margin: 0 0 4px;
-            color: #222222;
-            font-size: 16px;
-            font-weight: 600;
-        }
+    .notika-apps-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 45px;
+        width: 45px;
+        height: 45px;
+        color: #ffffff;
+        background: linear-gradient(145deg, #7785ff, #8d82ef);
+        border-radius: 12px;
+        box-shadow: 0 8px 18px rgba(123, 132, 255, 0.28);
+    }
 
-        .notika-apps-header span {
-            color: #888888;
-            font-size: 12px;
-        }
+    .notika-apps-header-text h4 {
+        margin: 0 0 4px;
+        color: #f7f8fc;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
 
+    .notika-apps-header-text span {
+        color: #9ca8bd;
+        font-size: 13px;
+    }
+
+    /* Uygulama listesi */
     .notika-apps-list {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-        padding: 14px;
+        column-gap: 10px;
+        row-gap: 18px;
+        padding: 28px 24px 30px;
     }
 
     .notika-app-card {
-        min-height: 92px;
         display: flex !important;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 9px;
+        gap: 10px;
+        min-height: 100px;
         padding: 10px 5px !important;
-        color: #444444 !important;
+        color: #cbd3e1 !important;
         text-align: center;
         text-decoration: none !important;
-        border-radius: 12px;
+        border-radius: 13px;
         transition: background-color 0.2s ease, transform 0.2s ease;
     }
 
-        .notika-app-card:hover {
-            background-color: #f5f7fa !important;
-            transform: translateY(-2px);
-        }
+    .notika-app-card:hover,
+    .notika-app-card:focus {
+        color: #ffffff !important;
+        text-decoration: none !important;
+        background-color: #222f46 !important;
+        transform: translateY(-3px);
+    }
 
-        .notika-app-card > span:last-child {
-            font-size: 13px;
-            font-weight: 500;
-        }
+    .notika-app-card > span:last-child {
+        font-size: 14px;
+        font-weight: 600;
+    }
 
+    /* Renkli uygulama ikonları */
     .notika-app-icon {
-        width: 44px;
-        height: 44px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 12px;
-        font-size: 20px;
+        width: 53px;
+        height: 53px;
+        color: #ffffff;
+        border-radius: 17px;
+        font-size: 24px;
+        box-shadow: 0 8px 20px rgba(4, 12, 28, 0.24);
     }
 
     .mail-app {
-        color: #ffffff;
-        background-color: #00c292;
+        background: linear-gradient(145deg, #2578ff, #2467e8);
     }
 
-    .calendar-app {
-        color: #ffffff;
-        background-color: #4285f4;
+    .news-app {
+        background: linear-gradient(145deg, #18bbed, #0da6dc);
     }
 
-    .contact-app {
-        color: #ffffff;
-        background-color: #7e57c2;
-    }
-
-    .file-app {
-        color: #ffffff;
-        background-color: #f4b400;
+    .finance-app {
+        background: linear-gradient(145deg, #b54eff, #913ce2);
     }
 
     .task-app {
-        color: #ffffff;
-        background-color: #ef5350;
+        background: linear-gradient(145deg, #ff831b, #ff6910);
+    }
+
+    .translate-app {
+        background: linear-gradient(145deg, #22bfaf, #13a899);
     }
 
     .dashboard-app {
-        color: #ffffff;
-        background-color: #26a69a;
+        background: linear-gradient(145deg, #18c68c, #0eaa77);
     }
 
-    /* Mobil */
+    /* Mobil görünüm */
     @@media (max-width: 767px) {
         .notika-apps-dropdown {
             position: fixed;
@@ -420,7 +441,18 @@
             left: 10px;
             width: auto;
         }
+
+        .notika-apps-list {
+            padding: 20px 15px;
+        }
+
+        .notika-app-icon {
+            width: 48px;
+            height: 48px;
+            font-size: 21px;
+        }
     }
+</style>
 </style>
 
 <div class="header-top-area">
@@ -554,97 +586,117 @@
                             </ul>
                         </li>
 
+<!-- Notika Uygulamaları -->
+<li class="nav-item dropdown notika-apps-item">
 
-                        <!-- Notika Uygulamaları -->
-                        <li class="nav-item dropdown notika-apps-item">
+    <a href="#"
+       class="nav-link dropdown-toggle notika-apps-trigger"
+       data-toggle="dropdown"
+       role="button"
+       aria-haspopup="true"
+       aria-expanded="false"
+       title="Notika Uygulamaları">
 
-                            <a href="#"
-                                   class="nav-link dropdown-toggle notika-apps-trigger"
-                                   data-toggle="dropdown"
-                                   role="button"
-                                   aria-haspopup="true"
-                                   aria-expanded="false"
-                                   title="Notika Uygulamaları">
+        <span class="notika-apps-grid">
+            @for (int i = 0; i < 9; i++)
+            {
+                <span></span>
+            }
+        </span>
+    </a>
 
-                                <span class="notika-apps-grid">
-                                    @for (int i = 0; i < 9; i++)
-                                    {
-                                        <span></span>
-                                    }
-                                </span>
+    <div class="dropdown-menu notika-apps-dropdown">
 
-                            </a>
+        <div class="notika-apps-header">
 
-                            <div class="dropdown-menu notika-apps-dropdown">
+            <div class="notika-apps-header-icon">
+                <span class="notika-apps-grid">
+                    @for (int i = 0; i < 9; i++)
+                    {
+                        <span></span>
+                    }
+                </span>
+            </div>
 
-                                <div class="notika-apps-header">
-                                    <h4>Notika Uygulamaları</h4>
-                                    <span>Diğer servislere geçiş yapın</span>
-                                </div>
+            <div class="notika-apps-header-text">
+                <h4>Notika Uygulamaları</h4>
+                <span>Kullanmak istediğiniz servisi seçin</span>
+            </div>
 
-                                <div class="notika-apps-list">
+        </div>
 
-                                    <a asp-controller="Message"
-                                           asp-action="Inbox"
-                                           class="notika-app-card">
+        <div class="notika-apps-list">
 
-                                        <span class="notika-app-icon mail-app">
-                                            <i class="fa fa-envelope"></i>
-                                        </span>
+            <a asp-controller="Message"
+               asp-action="Inbox"
+               class="notika-app-card">
 
-                                        <span>Mail</span>
-                                    </a>
+                <span class="notika-app-icon mail-app">
+                    <i class="fa fa-envelope-o"></i>
+                </span>
 
-                                    <a asp-controller="News"
-                                           asp-action="Index"
-                                           class="notika-app-card">
+                <span>Mail</span>
+            </a>
 
-                                        <span class="notika-app-icon calendar-app">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
+            <a asp-controller="News"
+               asp-action="Index"
+               class="notika-app-card">
 
-                                        <span>Haberler</span>
-                                    </a>
+                <span class="notika-app-icon news-app">
+                    <i class="fa fa-newspaper-o"></i>
+                </span>
 
-                                    <a asp-controller="Finance"
-                                           asp-action="Index"
-                                           class="notika-app-card">
+                <span>Haberler</span>
+            </a>
 
-                                        <span class="notika-app-icon contact-app">
-                                            <i class="fa fa-address-book"></i>
-                                        </span>
+            <a asp-controller="Finance"
+               asp-action="Index"
+               class="notika-app-card">
 
-                                        <span>Finans</span>
-                                    </a>
+                <span class="notika-app-icon finance-app">
+                    <i class="fa fa-line-chart"></i>
+                </span>
 
+                <span>Finans</span>
+            </a>
 
-                                    <a asp-controller="Task"
-                                           asp-action="Index"
-                                           class="notika-app-card">
+            <a asp-controller="Task"
+               asp-action="Index"
+               class="notika-app-card">
 
-                                        <span class="notika-app-icon task-app">
-                                            <i class="fa fa-check-square-o"></i>
-                                        </span>
+                <span class="notika-app-icon task-app">
+                    <i class="fa fa-check-circle-o"></i>
+                </span>
 
-                                        <span>Görevler</span>
-                                    </a>
+                <span>Görevler</span>
+            </a>
 
-                                    <a asp-controller="Dashboard"
-                                           asp-action="Index"
-                                           class="notika-app-card">
+            <a asp-controller="Translate"
+               asp-action="Index"
+               class="notika-app-card">
 
-                                        <span class="notika-app-icon dashboard-app">
-                                            <i class="fa fa-bar-chart"></i>
-                                        </span>
+                <span class="notika-app-icon translate-app">
+                    <i class="fa fa-language"></i>
+                </span>
 
-                                        <span>Panel</span>
-                                    </a>
+                <span>Translate</span>
+            </a>
 
-                                </div>
+            <a asp-controller="Dashboard"
+               asp-action="Index"
+               class="notika-app-card">
 
-                            </div>
+                <span class="notika-app-icon dashboard-app">
+                    <i class="fa fa-bar-chart"></i>
+                </span>
 
-                        </li>
+                <span>Panel</span>
+            </a>
+
+        </div>
+
+    </div>
+</li>
 </ul>
                 </div>
             </div>

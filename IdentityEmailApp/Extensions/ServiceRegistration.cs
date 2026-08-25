@@ -9,10 +9,11 @@ namespace IdentityEmailApp.Extensions
         {
             services.AddScoped<ISystemEventService, SystemEventService>();
             services.AddHttpClient<IAIGenerateResponse, AIGenerateResponse>();
-            services.AddHttpClient<INewsService, NewsService>();
+            services.AddScoped<INewsService, NewsService>();
             services.AddHttpClient<ITranslateService, TranslateService>();
             services.AddHttpClient<IAISupportService, AISupportService>();
             services.AddHttpClient<IFinanceService, FinanceService>();
+            services.AddHttpClient<IWeatherService, WeatherService>();
         }
     }
 }

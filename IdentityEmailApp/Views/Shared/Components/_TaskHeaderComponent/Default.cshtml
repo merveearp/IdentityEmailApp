@@ -164,8 +164,7 @@
             </a>
 
             <!-- Uygulamalar -->
-            <div id="financeAppsWrapper"
-                 class="relative">
+            <div id="financeAppsWrapper" class="relative">
 
                 <button type="button"
                         id="financeAppsButton"
@@ -173,71 +172,71 @@
                         aria-expanded="false"
                         aria-controls="financeAppsMenu"
                         class="p-2 rounded-lg
-                               text-dark-text-muted
-                               hover:bg-dark-surface-elevated
-                               hover:text-dark-text
-                               transition-all
-                               flex items-center justify-center">
+                    text-dark-text-muted
+                    hover:bg-dark-surface-elevated
+                    hover:text-dark-text
+                    transition-all
+                    flex items-center justify-center">
 
                     <span class="material-symbols-outlined">
                         apps
                     </span>
                 </button>
 
-                <!-- Uygulamalar menüsü -->
+                <!-- Uygulamalar Menüsü -->
                 <div id="financeAppsMenu"
                      class="hidden absolute right-0 top-full
-                            mt-3 w-[350px]
-                            max-w-[calc(100vw-24px)]
-                            bg-[#172033] rounded-2xl
-                            border border-dark-border
-                            shadow-[0_20px_55px_rgba(0,0,0,0.45)]
-                            z-[100]">
+                    mt-3 w-[360px] sm:w-[390px]
+                    max-w-[calc(100vw-24px)]
+                    bg-[#182236] rounded-2xl
+                    border border-[#344158]
+                    shadow-[0_20px_55px_rgba(0,0,0,0.45)]
+                    z-[100]">
 
-                    <div class="finance-apps-arrow
-                                absolute -top-2 right-3
-                                w-4 h-4 bg-[#172033]
-                                border-l border-t
-                                border-dark-border rotate-45">
+                    <!-- Üst ok -->
+                    <div class="absolute -top-2 right-3
+                        w-4 h-4 bg-[#182236]
+                        border-l border-t
+                        border-[#344158] rotate-45">
                     </div>
 
-                    <!-- Menü başlığı -->
-                    <div class="relative flex items-center gap-3
-                                px-5 py-4
-                                bg-gradient-to-r
-                                from-dark-primary/10
-                                to-transparent
-                                border-b border-dark-border
-                                rounded-t-2xl">
+                    <!-- Menü Başlığı -->
+                    <div class="relative flex items-center gap-4
+                        px-5 py-5
+                        border-b border-[#344158]
+                        rounded-t-2xl">
 
-                        <div class="w-10 h-10 rounded-xl
-                                    bg-dark-primary text-white
-                                    flex items-center justify-center">
+                        <div class="w-12 h-12 shrink-0 rounded-xl
+                            bg-gradient-to-br
+                            from-indigo-400 to-violet-500
+                            text-white
+                            flex items-center justify-center
+                            shadow-lg shadow-indigo-500/20">
 
-                            <span class="material-symbols-outlined">
+                            <span class="material-symbols-outlined text-[28px]">
                                 apps
                             </span>
                         </div>
 
                         <div>
-                            <h3 class="m-0 text-base font-bold
-                                       text-dark-text">
+                            <h3 class="m-0 text-[18px] leading-tight
+                                font-bold text-white">
                                 Notika Uygulamaları
                             </h3>
 
-                            <p class="mt-0.5 mb-0 text-xs
-                                      text-dark-text-muted">
+                            <p class="mt-1 mb-0 text-[13px] text-slate-400">
                                 Kullanmak istediğiniz servisi seçin
                             </p>
                         </div>
                     </div>
 
-                    <!-- Uygulamalar -->
-                    <div class="grid grid-cols-3 gap-3 p-4">
+                    <!-- Uygulama Kartları -->
+                    <div class="grid grid-cols-3 gap-x-2 gap-y-4 px-5 py-6">
 
+                        <!-- Mail -->
                         <a asp-controller="Message"
-                           asp-action="Inbox"
-                           class="finance-app-item">
+                               asp-action="Inbox"
+                               class="finance-app-item">
 
                             <div class="finance-app-icon bg-blue-600">
                                 <span class="material-symbols-outlined">
@@ -248,10 +247,11 @@
                             <span>Mail</span>
                         </a>
 
+                        <!-- Haberler -->
                         <a asp-controller="News"
-                           asp-action="Index"
-                           asp-route-category="latest"
-                           class="finance-app-item">
+                               asp-action="Index"
+                               asp-route-category="latest"
+                               class="finance-app-item">
 
                             <div class="finance-app-icon bg-sky-500">
                                 <span class="material-symbols-outlined">
@@ -262,9 +262,10 @@
                             <span>Haberler</span>
                         </a>
 
+                        <!-- Finans -->
                         <a asp-controller="Finance"
-                           asp-action="Index"
-                           class="finance-app-item">
+                               asp-action="Index"
+                               class="finance-app-item">
 
                             <div class="finance-app-icon bg-purple-500">
                                 <span class="material-symbols-outlined">
@@ -275,9 +276,10 @@
                             <span>Finans</span>
                         </a>
 
+                        <!-- Görevler -->
                         <a asp-controller="Task"
-                           asp-action="Index"
-                           class="finance-app-item">
+                               asp-action="Index"
+                               class="finance-app-item">
 
                             <div class="finance-app-icon bg-orange-500">
                                 <span class="material-symbols-outlined">
@@ -288,9 +290,10 @@
                             <span>Görevler</span>
                         </a>
 
+                        <!-- Translate -->
                         <a asp-controller="Translate"
-                           asp-action="Index"
-                           class="finance-app-item">
+                               asp-action="Index"
+                               class="finance-app-item">
 
                             <div class="finance-app-icon bg-teal-500">
                                 <span class="material-symbols-outlined">
@@ -301,9 +304,10 @@
                             <span>Translate</span>
                         </a>
 
+                        <!-- Panel -->
                         <a asp-controller="Dashboard"
-                           asp-action="Index"
-                           class="finance-app-item">
+                               asp-action="Index"
+                               class="finance-app-item">
 
                             <div class="finance-app-icon bg-emerald-500">
                                 <span class="material-symbols-outlined">
@@ -314,18 +318,6 @@
                             <span>Panel</span>
                         </a>
 
-                        <a asp-controller="Settings"
-                           asp-action="Index"
-                           class="finance-app-item">
-
-                            <div class="finance-app-icon bg-slate-500">
-                                <span class="material-symbols-outlined">
-                                    settings
-                                </span>
-                            </div>
-
-                            <span>Ayarlar</span>
-                        </a>
                     </div>
                 </div>
             </div>

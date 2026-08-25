@@ -38,9 +38,9 @@
 
         <!-- Right Sidebar Column -->
         <aside class="lg:col-span-4 space-y-lg">
-            <!-- Weather Widget -->
-            @await Component.InvokeAsync("_NewWeatherComponent")
-
+            <div id="weatherComponent">
+                @await Component.InvokeAsync("_NewWeatherComponent")
+            </div>
 
             <!-- Local News Section -->
             @await Component.InvokeAsync("_NewLocalComponent")

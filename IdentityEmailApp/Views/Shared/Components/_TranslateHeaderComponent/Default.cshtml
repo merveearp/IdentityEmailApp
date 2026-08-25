@@ -86,10 +86,8 @@
                 mail
             </span>
         </a>
-
         <!-- Uygulamalar -->
-        <div id="translateAppsWrapper"
-             class="relative">
+        <div id="translateAppsWrapper" class="relative">
 
             <button type="button"
                     id="translateAppsButton"
@@ -108,74 +106,79 @@
                 </span>
             </button>
 
-            <!-- Uygulama menüsü -->
+            <!-- Uygulamalar Menüsü -->
             <div id="translateAppsMenu"
                  class="hidden absolute right-0 top-full mt-3
-                w-[350px] max-w-[calc(100vw-24px)]
-                bg-white rounded-2xl
-                border border-slate-200
-                shadow-[0_20px_60px_rgba(32,55,110,0.20)]
-                overflow-hidden z-[100]">
+                w-[360px] sm:w-[390px]
+                max-w-[calc(100vw-24px)]
+                bg-[#182236] rounded-2xl
+                border border-[#344158]
+                shadow-[0_20px_55px_rgba(0,0,0,0.45)]
+                z-[100]">
 
-                <!-- Menü oku -->
+                <!-- Menü Oku -->
                 <div class="absolute -top-2 right-3
                     w-4 h-4 rotate-45
-                    bg-white border-l border-t
-                    border-slate-200">
+                    bg-[#182236]
+                    border-l border-t border-[#344158]">
                 </div>
 
                 <!-- Başlık -->
-                <div class="relative px-5 py-4
-                    flex items-center gap-3
-                    bg-gradient-to-r from-blue-50 to-white
-                    border-b border-slate-100">
+                <div class="relative flex items-center gap-4
+                    px-5 py-5
+                    border-b border-[#344158]
+                    rounded-t-2xl">
 
-                    <div class="w-11 h-11 rounded-xl
-                        bg-primary text-white
+                    <div class="w-12 h-12 shrink-0 rounded-xl
+                        bg-gradient-to-br
+                        from-indigo-400 to-violet-500
+                        text-white
                         flex items-center justify-center
-                        shadow-md">
+                        shadow-lg shadow-indigo-500/20">
 
-                        <span class="material-symbols-outlined">
+                        <span class="material-symbols-outlined text-[28px]">
                             apps
                         </span>
                     </div>
 
                     <div>
-                        <h3 class="m-0 text-base
-                            font-bold text-slate-900">
+                        <h3 class="m-0 text-[18px] leading-tight
+                            font-bold text-white">
                             Notika Uygulamaları
                         </h3>
 
-                        <p class="m-0 mt-1 text-xs text-slate-500">
+                        <p class="mt-1 mb-0 text-[13px] text-slate-400">
                             Kullanmak istediğiniz servisi seçin
                         </p>
                     </div>
                 </div>
 
-                <!-- Uygulamalar -->
-                <div class="grid grid-cols-3 gap-2 p-4">
+                <!-- Uygulama Kartları -->
+                <div class="grid grid-cols-3 gap-x-2 gap-y-4 px-5 py-6">
 
                     <!-- Mail -->
                     <a asp-controller="Message"
                            asp-action="Inbox"
-                           class="group rounded-xl p-3
-                        flex flex-col items-center gap-2
-                        text-slate-600 hover:bg-blue-50
-                        transition-colors"
-                           style="text-decoration:none;">
+                           class="group min-h-[105px] rounded-xl p-2
+                        flex flex-col items-center justify-center gap-3
+                        text-slate-300 hover:text-white
+                        hover:bg-white/5
+                        transition-all duration-200"
+                           style="text-decoration: none;">
 
-                        <div class="w-11 h-11 rounded-xl
+                        <div class="w-[52px] h-[52px] rounded-2xl
                             bg-blue-600 text-white
                             flex items-center justify-center
-                            shadow-sm group-hover:scale-105
-                            transition-transform">
+                            shadow-md
+                            transition-transform duration-200
+                            group-hover:-translate-y-1">
 
-                            <span class="material-symbols-outlined">
+                            <span class="material-symbols-outlined text-[27px]">
                                 mail
                             </span>
                         </div>
 
-                        <span class="text-xs font-medium">
+                        <span class="text-[14px] font-semibold">
                             Mail
                         </span>
                     </a>
@@ -184,24 +187,26 @@
                     <a asp-controller="News"
                            asp-action="Index"
                            asp-route-category="latest"
-                           class="group rounded-xl p-3
-                        flex flex-col items-center gap-2
-                        text-slate-600 hover:bg-sky-50
-                        transition-colors"
-                           style="text-decoration:none;">
+                           class="group min-h-[105px] rounded-xl p-2
+                        flex flex-col items-center justify-center gap-3
+                        text-slate-300 hover:text-white
+                        hover:bg-white/5
+                        transition-all duration-200"
+                           style="text-decoration: none;">
 
-                        <div class="w-11 h-11 rounded-xl
+                        <div class="w-[52px] h-[52px] rounded-2xl
                             bg-sky-500 text-white
                             flex items-center justify-center
-                            shadow-sm group-hover:scale-105
-                            transition-transform">
+                            shadow-md
+                            transition-transform duration-200
+                            group-hover:-translate-y-1">
 
-                            <span class="material-symbols-outlined">
+                            <span class="material-symbols-outlined text-[27px]">
                                 newspaper
                             </span>
                         </div>
 
-                        <span class="text-xs font-medium">
+                        <span class="text-[14px] font-semibold">
                             Haberler
                         </span>
                     </a>
@@ -209,24 +214,26 @@
                     <!-- Finans -->
                     <a asp-controller="Finance"
                            asp-action="Index"
-                           class="group rounded-xl p-3
-                        flex flex-col items-center gap-2
-                        text-slate-600 hover:bg-purple-50
-                        transition-colors"
-                           style="text-decoration:none;">
+                           class="group min-h-[105px] rounded-xl p-2
+                        flex flex-col items-center justify-center gap-3
+                        text-slate-300 hover:text-white
+                        hover:bg-white/5
+                        transition-all duration-200"
+                           style="text-decoration: none;">
 
-                        <div class="w-11 h-11 rounded-xl
+                        <div class="w-[52px] h-[52px] rounded-2xl
                             bg-purple-500 text-white
                             flex items-center justify-center
-                            shadow-sm group-hover:scale-105
-                            transition-transform">
+                            shadow-md
+                            transition-transform duration-200
+                            group-hover:-translate-y-1">
 
-                            <span class="material-symbols-outlined">
+                            <span class="material-symbols-outlined text-[27px]">
                                 monitoring
                             </span>
                         </div>
 
-                        <span class="text-xs font-medium">
+                        <span class="text-[14px] font-semibold">
                             Finans
                         </span>
                     </a>
@@ -234,24 +241,26 @@
                     <!-- Görevler -->
                     <a asp-controller="Task"
                            asp-action="Index"
-                           class="group rounded-xl p-3
-                        flex flex-col items-center gap-2
-                        text-slate-600 hover:bg-orange-50
-                        transition-colors"
-                           style="text-decoration:none;">
+                           class="group min-h-[105px] rounded-xl p-2
+                        flex flex-col items-center justify-center gap-3
+                        text-slate-300 hover:text-white
+                        hover:bg-white/5
+                        transition-all duration-200"
+                           style="text-decoration: none;">
 
-                        <div class="w-11 h-11 rounded-xl
+                        <div class="w-[52px] h-[52px] rounded-2xl
                             bg-orange-500 text-white
                             flex items-center justify-center
-                            shadow-sm group-hover:scale-105
-                            transition-transform">
+                            shadow-md
+                            transition-transform duration-200
+                            group-hover:-translate-y-1">
 
-                            <span class="material-symbols-outlined">
+                            <span class="material-symbols-outlined text-[27px]">
                                 task_alt
                             </span>
                         </div>
 
-                        <span class="text-xs font-medium">
+                        <span class="text-[14px] font-semibold">
                             Görevler
                         </span>
                     </a>
@@ -259,78 +268,57 @@
                     <!-- Translate -->
                     <a asp-controller="Translate"
                            asp-action="Index"
-                           class="group rounded-xl p-3
-                        flex flex-col items-center gap-2
-                        text-slate-600 bg-teal-50
-                        hover:bg-teal-100
-                        transition-colors"
-                           style="text-decoration:none;">
+                           class="group min-h-[105px] rounded-xl p-2
+                        flex flex-col items-center justify-center gap-3
+                        text-slate-300 hover:text-white
+                        bg-white/5 hover:bg-white/10
+                        transition-all duration-200"
+                           style="text-decoration: none;">
 
-                        <div class="w-11 h-11 rounded-xl
+                        <div class="w-[52px] h-[52px] rounded-2xl
                             bg-teal-500 text-white
                             flex items-center justify-center
-                            shadow-sm group-hover:scale-105
-                            transition-transform">
+                            shadow-md
+                            transition-transform duration-200
+                            group-hover:-translate-y-1">
 
-                            <span class="material-symbols-outlined">
+                            <span class="material-symbols-outlined text-[27px]">
                                 translate
                             </span>
                         </div>
 
-                        <span class="text-xs font-medium">
+                        <span class="text-[14px] font-semibold">
                             Translate
                         </span>
                     </a>
 
-                    <!-- Dashboard -->
+                    <!-- Panel -->
                     <a asp-controller="Dashboard"
                            asp-action="Index"
-                           class="group rounded-xl p-3
-                        flex flex-col items-center gap-2
-                        text-slate-600 hover:bg-emerald-50
-                        transition-colors"
-                           style="text-decoration:none;">
+                           class="group min-h-[105px] rounded-xl p-2
+                        flex flex-col items-center justify-center gap-3
+                        text-slate-300 hover:text-white
+                        hover:bg-white/5
+                        transition-all duration-200"
+                           style="text-decoration: none;">
 
-                        <div class="w-11 h-11 rounded-xl
+                        <div class="w-[52px] h-[52px] rounded-2xl
                             bg-emerald-500 text-white
                             flex items-center justify-center
-                            shadow-sm group-hover:scale-105
-                            transition-transform">
+                            shadow-md
+                            transition-transform duration-200
+                            group-hover:-translate-y-1">
 
-                            <span class="material-symbols-outlined">
+                            <span class="material-symbols-outlined text-[27px]">
                                 bar_chart
                             </span>
                         </div>
 
-                        <span class="text-xs font-medium">
+                        <span class="text-[14px] font-semibold">
                             Panel
                         </span>
                     </a>
 
-                    <!-- Ayarlar -->
-                    <a asp-controller="Settings"
-                           asp-action="Index"
-                           class="group rounded-xl p-3
-                        flex flex-col items-center gap-2
-                        text-slate-600 hover:bg-slate-100
-                        transition-colors"
-                           style="text-decoration:none;">
-
-                        <div class="w-11 h-11 rounded-xl
-                            bg-slate-500 text-white
-                            flex items-center justify-center
-                            shadow-sm group-hover:scale-105
-                            transition-transform">
-
-                            <span class="material-symbols-outlined">
-                                settings
-                            </span>
-                        </div>
-
-                        <span class="text-xs font-medium">
-                            Ayarlar
-                        </span>
-                    </a>
                 </div>
             </div>
         </div>
