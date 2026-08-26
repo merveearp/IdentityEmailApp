@@ -203,10 +203,12 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
 ### Giriş, Kayıt ve Aktivasyon
 
 <p align="center">
- <img width="1850" height="962" alt="login" src="https://github.com/user-attachments/assets/41aef688-0dce-4a89-9f88-84c910be8786" />
+  
+<img width="1825" height="962" alt="register" src="https://github.com/user-attachments/assets/bf22d4e6-fb48-423f-b965-928ee1e33914" />
+  <img width="1850" height="962" alt="login" src="https://github.com/user-attachments/assets/41aef688-0dce-4a89-9f88-84c910be8786" />
 <img width="1780" height="892" alt="1" src="https://github.com/user-attachments/assets/82fdc8f1-d33f-43ae-afb6-cd2868bbef50" />
 <img width="1797" height="958" alt="Ekran Alıntısı" src="https://github.com/user-attachments/assets/3e465845-6868-41ff-84ff-2dbac2dab76e" />
-<img width="1825" height="962" alt="register" src="https://github.com/user-attachments/assets/bf22d4e6-fb48-423f-b965-928ee1e33914" />
+
 
 </p>
 
@@ -229,7 +231,7 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
 <img width="1536" height="966" alt="2" src="https://github.com/user-attachments/assets/9f667475-2d3b-4e39-8111-52efda7c2b66" />
  <img width="1436" height="832" alt="9" src="https://github.com/user-attachments/assets/50d55982-c22d-46db-a4f9-dd5f698241f0" />
   
-    </td>
+</td>
     <td width="50%">
   
 <img width="1401" height="888" alt="6" src="https://github.com/user-attachments/assets/32cc7f1a-11d5-424d-8b4d-e77c30eb2e31" />
@@ -237,7 +239,7 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
 <img width="1457" height="923" alt="4" src="https://github.com/user-attachments/assets/0c856217-a2d6-40df-9fc4-4f9bf96e157b" />
 <img width="1517" height="912" alt="3" src="https://github.com/user-attachments/assets/56881b85-ab5d-4993-9a00-9f834cc5503c" />
 
-    </td>
+</td>
   </tr>
 </table>
 
@@ -248,11 +250,11 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
     <td width="50%">
     <img width="1198" height="939" alt="11" src="https://github.com/user-attachments/assets/19a0bca6-fd56-4da8-8ead-d069f1639ec5" />
 
-    </td>
-    <td width="50%">
-     <img width="1029" height="970" alt="10" src="https://github.com/user-attachments/assets/e6ffda50-c0d9-4b3f-8ad8-979ac092419c" />
+</td>
+<td width="50%">
+<img width="1029" height="970" alt="10" src="https://github.com/user-attachments/assets/e6ffda50-c0d9-4b3f-8ad8-979ac092419c" />
 
-    </td>
+</td>
   </tr>
 </table>
 
@@ -265,7 +267,7 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
 
     </td>
     <td width="50%">
-     <img width="1846" height="797" alt="yeni görev oluştur" src="https://github.com/user-attachments/assets/6e71160a-3795-4ccc-a432-046867b71de2" />
+<img width="1846" height="797" alt="yeni görev oluştur" src="https://github.com/user-attachments/assets/6e71160a-3795-4ccc-a432-046867b71de2" />
 <img width="1838" height="770" alt="6" src="https://github.com/user-attachments/assets/f180bb2f-e4bd-4682-9fd3-2bbab0c8561e" />
 <img width="1839" height="769" alt="5" src="https://github.com/user-attachments/assets/7e07c185-a6d9-436b-9ca5-b3e25bb32d1c" />
 <img width="1837" height="958" alt="4" src="https://github.com/user-attachments/assets/08c8cd92-7689-47f1-a710-da2f358255e6" />
@@ -287,7 +289,8 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
 
     </td>
     <td width="50%">
-     <img width="1819" height="949" alt="3" src="https://github.com/user-attachments/assets/959784ac-0e18-4ae9-b9e2-83b2f8822b8b" />
+    
+<img width="1819" height="949" alt="3" src="https://github.com/user-attachments/assets/959784ac-0e18-4ae9-b9e2-83b2f8822b8b" />
 <img width="1814" height="964" alt="2" src="https://github.com/user-attachments/assets/2a59f370-8d07-4593-b2bf-d4a0aeacbfbc" />
 <img width="1817" height="937" alt="1" src="https://github.com/user-attachments/assets/6b0ac3c0-84fd-43b7-b8ca-eb87596a4d1b" />
 
@@ -324,7 +327,8 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
 
     </td>
     <td width="50%">
-    <img width="1146" height="968" alt="13" src="https://github.com/user-attachments/assets/b4b1e140-c45a-4b20-885b-777f63128bf6" />
+ 
+<img width="1146" height="968" alt="13" src="https://github.com/user-attachments/assets/b5554f41-a013-46ba-86a0-6cdeaf652bd6" />
 
     </td>
   </tr>
