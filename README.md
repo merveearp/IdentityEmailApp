@@ -215,12 +215,13 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
 ### Kullanıcı Dashboard’u
 
 <p align="center">
+  <img width="1845" height="969" alt="1" src="https://github.com/user-attachments/assets/e8429375-2731-436d-90d4-7ccb87c833f6" />
   <img width="1838" height="946" alt="2" src="https://github.com/user-attachments/assets/7abf70f2-8f58-46e3-9bf4-46ba276d326c" />
  <img width="1839" height="945" alt="5" src="https://github.com/user-attachments/assets/2b523094-cb49-4e7d-8ad7-0062ec161da9" />
 <img width="1851" height="968" alt="4" src="https://github.com/user-attachments/assets/1bc9312e-fb36-4fc0-98c6-bb5fbb9fb7d0" />
 <img width="1841" height="956" alt="3" src="https://github.com/user-attachments/assets/ad2d5318-9174-4549-acf6-ff72ab51db6c" />
 
-<img width="1845" height="969" alt="1" src="https://github.com/user-attachments/assets/e8429375-2731-436d-90d4-7ccb87c833f6" />
+
 
 </p>
 
