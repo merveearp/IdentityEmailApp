@@ -265,7 +265,7 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
     <td width="50%">
      <img width="1559" height="902" alt="1" src="https://github.com/user-attachments/assets/6f68db71-a25c-452e-b76f-a5535770fcba" />
 
-    </td>
+</td>
     <td width="50%">
 <img width="1846" height="797" alt="yeni görev oluştur" src="https://github.com/user-attachments/assets/6e71160a-3795-4ccc-a432-046867b71de2" />
 <img width="1838" height="770" alt="6" src="https://github.com/user-attachments/assets/f180bb2f-e4bd-4682-9fd3-2bbab0c8561e" />
@@ -275,7 +275,7 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
 <img width="1828" height="789" alt="2" src="https://github.com/user-attachments/assets/f43349dd-bbe6-43a4-9d9f-83803a9c6952" />
 <img width="1841" height="974" alt="1" src="https://github.com/user-attachments/assets/e1bd9674-3e18-4ade-a038-9968d441e1b4" />
 
-    </td>
+</td>
   </tr>
 </table>
 
@@ -287,7 +287,7 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
       <img width="1801" height="893" alt="4" src="https://github.com/user-attachments/assets/8063ec71-4835-48ff-8ffc-7ee0af3757b6" />
 <img width="1782" height="910" alt="1" src="https://github.com/user-attachments/assets/3913203a-a95d-4075-b1e7-6bbdc8b63890" />
 
-    </td>
+</td>
     <td width="50%">
     
 <img width="1819" height="949" alt="3" src="https://github.com/user-attachments/assets/959784ac-0e18-4ae9-b9e2-83b2f8822b8b" />
@@ -310,7 +310,7 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
 <img width="1771" height="951" alt="3" src="https://github.com/user-attachments/assets/cbb7c6be-9223-4bcc-a9b7-24b54ec2ab93" />
 <img width="665" height="912" alt="2" src="https://github.com/user-attachments/assets/43c3b068-ddd8-4651-a238-d89ce420fe9f" />
 
-    </td>
+</td>
     <td width="50%">
    <img width="982" height="969" alt="1" src="https://github.com/user-attachments/assets/282f9519-a991-4baa-abfd-d5957c584b49" />
 
@@ -325,12 +325,12 @@ Görseller `docs/screenshots` klasörü içerisinde tutulmaktadır.
     <td width="50%">
   <img width="1169" height="868" alt="8" src="https://github.com/user-attachments/assets/b69e5bcf-b15f-452c-bce6-9f1274c9f577" />
 
-    </td>
+</td>
     <td width="50%">
  
 <img width="1146" height="968" alt="13" src="https://github.com/user-attachments/assets/b5554f41-a013-46ba-86a0-6cdeaf652bd6" />
 
-    </td>
+</td>
   </tr>
 </table>
 
