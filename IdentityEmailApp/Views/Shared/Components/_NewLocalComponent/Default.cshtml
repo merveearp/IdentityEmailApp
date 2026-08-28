@@ -17,7 +17,7 @@
 
     <div class="space-y-md">
 
-        @foreach (var news in Model.Take(10))
+        @foreach (var news in Model.Take(8))
         {
             var image = !string.IsNullOrWhiteSpace(news.images?.thumbnailProxied)
                 ? news.images.thumbnailProxied

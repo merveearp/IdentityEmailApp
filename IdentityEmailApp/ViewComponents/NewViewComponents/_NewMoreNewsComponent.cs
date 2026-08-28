@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityEmailApp.ViewComponents.NewViewComponents
 {
-    public class _NewMoreNewsComponent :ViewComponent
+    public class _NewMoreNewsComponent : ViewComponent
     {
         private readonly INewsService _newsService;
 
@@ -16,13 +16,11 @@ namespace IdentityEmailApp.ViewComponents.NewViewComponents
         {
             var news = await _newsService.GetNewsAsync();
 
-            var values = news
-                .Take(6)
-                .ToList();
+            var values = news?
+                .Take(4)
+                .ToList() ?? new();
 
             return View(values);
         }
     }
-    
 }
- 

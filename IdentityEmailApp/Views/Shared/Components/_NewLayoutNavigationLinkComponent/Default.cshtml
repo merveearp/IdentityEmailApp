@@ -17,10 +17,15 @@
 <nav class="flex items-center gap-lg overflow-x-auto pb-2 scrollbar-hide">
 
     <a asp-controller="News"
+           asp-action="Index">
+           
+        Ana Sayfa
+    </a>
+    <a asp-controller="News"
            asp-action="GetCategoryByNews"
            asp-route-category="latest"
            class="@(activeCategory == "latest" ? activeClass : passiveClass)">
-        Ana Sayfa
+       Gündem
     </a>
 
     <a asp-controller="News"
@@ -50,12 +55,6 @@
         Teknoloji
     </a>
 
-    <a asp-controller="News"
-           asp-action="GetCategoryByNews"
-           asp-route-category="sports"
-           class="@(activeCategory == "sports" ? activeClass : passiveClass)">
-        Spor
-    </a>
     <a asp-controller="News"
            asp-action="GetCategoryByNews"
            asp-route-category="science"

@@ -71,6 +71,12 @@ namespace IdentityEmailApp.ViewComponents.MessageViewComponents
                     !x.IsDeleted &&
                     x.ReceiverEmail == user.Email);
 
+            ViewBag.draftedMessageCount
+                = await _context.Messages
+                    .CountAsync(x =>
+                        x.IsDraft &&
+                        !x.IsDeleted &&
+                        x.SenderEmail == user.Email);
 
             return View();
         }

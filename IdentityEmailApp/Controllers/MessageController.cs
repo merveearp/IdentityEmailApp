@@ -39,9 +39,13 @@ namespace IdentityEmailApp.Controllers
                 Value = x.CategoryId.ToString()
             }).ToList();
         }
-       
+
         //----------GELEN KUTUSU---------//
-        public async Task<IActionResult> Inbox()
+
+        [HttpGet]
+        public async Task<IActionResult> Inbox(
+            string search = "",
+            int page = 1)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -50,36 +54,123 @@ namespace IdentityEmailApp.Controllers
                 return RedirectToAction("SignIn", "Login");
             }
 
-            var values = await (
+            const int pageSize = 10;
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            var query =
                 from m in _context.Messages
+
                 join u in _context.Users
                     on m.SenderEmail equals u.Email into userGroup
+
                 from sender in userGroup.DefaultIfEmpty()
 
                 join c in _context.Categories
-                on m.CategoryId equals c.CategoryId into catgeoryGroup
-                from category in catgeoryGroup.DefaultIfEmpty()
+                    on m.CategoryId equals c.CategoryId into categoryGroup
 
+                from category in categoryGroup.DefaultIfEmpty()
 
-                where m.ReceiverEmail == user.Email && m.IsDraft == false && m.IsDeleted==false && m.IsSpam == false
-          
-                select new MessageWithSenderInfoModel
+                where m.ReceiverEmail == user.Email
+                      && m.IsDraft == false
+                      && m.IsDeleted == false
+                      && m.IsSpam == false
+
+                select new
                 {
-                    MessageId = m.MessageId,
-                    MessageDetail = m.MessageDetail,
-                    Subject = m.Subject,
-                    SendDate = m.SendDate,
-                    SenderEmail = m.SenderEmail,
-                    SenderName = sender != null ? sender.Name : "Bilinmeyen",
-                    SenderSurname = sender != null ? sender.Surname : "Kullanıcı",
-                    IsRead = m.IsRead,
-                    IsStarred = m.IsStarred,
-                    CategoryName = category != null ? category.CategoryName :"Kategori Yok"
-                }).OrderByDescending(x=>x.SendDate).ToListAsync();
+                    Message = m,
+                    Sender = sender,
+                    Category = category
+                };
+
+            // Arama
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.Trim();
+
+                query = query.Where(x =>
+                    (x.Message.Subject != null &&
+                     x.Message.Subject.Contains(search)) ||
+
+                    (x.Message.MessageDetail != null &&
+                     x.Message.MessageDetail.Contains(search)) ||
+
+                    (x.Message.SenderEmail != null &&
+                     x.Message.SenderEmail.Contains(search)) ||
+
+                    (x.Sender != null &&
+                     x.Sender.Name != null &&
+                     x.Sender.Name.Contains(search)) ||
+
+                    (x.Sender != null &&
+                     x.Sender.Surname != null &&
+                     x.Sender.Surname.Contains(search)) ||
+
+                    (x.Category != null &&
+                     x.Category.CategoryName != null &&
+                     x.Category.CategoryName.Contains(search))
+                );
+            }
+
+            var totalMessageCount = await query.CountAsync();
+
+            var totalPages = (int)Math.Ceiling(
+                totalMessageCount / (double)pageSize
+            );
+
+           
+            if (totalPages == 0)
+            {
+                totalPages = 1;
+            }
+
+           
+            if (page > totalPages)
+            {
+                page = totalPages;
+            }
+
+            var values = await query
+                .OrderByDescending(x => x.Message.SendDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => new MessageWithSenderInfoModel
+                {
+                    MessageId = x.Message.MessageId,
+                    MessageDetail = x.Message.MessageDetail,
+                    Subject = x.Message.Subject,
+                    SendDate = x.Message.SendDate,
+                    SenderEmail = x.Message.SenderEmail,
+
+                    SenderName = x.Sender != null
+                        ? x.Sender.Name
+                        : " ",
+
+                    SenderSurname = x.Sender != null
+                        ? x.Sender.Surname
+                        : " ",
+
+                    IsRead = x.Message.IsRead,
+                    IsStarred = x.Message.IsStarred,
+                    IsSpam = x.Message.IsSpam,
+
+                    CategoryName = x.Category != null
+                        ? x.Category.CategoryName
+                        : "Kategori Yok"
+                })
+                .ToListAsync();
+
+            ViewBag.Search = search;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalMessageCount = totalMessageCount;
 
             return View(values);
         }
-       
+
         //----------GİDEN KUTUSU---------//
         public async Task<IActionResult> SendBox()
         {
@@ -109,8 +200,8 @@ namespace IdentityEmailApp.Controllers
                     Subject = m.Subject,
                     SendDate = m.SendDate,
                     ReceiverEmail = m.ReceiverEmail,
-                    ReceiverName = receiver != null ? receiver.Name : "Bilinmeyen",
-                    ReceiverSurname = receiver != null ? receiver.Surname : "Kullanıcı",
+                    ReceiverName = receiver != null ? receiver.Name : " ",
+                    ReceiverSurname = receiver != null ? receiver.Surname : " ",
                     IsRead = m.IsRead,
                     CategoryName = category != null ? category.CategoryName : "Kategori Yok"
                 }).OrderByDescending(x=>x.SendDate).ToListAsync();

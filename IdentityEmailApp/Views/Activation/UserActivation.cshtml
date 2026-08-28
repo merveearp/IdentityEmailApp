@@ -65,44 +65,136 @@
         <div class="nk-block toggled" id="l-login">
             <div class="nk-form">
 
-                <!-- Başlık (H1) Alanı -->
-                <div class="login-header text-center mg-b-30" style="margin-bottom: 35px; margin-top: 10px;">
-                    <h1 style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 38px; color: #333; margin: 0; letter-spacing: 1px;">
-                        NOTIKA<span style="color: #00c292; font-weight: 400; font-size: 14px; display: block; letter-spacing: 4px; margin-top: 5px;">EMAIL APP</span>
+                <div class="login-header text-center mg-b-30"
+                     style="margin-bottom:25px; margin-top:10px;">
+
+                    <h1 style="font-family:'Montserrat', sans-serif;
+                        font-weight:800;
+                        font-size:38px;
+                        color:#333;
+                        margin:0;
+                        letter-spacing:1px;">
+
+                        NOTIKA
+
+                        <span style="color:#00c292;
+                            font-weight:400;
+                            font-size:14px;
+                            display:block;
+                            letter-spacing:4px;
+                            margin-top:5px;">
+                            EMAIL APP
+                        </span>
                     </h1>
                 </div>
 
+                <div class="text-center" style="margin-bottom:25px;">
+                    <h4 style="font-weight:600; color:#333; margin-bottom:8px;">
+                        E-posta Doğrulama
+                    </h4>
+
+                    <p style="color:#777; font-size:13px; line-height:1.6; margin:0;">
+                        E-posta adresinize gönderilen 6 haneli aktivasyon kodunu giriniz.
+                    </p>
+                </div>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success text-center"
+                         style="font-size:13px; border-radius:5px;">
+
+                        <i class="fa fa-check-circle"></i>
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger text-center"
+                         style="font-size:13px; border-radius:5px;">
+
+                        <i class="fa fa-exclamation-circle"></i>
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+
+                <!-- Aktivasyon kodunu doğrulama formu -->
                 <form asp-controller="Activation"
                       asp-action="UserActivation"
                       method="post">
 
+                    @Html.AntiForgeryToken()
+
                     <div asp-validation-summary="ModelOnly"
-                         class="text-danger text-center mg-b-15">
+                         class="text-danger text-center"
+                         style="margin-bottom:15px;">
                     </div>
 
                     <div class="input-group">
                         <span class="input-group-addon nk-ic-st-pro">
-                            <i class="notika-icon notika-support"></i>
+                            <i class="fa fa-shield"></i>
                         </span>
 
                         <div class="nk-int-st">
                             <input asp-for="ActivationCode"
                                    type="text"
                                    inputmode="numeric"
+                                   autocomplete="one-time-code"
                                    maxlength="6"
                                    class="form-control"
-                                   placeholder="Doğrulama kodunuzu giriniz..." />
+                                   placeholder="6 haneli doğrulama kodu" />
                         </div>
                     </div>
 
                     <span asp-validation-for="ActivationCode"
-                          class="text-danger">
+                          class="text-danger"
+                          style="display:block; margin-top:8px;">
                     </span>
 
                     <button type="submit"
-                            class="btn btn-login btn-success btn-float">
+                            class="btn btn-login btn-success btn-float"
+                            title="Hesabı doğrula">
+
                         <i class="notika-icon notika-right-arrow right-arrow-ant"></i>
                     </button>
+
+                </form>
+
+                <!-- Tekrar kod gönderme formu -->
+                <form asp-controller="Activation"
+                      asp-action="ResendActivationCode"
+                      method="post"
+                      style="margin-top:28px;">
+
+                    @Html.AntiForgeryToken()
+
+                    <div class="text-center">
+
+                        <p style="color:#888; font-size:13px; margin-bottom:10px;">
+                            Aktivasyon kodu gelmedi mi?
+                        </p>
+
+                        <button type="submit"
+                                class="btn btn-default waves-effect"
+                                style="border:1px solid #00c292;
+                            color:#00a67d;
+                            background:#ffffff;
+                            font-weight:600;
+                            padding:9px 18px;
+                            border-radius:4px;">
+
+                            <i class="fa fa-refresh" style="margin-right:6px;"></i>
+                            Kodu Tekrar Gönder
+                        </button>
+
+                        <p style="color:#aaa;
+                            font-size:11px;
+                            margin-top:10px;
+                            margin-bottom:0;">
+                            Yeni kod gönderildiğinde önceki kod geçersiz olur.
+                        </p>
+
+                    </div>
 
                 </form>
 

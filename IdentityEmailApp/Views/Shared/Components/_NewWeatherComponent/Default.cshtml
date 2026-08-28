@@ -150,12 +150,61 @@ else
     </div>
 }
 
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
+        const weatherContainer =
+            document.getElementById("weatherComponent");
+
+        if (!weatherContainer) {
+            return;
+        }
+
+        const savedLatitude =
+            localStorage.getItem("notikaLatitude");
+
+        const savedLongitude =
+            localStorage.getItem("notikaLongitude");
+
+        function getWeather(latitude, longitude) {
+
+            const url =
+                '@Url.Action("GetByLocation", "Weather")' +
+                '?latitude=' + encodeURIComponent(latitude) +
+                '&longitude=' + encodeURIComponent(longitude);
+
+            fetch(url)
+                .then(function (response) {
+
+                    if (!response.ok) {
+                        throw new Error("Hava durumu alınamadı.");
+                    }
+
+                    return response.text();
+                })
+                .then(function (html) {
+                    weatherContainer.innerHTML = html;
+                })
+                .catch(function (error) {
+                    console.error(
+                        "Hava durumu yüklenirken hata oluştu:",
+                        error
+                    );
+                });
+        }
+
+        // Daha önce kaydedilen konum varsa doğrudan kullan
+        if (savedLatitude && savedLongitude) {
+            getWeather(savedLatitude, savedLongitude);
+            return;
+        }
+
+        // Kayıtlı konum yoksa kullanıcıdan konum iste
         if (!navigator.geolocation) {
-            console.log("Tarayıcı konum özelliğini desteklemiyor.");
+            console.log(
+                "Tarayıcı konum özelliğini desteklemiyor. İstanbul gösteriliyor."
+            );
+
             return;
         }
 
@@ -165,34 +214,29 @@ else
                 const latitude = position.coords.latitude;
                 const longitude = position.coords.longitude;
 
-                const url =
-                    '@Url.Action("GetByLocation", "Weather")' +
-                    '?latitude=' + encodeURIComponent(latitude) +
-                    '&longitude=' + encodeURIComponent(longitude);
+                // Konumu tarayıcı hafızasına kaydet
+                localStorage.setItem(
+                    "notikaLatitude",
+                    latitude
+                );
 
-                fetch(url)
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw new Error(
-                                "Hava durumu alınamadı.");
-                        }
+                localStorage.setItem(
+                    "notikaLongitude",
+                    longitude
+                );
 
-                        return response.text();
-                    })
-                    .then(function (html) {
-                        document.getElementById(
-                            "weatherComponent"
-                        ).innerHTML = html;
-                    })
-                    .catch(function (error) {
-                        console.error(error);
-                    });
+                getWeather(latitude, longitude);
             },
             function (error) {
                 console.log(
                     "Konum izni verilmedi. İstanbul gösteriliyor.",
                     error
                 );
+            },
+            {
+                enableHighAccuracy: false,
+                timeout: 10000,
+                maximumAge: 600000
             }
         );
     });

@@ -1,0 +1,598 @@
+﻿@using System.Globalization
+@using System.Net
+@using System.Text.RegularExpressions
+@model List<Message>
+
+@{
+    var turkishCulture = new CultureInfo("tr-TR");
+
+    var totalMessageCount = Model?.Count ?? 0;
+
+    var spamMessageCount = Model?
+        .Count(x => x.IsSpam) ?? 0;
+}
+
+<div class="glass-card rounded-2xl
+    border border-glacier-card-border
+    shadow-glacier xl:col-span-12
+    flex flex-col min-h-[400px]">
+
+    <!-- Başlık -->
+    <div class="p-6 border-b border-glacier-card-border
+        bg-white/[0.01]
+        flex items-center justify-between gap-4">
+
+        <div>
+            <div class="flex items-center gap-2">
+
+                <span class="material-symbols-outlined
+                    text-red-400 text-[22px]">
+                    security
+                </span>
+
+                <h2 class="text-base font-semibold text-white">
+                    Spam Risk Analizi
+                </h2>
+            </div>
+
+            <p class="text-xs text-glacier-text-muted mt-1">
+                Yapay zekâ tarafından analiz edilen mesajların
+                spam risk seviyeleri
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+
+            <div class="px-3 py-1.5 rounded-full
+                bg-white/5 border border-white/10
+                text-xs text-glacier-text-muted">
+
+                @totalMessageCount mesaj
+            </div>
+
+            <div class="px-3 py-1.5 rounded-full
+                bg-red-500/10 border border-red-400/20
+                text-xs font-semibold text-red-300">
+
+                @spamMessageCount spam
+            </div>
+
+        </div>
+    </div>
+
+    <div class="flex-1 overflow-x-auto">
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="min-h-[300px]
+                flex flex-col items-center justify-center
+                text-center px-6">
+
+                <div class="w-14 h-14 rounded-full
+                    bg-emerald-500/10 text-emerald-400
+                    flex items-center justify-center mb-4">
+
+                    <span class="material-symbols-outlined text-3xl">
+                        verified_user
+                    </span>
+                </div>
+
+                <p class="text-sm font-medium text-white">
+                    Analiz edilmiş mesaj bulunmuyor
+                </p>
+
+                <p class="text-xs text-glacier-text-muted mt-1">
+                    Spam analizi yapılan mesajlar burada görüntülenecek.
+                </p>
+
+            </div>
+        }
+        else
+        {
+            <table class="w-full border-collapse">
+
+                <thead>
+                    <tr class="border-b border-white/5 text-left">
+
+                        <th class="px-6 py-4 text-xs font-medium
+                            text-glacier-text-muted">
+                            Gönderen
+                        </th>
+
+                        <th class="px-4 py-4 text-xs font-medium
+                            text-glacier-text-muted">
+                            Konu
+                        </th>
+
+                        <th class="px-4 py-4 text-xs font-medium
+                            text-glacier-text-muted min-w-[180px]">
+                            Spam Skoru
+                        </th>
+
+                        <th class="px-4 py-4 text-xs font-medium
+                            text-glacier-text-muted">
+                            Spam Durumu
+                        </th>
+
+                        <th class="px-4 py-4 text-xs font-medium
+                            text-glacier-text-muted">
+                            Analiz Tarihi
+                        </th>
+
+                        <th class="px-6 py-4 text-xs font-medium
+                            text-glacier-text-muted text-right">
+                            Detay
+                        </th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var message in Model)
+                    {
+                        var senderInitial =
+                            !string.IsNullOrWhiteSpace(message.SenderEmail)
+                                ? message.SenderEmail[..1].ToUpper()
+                                : "?";
+
+                        var subject =
+                            string.IsNullOrWhiteSpace(message.Subject)
+                                ? "Konu belirtilmemiş"
+                                : message.Subject;
+
+                        var hasSpamAnalysis =
+                            message.SpamScore.HasValue;
+
+                        var spamScore = hasSpamAnalysis
+                            ? Math.Clamp(
+                                Convert.ToDouble(message.SpamScore.Value),
+                                0,
+                                100)
+                            : 0;
+
+                        var roundedSpamScore =
+                            (int)Math.Round(spamScore);
+
+                        string statusText;
+                        string statusIcon;
+                        string statusClass;
+                        string scoreColorClass;
+                        string avatarClass;
+                        string backgroundRgb;
+
+                        if (!hasSpamAnalysis)
+                        {
+                            statusText = "Analiz edilmedi";
+                            statusIcon = "hourglass_empty";
+
+                            statusClass =
+                                "bg-slate-500/10 border-slate-400/20 text-slate-300";
+
+                            scoreColorClass = "bg-slate-500";
+                            avatarClass = "bg-slate-500/10 text-slate-300";
+                            backgroundRgb = "100, 116, 139";
+                        }
+                        else if (message.IsSpam || spamScore >= 70)
+                        {
+                            statusText = "Spam";
+                            statusIcon = "gpp_bad";
+
+                            statusClass =
+                                "bg-red-500/15 border-red-400/30 text-red-300";
+
+                            scoreColorClass = "bg-red-500";
+                            avatarClass = "bg-red-500/15 text-red-300";
+                            backgroundRgb = "239, 68, 68";
+                        }
+                        else if (spamScore >= 40)
+                        {
+                            statusText = "Şüpheli";
+                            statusIcon = "warning";
+
+                            statusClass =
+                                "bg-amber-500/15 border-amber-400/30 text-amber-300";
+
+                            scoreColorClass = "bg-amber-400";
+                            avatarClass = "bg-amber-500/15 text-amber-300";
+                            backgroundRgb = "245, 158, 11";
+                        }
+                        else
+                        {
+                            statusText = "Güvenli";
+                            statusIcon = "verified_user";
+
+                            statusClass =
+                                "bg-emerald-500/15 border-emerald-400/30 text-emerald-300";
+
+                            scoreColorClass = "bg-emerald-400";
+                            avatarClass = "bg-emerald-500/15 text-emerald-300";
+                            backgroundRgb = "16, 185, 129";
+                        }
+
+                        // Skor arttıkça satırın arka plan koyuluğu artar.
+                        var backgroundOpacity = hasSpamAnalysis
+                            ? 0.025 + (spamScore / 100 * 0.16)
+                            : 0.02;
+
+                        if (message.IsSpam && backgroundOpacity < 0.12)
+                        {
+                            backgroundOpacity = 0.12;
+                        }
+
+                        var opacityText = backgroundOpacity.ToString(
+                            "0.000",
+                            CultureInfo.InvariantCulture
+                        );
+
+                        var rowStyle =
+                            $"background-color: rgba({backgroundRgb}, {opacityText});";
+
+                        var progressStyle =
+                            $"width: {roundedSpamScore}%;";
+
+                        var analysisDateText =
+                            message.SpamAnalyzedDate.HasValue
+                                ? message.SpamAnalyzedDate.Value.ToString(
+                                    "dd MMM yyyy HH:mm",
+                                    turkishCulture
+                                )
+                                : "Bekliyor";
+
+                        var subjectStyle = message.IsRead
+                            ? "text-glacier-text-muted font-normal"
+                            : "text-white font-semibold";
+
+                        var rawDetail =
+                            message.MessageDetail ?? "";
+
+                        rawDetail = Regex.Replace(
+                            rawDetail,
+                            @"<br\s*/?>|</p>|</div>|</li>",
+                            "\n",
+                            RegexOptions.IgnoreCase
+                        );
+
+                        var cleanDetail = Regex.Replace(
+                            rawDetail,
+                            "<[^>]+>",
+                            ""
+                        );
+
+                        cleanDetail = WebUtility
+                            .HtmlDecode(cleanDetail)
+                            .Trim();
+
+                        <tr class="border-b border-white/5
+                            transition-all hover:brightness-110"
+                            style="@rowStyle">
+
+                            <!-- Gönderen -->
+                            <td class="px-6 py-4">
+
+                                <div class="flex items-center gap-3">
+
+                                    <div class="w-9 h-9 shrink-0 rounded-full
+                                        @avatarClass
+                                        flex items-center justify-center
+                                        text-sm font-semibold">
+
+                                        @senderInitial
+                                    </div>
+
+                                    <div class="min-w-0">
+
+                                        <span class="block text-sm text-white
+                                            max-w-[190px] truncate">
+
+                                            @message.SenderEmail
+                                        </span>
+
+                                        @if (!message.IsRead)
+                                        {
+                                            <span class="block text-[10px]
+                                                text-glacier-accent mt-0.5">
+                                                Okunmadı
+                                            </span>
+                                        }
+
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Konu -->
+                            <td class="px-4 py-4">
+
+                                <p class="text-sm truncate max-w-[240px]
+                                    @subjectStyle">
+                                    @subject
+                                </p>
+
+                            </td>
+
+                            <!-- Spam skoru -->
+                            <td class="px-4 py-4">
+
+                                @if (hasSpamAnalysis)
+                                {
+                                    <div class="min-w-[150px]">
+
+                                        <div class="flex items-center
+                                            justify-between mb-2">
+
+                                            <span class="text-xs
+                                                text-glacier-text-muted">
+                                                Risk oranı
+                                            </span>
+
+                                            <span class="text-sm font-bold
+                                                text-white">
+                                                %@roundedSpamScore
+                                            </span>
+
+                                        </div>
+
+                                        <div class="w-full h-1.5 rounded-full
+                                            bg-white/10 overflow-hidden">
+
+                                            <div class="h-full rounded-full
+                                                @scoreColorClass
+                                                transition-all duration-500"
+                                                 style="@progressStyle">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-xs text-slate-400">
+                                        Skor bulunmuyor
+                                    </span>
+                                }
+
+                            </td>
+
+                            <!-- Spam durumu -->
+                            <td class="px-4 py-4">
+
+                                <div class="inline-flex items-center gap-1.5
+                                    px-2.5 py-1.5 rounded-full
+                                    border @statusClass">
+
+                                    <span class="material-symbols-outlined
+                                        text-[16px]">
+                                        @statusIcon
+                                    </span>
+
+                                    <span class="text-xs font-semibold">
+                                        @statusText
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+                            <!-- Analiz tarihi -->
+                            <td class="px-4 py-4">
+
+                                <span class="text-xs
+                                    text-glacier-text-muted
+                                    whitespace-nowrap">
+
+                                    @analysisDateText
+                                </span>
+
+                            </td>
+
+                            <!-- Detay -->
+                            <td class="px-6 py-4 text-right">
+
+                                <button type="button"
+                                        class="dashboard-message-preview
+                                    w-8 h-8 rounded-lg
+                                    glass-button
+                                    inline-flex items-center
+                                    justify-center
+                                    text-glacier-text-muted
+                                    hover:text-glacier-accent
+                                    transition-colors"
+                                        data-message-id="@message.MessageId"
+                                        title="Mesaj içeriğini görüntüle"
+                                        aria-label="Mesaj içeriğini görüntüle">
+
+                                    <span class="material-symbols-outlined
+                                        text-[19px]">
+                                        visibility
+                                    </span>
+
+                                </button>
+
+                                <!-- Popup verileri -->
+                                <div id="dashboard-message-@message.MessageId"
+                                     class="hidden">
+
+                                    <span data-sender>
+                                        @message.SenderEmail
+                                    </span>
+
+                                    <span data-subject>
+                                        @subject
+                                    </span>
+
+                                    <span data-date>
+                                        @message.SendDate.ToString(
+                                            "dd MMMM yyyy HH:mm",
+                                            turkishCulture
+                                        )
+                                    </span>
+
+                                    <div data-content>
+                                        @cleanDetail
+                                    </div>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+</div>
+
+<!-- Mesaj popup -->
+<div id="dashboardMessageModal"
+     class="hidden fixed inset-0 z-[9999]
+    bg-black/70 backdrop-blur-sm
+    flex items-center justify-center p-4"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="dashboardModalSubject">
+
+    <div class="w-full max-w-2xl max-h-[85vh]
+        glass-card rounded-2xl
+        border border-white/10
+        shadow-[0_25px_80px_rgba(0,0,0,0.6)]
+        overflow-hidden">
+
+        <!-- Popup başlığı -->
+        <div class="flex items-start justify-between
+            gap-4 px-6 py-5
+            border-b border-white/10">
+
+            <div class="min-w-0">
+                <h3 id="dashboardModalSubject"
+                    class="text-lg font-semibold text-white truncate">
+                </h3>
+
+                <p id="dashboardModalSender"
+                       class="text-xs text-glacier-text-muted mt-1">
+                </p>
+            </div>
+
+            <button type="button"
+                    id="closeDashboardMessageModal"
+                    class="w-9 h-9 rounded-lg glass-button
+                flex items-center justify-center
+                text-glacier-text-muted hover:text-white"
+                    aria-label="Pencereyi kapat">
+
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+            </button>
+        </div>
+
+        <!-- Popup içeriği -->
+        <div class="px-6 py-5 overflow-y-auto max-h-[60vh]">
+
+            <p id="dashboardModalDate"
+                   class="text-xs text-glacier-text-muted mb-5">
+            </p>
+
+            <div id="dashboardModalContent"
+                 class="text-sm leading-7 text-slate-200
+                whitespace-pre-wrap break-words">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const modal =
+            document.getElementById("dashboardMessageModal");
+
+        const closeButton =
+            document.getElementById("closeDashboardMessageModal");
+
+        const modalSubject =
+            document.getElementById("dashboardModalSubject");
+
+        const modalSender =
+            document.getElementById("dashboardModalSender");
+
+        const modalDate =
+            document.getElementById("dashboardModalDate");
+
+        const modalContent =
+            document.getElementById("dashboardModalContent");
+
+
+        function closeModal() {
+            modal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+        }
+
+
+        document
+            .querySelectorAll(".dashboard-message-preview")
+            .forEach(function (button) {
+
+                button.addEventListener("click", function () {
+
+                    const messageId =
+                        button.dataset.messageId;
+
+                    const messageData =
+                        document.getElementById(
+                            "dashboard-message-" + messageId
+                        );
+
+                    if (!messageData) {
+                        return;
+                    }
+
+                    modalSubject.textContent =
+                        messageData
+                            .querySelector("[data-subject]")
+                            .textContent
+                            .trim();
+
+                    modalSender.textContent =
+                        messageData
+                            .querySelector("[data-sender]")
+                            .textContent
+                            .trim();
+
+                    modalDate.textContent =
+                        messageData
+                            .querySelector("[data-date]")
+                            .textContent
+                            .trim();
+
+                    modalContent.textContent =
+                        messageData
+                            .querySelector("[data-content]")
+                            .textContent
+                            .trim();
+
+                    modal.classList.remove("hidden");
+                    document.body.classList.add("overflow-hidden");
+                });
+            });
+
+
+        closeButton.addEventListener("click", closeModal);
+
+        modal.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" &&
+                !modal.classList.contains("hidden")) {
+
+                closeModal();
+            }
+        });
+
+    });
+</script>

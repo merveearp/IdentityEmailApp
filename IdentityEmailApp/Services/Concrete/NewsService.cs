@@ -20,7 +20,7 @@ namespace IdentityEmailApp.Services.Concrete
 
         public async Task<List<ResultLatestOfNewDto.Item>> GetCurrentNewsAsync()
         {
-            var rapidapi_key = _configuration["RapidApi:ApiKey"];
+            var rapidapi_key = _configuration["GoogleNewsApi:ApiKey"];
             const string cacheKey = "CurrentNews";
 
             if (_memoryCache.TryGetValue(cacheKey, out List<ResultLatestOfNewDto.Item>? cachedNews))
@@ -59,7 +59,7 @@ namespace IdentityEmailApp.Services.Concrete
 
         public async Task<List<ResultLatestOfNewDto.Item>> GetLocalNewsAsync()
         {
-            var rapidapi_key = _configuration["RapidApi:ApiKey"];
+            var rapidapi_key = _configuration["GoogleNewsApi:ApiKey"];
             const string cacheKey = "LocalNews";
 
             if (_memoryCache.TryGetValue(cacheKey, out List<ResultLatestOfNewDto.Item>? cachedNews))
@@ -99,7 +99,7 @@ namespace IdentityEmailApp.Services.Concrete
 
         public async Task<List<ResultLatestOfNewDto.Subnew>> GetNewsAsync()
         {
-            var rapidapi_key = _configuration["RapidApi:ApiKey"];
+            var rapidapi_key = _configuration["GoogleNewsApi:ApiKey"];
             const string cacheKey = "entertainment-subnews";
 
             if (_memoryCache.TryGetValue(
@@ -156,7 +156,7 @@ namespace IdentityEmailApp.Services.Concrete
 
         public async Task<List<ResultLatestOfNewDto.Item>> GetCategoryByNewsAsync(string category)
         {
-            var rapidapi_key = _configuration["RapidApi:ApiKey"];
+            var rapidapi_key = _configuration["GoogleNewsApi:ApiKey"];
             var searchCategory = string.IsNullOrWhiteSpace(category)
                 ? "latest"
                 : category.ToLower();

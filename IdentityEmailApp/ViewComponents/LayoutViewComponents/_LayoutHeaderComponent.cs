@@ -19,7 +19,7 @@ namespace IdentityEmailApp.ViewComponents.LayoutViewComponents
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
-            ViewBag.FullName = user.Name + user.Surname;
+            ViewBag.FullName = user.Name +" "+ user.Surname;
             ViewBag.ImageUrl = user.ImageUrl;
             return View();
         }
